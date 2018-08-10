@@ -11,6 +11,14 @@ add_global_arguments('-Wextra', language: 'c')
 
 add_global_link_arguments('-lrt', language: 'c') 
 
+opt_mcpuncores = get_option('m-cpu-ncores')
+if opt_mcpuncores > 0
+	debugstr = '-DNCORES_MAX=@0@'
+	debugstr = debugstr.format(opt_mcpuncores)
+	add_global_arguments(debugstr, language: 'c')
+	#TODO auto set ncpu
+endif
+
 if( get_option('optimize') > 0 )
   add_global_arguments('-O2', language: 'c')
   add_global_arguments('-march=native', language: 'c')
