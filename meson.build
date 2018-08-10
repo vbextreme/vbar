@@ -1,0 +1,44 @@
+project('vbar', 'c')
+
+src = [ 'core/vbar.c', 'core/config.c', 'core/delay.c', 'core/string.c', 'core/memory.c', 'core/modules.c' ]
+src += [ 'ipc/i3pc.c' ]
+src += ['modules/M_cpu.c' , 'modules/M_memory.c']
+
+incdir = include_directories('include')
+
+add_global_arguments('-std=gnu11', language: 'c')
+add_global_arguments('-Wextra', language: 'c')
+
+add_global_link_arguments('-lrt', language: 'c') 
+
+if( get_option('optimize') > 0 )
+  add_global_arguments('-O2', language: 'c')
+  add_global_arguments('-march=native', language: 'c')
+endif
+
+opt_debug = get_option('debug')
+if opt_debug > 0
+	message('debug enabled')
+	debugstr = '-DEF_DEBUG_ENABLE=@0@'
+	debugstr = debugstr.format(opt_debug)
+	add_global_arguments(debugstr, language: 'c')
+endif
+
+opt_debug_color = get_option('dolor')
+if opt_debug_color > 0
+	message('color debug enabled')
+	debugstr = '-DEF_DEBUG_COLOR=@0@'
+	debugstr = debugstr.format(opt_debug_color)
+	add_global_arguments(debugstr, language: 'c')
+endif
+
+if get_option('assert') > 0
+	message('assertion enabled')
+	add_global_arguments('-DEF_ASSERT_ENABLE=1', language: 'c')
+endif
+
+message('copyright vbextreme 2018')
+message('release under GPLv3')
+
+executable('vbar', src, include_directories: incdir)
+
