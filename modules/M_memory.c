@@ -110,7 +110,7 @@ int mem_mod_load(module_s* mod, char* path){
 	config_add(&conf, "format", CNF_S, mem->format, MAX_FORMAT, SYSINFO_ELEMS);
 	config_load(&conf, path);
 	config_destroy(&conf);
-	mod->tick = mod->reftime;
+	mod->tick = mod->reftime + time_ms();
 
 	return 0;
 }

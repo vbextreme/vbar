@@ -18,22 +18,14 @@ module_s* modules_pop(modules_s* mods){
 		size_t left = PHQ_LEFT(bubble);
 		size_t right = PHQ_RIGHT(bubble);
 
-		if( mods->mod[left] == NULL ){
-			mods->mod[left] = mods->mod[bubble];
-			break;
-		}
-		else if( mods->mod[right] == NULL ){
-			mods->mod[right] = mods->mod[bubble];
-			break;
-		}
-		else if( mods->mod[bubble]->tick > mods->mod[left]->tick ){
+		if( mods->mod[bubble]->tick > mods->mod[left]->tick ){
 			module_s* tmp = mods->mod[left];
 			mods->mod[left] = mods->mod[bubble];
 			mods->mod[bubble] = tmp;
 		}
 		else if( mods->mod[bubble]->tick > mods->mod[right]->tick ){
-			module_s* tmp = mods->mod[left];
-			mods->mod[left] = mods->mod[bubble];
+			module_s* tmp = mods->mod[right];
+			mods->mod[right] = mods->mod[bubble];
 			mods->mod[bubble] = tmp;
 		}
 		else{
