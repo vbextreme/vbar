@@ -1,9 +1,5 @@
 #include <vbar.h>
 
-//TODO 
-//riordinare
-//event shell software
-
 int main(__ef_unused int argc, __ef_unused char** argv)
 {
 	modules_s mods;
@@ -14,7 +10,8 @@ int main(__ef_unused int argc, __ef_unused char** argv)
 		i3event_s ev;
 		int ret = i3bar_wait(&ev, modules_next_tick(&mods));
 		if( ret & I3BAR_EVENT ){
-			//TODO
+			dbg_info("event %s %s", ev.instance, ev.name); 
+			modules_dispatch(&mods, &ev);
 		}
 
 		if( ret & I3BAR_TIMEOUT ){

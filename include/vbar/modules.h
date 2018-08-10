@@ -11,6 +11,7 @@
 #define ICONS_SIZE 8
 
 #define MODULE_NAME_MAX 32
+#define MODULE_SPAWN_MAX 1024
 
 typedef struct module module_s;
 
@@ -28,6 +29,7 @@ typedef struct module{
 	char** icons;
 	size_t iconcount;
 	size_t icoindex;
+	char onevent[MODULE_SPAWN_MAX];
 
 	i3element_s i3;
 	void* data;
@@ -54,5 +56,6 @@ void modules_refresh_output(modules_s* mods);
 void modules_default_config(module_s* mod, config_s* conf);
 void modules_icons_init(module_s* mod, size_t count);
 void modules_icons_set(module_s* mod, size_t id, char* ico);
+void modules_dispatch(modules_s* mods, i3event_s* ev);
 
 #endif

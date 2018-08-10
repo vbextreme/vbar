@@ -155,6 +155,7 @@ __ef_private void module_load(modules_s* mods, char* name, char* path){
 			iassert(mods->used < MODULES_MAX);
 			module_s* mod = &mods->rmod[mods->used++];
 			mod->i3 = mods->def;
+			mod->onevent[0] = 0;
 			if( *path ){
 				modsload[i](mod, path);
 			}
@@ -252,5 +253,14 @@ void modules_icons_set(module_s* mod, size_t id, char* ico){
 	}
 	strcpy(mod->icons[id],ico);
 }
+
+void modules_dispatch(modules_s* mods, i3event_s* ev){
+	for( size_t i = 0; i < mods->used; ++i ){
+		if( mods->rmod[i].onevent[0] && !strcmp(mods->rmod[i].i3.instance, ev->instance) ){
+			spawn_shell(mods->rmod[i].onevent);
+		}
+	}
+}
+
 
 //TODO free modules??????

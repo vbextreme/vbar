@@ -1,6 +1,6 @@
 project('vbar', 'c')
 
-src = [ 'core/vbar.c', 'core/config.c', 'core/delay.c', 'core/string.c', 'core/memory.c', 'core/modules.c' ]
+src = [ 'core/vbar.c', 'core/config.c', 'core/delay.c', 'core/string.c', 'core/memory.c', 'core/modules.c', 'core/spawn.c' ]
 src += [ 'ipc/i3pc.c' ]
 src += ['modules/M_cpu.c' , 'modules/M_memory.c']
 

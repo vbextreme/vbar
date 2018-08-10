@@ -12,9 +12,9 @@ Released under GPL v3
 	- [X] memory
 	- [X] delay
 	- [X] config
-	- [ ] modules
-		- [ ] config event
-		- [ ] exec on event
+	- [X] modules
+	- [ ] spawn
+		- [ ] add enviroment and argument
 	- [ ] vbar
 		- [ ] call event
 		- [ ] custom directory for config file
@@ -29,6 +29,7 @@ Released under GPL v3
 	- [ ] power
 	- [ ] temperature
 	- [ ] exec
+- [ ] documentation
 
 ## How To
 ToDo

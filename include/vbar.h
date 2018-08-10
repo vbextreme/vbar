@@ -7,6 +7,7 @@
 #include <vbar/delay.h>
 #include <vbar/config.h>
 #include <vbar/ipc.h>
+#include <vbar/spawn.h>
 #include <vbar/modules.h>
 #include <sys/sysinfo.h>
 
