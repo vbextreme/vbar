@@ -10,6 +10,8 @@
 
 #define ICONS_SIZE 8
 
+#define MODULE_NAME_MAX 32
+
 typedef struct module module_s;
 
 typedef int (*modself_f)(module_s*);

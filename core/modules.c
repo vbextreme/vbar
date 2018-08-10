@@ -130,7 +130,7 @@ void modules_refresh_output(modules_s* mods){
 	fflush(stdout);
 }
 
-__ef_private void module_load(modules_s* mods, char* name){
+__ef_private void module_load(modules_s* mods, char* name, char* path){
 	static char* modsname[] = {
 		"cpu",
 		"memory",
@@ -155,7 +155,12 @@ __ef_private void module_load(modules_s* mods, char* name){
 			iassert(mods->used < MODULES_MAX);
 			module_s* mod = &mods->rmod[mods->used++];
 			mod->i3 = mods->def;
-			modsload[i](mod, modsconf[i]);
+			if( *path ){
+				modsload[i](mod, path);
+			}
+			else{
+				modsload[i](mod, modsconf[i]);
+			}
 			modules_insert(mods, mod);
 		}
 	}
@@ -183,13 +188,16 @@ void modules_load(modules_s* mods){
 	mods->def.urgent = -1;
 
 	char** listModules = ef_mem_matrix_new(MODULES_MAX, sizeof(char) * I3BAR_TEXT_MAX);
+	char** listModulesDir = ef_mem_matrix_new(MODULES_MAX, sizeof(char) * PATH_MAX);
 	for( size_t i = 0; i < MODULES_MAX; ++i){
 		listModules[i][0] = 0;
+		listModulesDir[i][0] = 0;
 	}
 
 	config_s conf;
 	config_init(&conf, 256);
-	config_add(&conf, "load", CNF_S, listModules, I3BAR_TEXT_MAX, MODULES_MAX);
+	config_add(&conf, "module.type", CNF_S, listModules, I3BAR_TEXT_MAX, MODULES_MAX);
+	config_add(&conf, "module.path", CNF_S, listModulesDir, PATH_MAX, MODULES_MAX);
 	config_add(&conf, "color", CNF_U, &mods->def.color, 0, 0);
 	config_add(&conf, "background", CNF_U, &mods->def.background, 0, 0);
 	config_add(&conf, "border", CNF_U, &mods->def.border, 0, 0);
@@ -203,11 +211,13 @@ void modules_load(modules_s* mods){
 	
 	for( size_t i = 0; i < MODULES_MAX; ++i ){
 		if( listModules[i][0] ){
-			module_load(mods, listModules[i]);
+			module_load(mods, listModules[i], listModulesDir[i]);
 		}
 	}
 	
 	ef_mem_matrix_free(listModules, MODULES_MAX);
+	ef_mem_matrix_free(listModulesDir, MODULES_MAX);
+	
 	if( mods->used == 0 ){
 		dbg_fail("need set module to run");
 	}
@@ -243,4 +253,4 @@ void modules_icons_set(module_s* mod, size_t id, char* ico){
 	strcpy(mod->icons[id],ico);
 }
 
-//TODO free??????
+//TODO free modules??????
