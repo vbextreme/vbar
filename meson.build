@@ -48,5 +48,5 @@ endif
 message('copyright vbextreme 2018')
 message('release under GPLv3')
 
-executable('vbar', src, include_directories: incdir)
+executable('vbar', src, include_directories: incdir, install: true)
 

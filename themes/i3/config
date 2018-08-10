@@ -1,0 +1,21 @@
+
+#load cpu module
+module.type[0] = cpu
+#default path
+#module.path[0] = ~/.config/vbar/cpu/config
+
+#load memory module
+module.type[1] = memory
+#default path
+#module.path[1] = ~/.config/vbar/memory/config
+
+#common property
+#color = 0xFF
+#background = 0x0
+#border = 0xFFFFFF
+#min_width = 300
+#align = center
+#separator = 1
+#separator_block_width = 1
+
+
