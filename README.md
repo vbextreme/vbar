@@ -1,4 +1,4 @@
-# vbar alpha 0
+# vbar alpha 1
 another status bar for i3</br>
 </br>
 Released under GPL v3
@@ -16,7 +16,7 @@ Released under GPL v3
 	- [ ] spawn
 		- [ ] add enviroment and argument
 	- [ ] vbar
-		- [ ] call event
+		- [X] call event
 		- [ ] custom directory for config file
 - [X] ipc
 	- [X] i3

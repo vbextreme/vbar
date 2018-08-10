@@ -14,7 +14,7 @@ void spawn_init(void){
 
 int spawn_shell(char* cmdline){
 	pid_t child;
-	char* argv[] = { SPAWN_SHELL, SPAWN_ARGUMENT, cmdline };
+	char* argv[] = { SPAWN_SHELL, SPAWN_ARGUMENT, cmdline, NULL };
 	dbg_info("%s %s %s", SPAWN_SHELL_PATH, SPAWN_ARGUMENT, cmdline);
 	errno = posix_spawn(&child, SPAWN_SHELL_PATH, NULL, NULL, argv, environ);
 	if( errno ){

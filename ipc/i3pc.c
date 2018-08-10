@@ -202,13 +202,15 @@ __ef_private int i3bar_event_lexer(i3event_s* ev, char* line){
 
 __ef_private int i3bar_scan_line(i3event_s* ev){
 	char inp[2048];
-	if( NULL == fgets(inp, 2048, stdin) )
-		return  -1;
-	if( inp[0] != '{' ){
-		dbg_info("garbage %s",inp);
-		return -1;
+	while( fgets(inp, 2048, stdin) ){
+		char* begin = strchr(inp, '{');
+		if( !begin ){
+			dbg_info("garbage %s",inp);
+			continue;
+		}
+		return i3bar_event_lexer(ev, begin++);
 	}
-	return i3bar_event_lexer(ev, inp);
+	return -1;
 }
 
 int i3bar_wait(i3event_s* ev, long timeend){

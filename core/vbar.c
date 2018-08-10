@@ -2,9 +2,10 @@
 
 int main(__ef_unused int argc, __ef_unused char** argv)
 {
+	spawn_init();
 	modules_s mods;
 	modules_load(&mods);
-	
+		
 	i3bar_init(TRUE);
 	while(1){
 		i3event_s ev;
