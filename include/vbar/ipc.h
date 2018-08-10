@@ -28,7 +28,6 @@ typedef struct i3element{
 }i3element_s;
 
 typedef struct i3events{
-	int wip;
 	char name[I3BAR_TEXT_MAX];
 	char instance[I3BAR_TEXT_MAX];
 	int x;

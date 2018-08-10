@@ -96,7 +96,6 @@ void i3bar_write_element(i3element_s* el, bool_t next){
 }
 
 void i3bar_event_reset(i3event_s* ev){
-	ev->wip = 1;
 	ev->name[0] = 0;
 	ev->instance[0] = 0;
 	ev->x = -1;
@@ -150,59 +149,69 @@ __ef_private void i3bar_event_parser(i3event_s* ev, char* name, size_t lenName, 
 	for( i = 0; elname[i]; ++i){
 		if( 0 == str_len_cmp(elname[i], strlen(elname[i]), name, lenName) ){
 			if( eltype[i] == 0 ){
-				str_nncpy_src(elptr[i], I3BAR_TEXT_MAX, value, lenValue);
+				dbg_info("copy %s is string = %.*s", elname[i], (int)lenValue, value);
+				str_nncpy_src(elptr[i], I3BAR_TEXT_MAX, value, lenValue - 1);
 			}
 			else if( eltype[i] == 1){
+				dbg_info("copy %s is long '%.*s'", elname[i], (int)lenValue, value);
 				*((int*)elptr[i]) = strtol(value, NULL, 10);
 			}
 			return;
 		}
 	}
+	dbg_warning("no element '%.*s'", (int)lenName, name); 
 }
 
 __ef_private int i3bar_event_lexer(i3event_s* ev, char* line){
-	char* parse = strchr(line, '}');
-	if( parse ) return 1;
+	dbg_info("line:%s",line);
+	char* parse = line;
 
-	char* name = strchr(line, '"');
-	if( NULL == name++ ) return 0;
-	
-	parse = strchr(name, '"');
-	if( NULL == parse ) return 0;
-	size_t lenName = parse - name;
+	while( (parse = strchr(parse, '"')) ){
+		char* name = parse + 1;
+		parse = strchr(name, '"');
+		if( NULL == parse ){
+			dbg_warning("name not terminated");
+			return -1;
+		}
+		size_t lenName = parse - name;
 
-	parse = strchr(parse, ':');
-	parse = str_skip_h(parse);
-	char* entok;
-	if( *parse == '"'){
+		parse = strchr(parse, ':');
 		++parse;
-		entok = "\"";
+		parse = str_skip_h(parse);
+		char* entok;
+		if( *parse == '"'){
+			++parse;
+			entok = "\"";
+		}
+		else{
+			entok = " \t\n,}";
+		}
+		char* value = parse;
+		parse = strpbrk(parse, entok);
+		if( NULL == parse ){
+			dbg_warning("value not terminate");
+			return -1;
+		}
+		size_t lenValue = parse - value;
+		i3bar_event_parser(ev, name, lenName, value, lenValue);
+		++parse;
 	}
-	else{
-		entok = " \t\n,";
-	}
-	char* value = parse;
-	parse = strpbrk(parse, entok);
-	if( NULL == parse ) return 0;
-	size_t lenValue = value - parse;
-
-	i3bar_event_parser(ev, name, lenName, value, lenValue);
 
 	return 0;
 }
 
 __ef_private int i3bar_scan_line(i3event_s* ev){
-	char inp[1024];
-	int ret;
-	while( fgets(inp, 1024, stdin) && !(ret = i3bar_event_lexer(ev, inp)) );
-	return ret;
+	char inp[2048];
+	if( NULL == fgets(inp, 2048, stdin) )
+		return  -1;
+	if( inp[0] != '{' ){
+		dbg_info("garbage %s",inp);
+		return -1;
+	}
+	return i3bar_event_lexer(ev, inp);
 }
 
 int i3bar_wait(i3event_s* ev, long timeend){
-	if( !ev->wip ){
-		i3bar_event_reset(ev);
-	}
-
 	struct timeval time = { 
 		.tv_sec = 0,
 		.tv_usec = 0
@@ -214,7 +223,7 @@ int i3bar_wait(i3event_s* ev, long timeend){
 
 	while(1){
 		time.tv_usec = (timeend - time_ms()) * 1000;
-		dbg_info("wait %ld", time.tv_usec);
+		/*dbg_info("wait %ld", time.tv_usec);*/
 		int ret = 0;
 		if( time.tv_usec > 0 ) {
 			ret = select(STDIN_FILENO + 1, &rset, NULL, NULL, &time);
@@ -228,10 +237,8 @@ int i3bar_wait(i3event_s* ev, long timeend){
 		if( ret == 0 ){
 			return I3BAR_TIMEOUT;
 		}
-
-		ret = i3bar_scan_line(ev);
-		if( ret ){
-			ev->wip = 0;
+ 
+		if( !i3bar_scan_line(ev) ){
 			ret = I3BAR_EVENT;
 			if( (long)time_ms() >= timeend ) ret |= I3BAR_TIMEOUT;
 			return ret;
