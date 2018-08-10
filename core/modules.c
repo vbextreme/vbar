@@ -238,7 +238,8 @@ void modules_default_config(module_s* mod, config_s* conf){
 	config_add(conf, "seaparator", CNF_U, &mod->i3.seaparator, 0, 0);
 	config_add(conf, "separator_block_width", CNF_U, &mod->i3.separator_block_width, 0, 0);
 	config_add(conf, "markup", CNF_U, &mod->i3.markup, 0, 0);
-	config_add(conf, "icon", CNF_S, mod->icons, ICONS_SIZE, mod->iconcount); 
+	config_add(conf, "icon", CNF_S, mod->icons, ICONS_SIZE, mod->iconcount);
+	config_add(conf, "event", CNF_S, mod->onevent, MODULE_SPAWN_MAX, 0);
 }
 
 void modules_icons_init(module_s* mod, size_t count){

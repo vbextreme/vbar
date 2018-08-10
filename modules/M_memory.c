@@ -108,6 +108,7 @@ int mem_mod_load(module_s* mod, char* path){
 	modules_default_config(mod, &conf);
 	config_add(&conf, "blink.on", CNF_LF, &mem->toblink, 0, 0);
 	config_add(&conf, "format", CNF_S, mem->format, MAX_FORMAT, SYSINFO_ELEMS);
+	config_add(&conf, "unit", CNF_LU, &mem->unit, 0, 0);
 	config_load(&conf, path);
 	config_destroy(&conf);
 	mod->tick = mod->reftime + time_ms();
