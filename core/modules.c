@@ -1,46 +1,55 @@
 #include <vbar.h>
-
+//TODO clean PHQ
 #define PHQ_PARENT(I) ((I)/2)
 #define PHQ_LEFT(I) ((I)*2)
 #define PHQ_RIGHT(I) ((I)*2+1)
 
-module_s* modules_pop(modules_s* mods){
+/*
+__ef_private void dbg_phq(modules_s* mods, int pop){
+	dbg_info("PHQ %s", pop ? "POP":"PUSH");
+	for(size_t i = 1; i <= mods->count; ++i){
+		dbg_info("%10s %ld",mods->mod[i]->i3.instance,mods->mod[i]->tick);
+	}
+}
+*/
+
+module_s* modules_pop(modules_s* mods) {
 	if( mods->mod[1]->tick > (long)time_ms() ){
 		return NULL;
 	}
-
+	
 	module_s* ret = mods->mod[1];
 	mods->mod[1] = mods->mod[mods->count];
-	mods->mod[mods->count--] = NULL;
-	size_t bubble = 1;
+	--mods->count;
 	
-	while( bubble < mods->count ){
-		size_t left = PHQ_LEFT(bubble);
-		size_t right = PHQ_RIGHT(bubble);
-		
-		if( mods->mod[left] && mods->mod[bubble]->tick > mods->mod[left]->tick ){
-			module_s* tmp = mods->mod[left];
-			mods->mod[left] = mods->mod[bubble];
-			mods->mod[bubble] = tmp;
-			bubble = left;
-		}
-		else if( mods->mod[right] && mods->mod[bubble]->tick > mods->mod[right]->tick ){
-			module_s* tmp = mods->mod[right];
-			mods->mod[right] = mods->mod[bubble];
-			mods->mod[bubble] = tmp;
-			bubble = right;
-		}
-		else{
-			break;
-		}
-	}
+	size_t parent = 1;
+    size_t child;
+    
+    for (;;) {
+        child = parent * 2;
+        if( child > mods->count ){
+            break;
+        }
+        if( child < mods->count) {
+            if( mods->mod[child]->tick > mods->mod[child+1]->tick ){
+                ++child;
+            }
+        }
+        
+        if( mods->mod[child]->tick < mods->mod[parent]->tick ){
+            module_s* tmp = mods->mod[child];
+            mods->mod[child] = mods->mod[parent];
+            mods->mod[parent] = tmp;
+            parent = child;
+        } else {
+            break;
+        }
+    }
 	return ret;
 }
 
 void modules_insert(modules_s* mods, module_s* mod){
-	++mods->count;
-	iassert(mods->count < MODULES_MAX);
-	
+
 	if( mod->blinkstatus ){
 		mod->tick = mod->blinktime;
 		mod->i3.urgent = (mod->i3.urgent + 1) & 1;
@@ -50,16 +59,19 @@ void modules_insert(modules_s* mods, module_s* mod){
 	}
 	
 	mod->tick += time_ms();
-	mods->mod[mods->count] = mod;
 
-	size_t child = mods->count;
+	size_t child = ++mods->count;
+	iassert(mods->count < MODULES_MAX);
+
 	size_t parent = PHQ_PARENT(child);
-	while( parent && mods->mod[child]->tick < mods->mod[parent]->tick ){
+	while( parent && mod->tick < mods->mod[parent]->tick ){
 		mods->mod[child] = mods->mod[parent];
 		child = parent;
 		parent = PHQ_PARENT(child);
 	}
+	
 	mods->mod[child] = mod;
+	//dbg_phq(mods,0);
 }
 
 long modules_next_tick(modules_s* mods){
@@ -117,7 +129,9 @@ __ef_private void module_reform(module_s* mod, char* dst, size_t len, char* src)
 }
 
 void modules_reformatting(module_s* mod){
+	//dbg_info("reform %s", mod->longformat);
 	module_reform(mod, mod->i3.full_text, I3BAR_TEXT_MAX,mod->longformat);
+	//dbg_info("out %s", mod->i3.full_text);
 	module_reform(mod, mod->i3.short_text, I3BAR_TEXT_MAX,mod->shortformat);
 }
 
@@ -136,6 +150,7 @@ __ef_private void module_load(modules_s* mods, char* name, char* path){
 		"cpu",
 		"memory",
 		"datetime",
+		"static",
 		NULL
 	};
 
@@ -143,13 +158,15 @@ __ef_private void module_load(modules_s* mods, char* name, char* path){
 	static modload_f modsload[] = {
 		cpu_mod_load,
 		mem_mod_load,
-		datetime_mod_load
+		datetime_mod_load,
+		static_mod_load
 	};
 	
 	static char* modsconf[] = {
 		"~/.config/vbar/cpu/config",
 		"~/.config/vbar/memory/config",
-		"~/.config/vbar/datetime/config"
+		"~/.config/vbar/datetime/config",
+		"~/.config/vbar/static/config"
 	};
 	
 	dbg_info("load module %s", name);
@@ -229,6 +246,7 @@ void modules_load(modules_s* mods){
 }
 
 void modules_default_config(module_s* mod, config_s* conf){
+	config_add(conf, "name", CNF_S, mod->i3.name, I3BAR_TEXT_MAX, 0);
 	config_add(conf, "blink", CNF_D, &mod->blink, 0, 0);
 	config_add(conf, "blink.time", CNF_LD, &mod->blinktime, 0, 0);
 	config_add(conf, "text.full", CNF_S, &mod->longformat, I3BAR_TEXT_MAX, 0);

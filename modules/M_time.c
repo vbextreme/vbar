@@ -28,7 +28,7 @@ __ef_private int datetime_mod_env(module_s* mod, int id, char* dest){
 	datetime_s* dt = mod->data;
 	if( (unsigned)id >= DT_COUNT ){
 		dbg_error("index to large");
-		return 0;
+		return -1;
 	}
 	sprintf(dest, dt->format[id], dt->dt[id]);	
 	return 0;

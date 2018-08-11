@@ -260,7 +260,7 @@ void config_load(config_s* cf, char* fconf){
 			continue;
 		}
 		size_t lenValue = (parse - value);
-
+		//dbg_info("%.*s[%lu] = %.*s", (int)lenName, name, index, (int)lenValue, value);
 		config_assign(cf,name, lenName, value, lenValue, index);
 	}
 	dbg_info("end parse");

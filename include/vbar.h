@@ -14,5 +14,6 @@
 int cpu_mod_load(module_s* mod, char* path);
 int mem_mod_load(module_s* mod, char* path);
 int datetime_mod_load(module_s* mod, char* path);
+int static_mod_load(module_s* mod, char* path);
 
 #endif

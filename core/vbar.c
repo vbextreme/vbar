@@ -7,6 +7,11 @@ int main(__ef_unused int argc, __ef_unused char** argv)
 	modules_load(&mods);
 		
 	i3bar_init(TRUE);
+	
+	for(size_t i = 0; i < mods.used; ++i){
+		modules_reformatting(&mods.rmod[i]);
+	}
+
 	while(1){
 		i3event_s ev;
 		int ret = i3bar_wait(&ev, modules_next_tick(&mods));

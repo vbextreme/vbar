@@ -26,6 +26,7 @@ Released under GPL v3
 	- [X] cpu
 	- [X] memory
 	- [X] date
+	- [X] static
 	- [ ] net
 	- [ ] time
 	- [ ] power
