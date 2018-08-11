@@ -5,16 +5,16 @@
 #include <sys/select.h>
 
 //signstop sigcont
-#define json_begin_block() puts("{")
+#define json_begin_block() putchar('{')
 #define json_end() putchar('\n')
 #define json_end_block() putchar('}')
 
 __ef_private void json_next(bool_t next){
 	if( next ){
-		puts(",");
+		putchar(',');
 	}
 	else{
-		putchar('\n');
+		//putchar('\n');
 	}
 }
 
@@ -30,7 +30,14 @@ __ef_private void json_write_str(char* name, char* value, bool_t next){
 
 __ef_private void json_write_i3color(char* name, int value, bool_t next){
 	if( value < 0 ) return;
-	printf("\"%s\": \"#%X\"", name, value);
+	static char* hex = "0123456789ABCDEF"; 
+	char out[] = "00000000";
+	size_t j = 7;
+	while( value > 0 ){
+		out[j--] = hex[value & 15];
+		value >>= 4;
+	}
+	printf("\"%s\":\"#%s\"", name, &out[2]);
 	json_next(next);
 }
 
@@ -69,7 +76,7 @@ void i3bar_init(bool_t clickevents){
 }
 
 void i3bar_begin_elements(){
-	puts("[");
+	putchar('[');
 }
 
 void i3bar_end_elements(){

@@ -109,4 +109,7 @@ text.short = "$@ $0%"
 #change common property
 color = 0x00FF00
 
+#execute application when click module
+event = "urxvt -e htop"
+
 ```
