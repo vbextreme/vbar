@@ -1,9 +1,10 @@
-# vbar alpha 1
+# vbar alpha 2
 another status bar for i3</br>
 </br>
 Released under GPL v3
 
 ## News
+* **alpha 2** fix bug, add datetime module</br>
 * **alpha 1** fix bug, complete core</br>
 * **alpha 0** begin
 
@@ -24,7 +25,7 @@ Released under GPL v3
 - [ ] module
 	- [X] cpu
 	- [X] memory
-	- [ ] date
+	- [X] date
 	- [ ] net
 	- [ ] time
 	- [ ] power

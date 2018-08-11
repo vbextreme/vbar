@@ -9,6 +9,11 @@ module.type[1] = memory
 #default path
 #module.path[1] = ~/.config/vbar/memory/config
 
+#load datetime module
+module.type[2] = datetime
+#default path
+#module.path[2] = ~/.config/vbar/datetime/config
+
 #common property
 #color = 0xFF
 #background = 0x0
