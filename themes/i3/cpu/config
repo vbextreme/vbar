@@ -19,6 +19,6 @@ refresh = 1000
 text.full = "$@ cpu $0%"
 text.short = "$@ $0%"
 
-
+#event = "urxvt -e htop"
 
 ```

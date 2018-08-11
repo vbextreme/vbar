@@ -65,8 +65,8 @@ long modules_next_tick(modules_s* mods){
 	return mods->mod[1]->tick;
 }
 
-__ef_private void module_reform(module_s* mod, char* dst, char* src){
-	size_t len = I3BAR_TEXT_MAX - 1;
+__ef_private void module_reform(module_s* mod, char* dst, size_t len, char* src){
+	--len;
 	while( *src ){
 		while( *src && *src != '$' && len-->0 ) *dst++ = *src++;
 		if( 0 == src ){
@@ -116,8 +116,8 @@ __ef_private void module_reform(module_s* mod, char* dst, char* src){
 }
 
 void modules_reformatting(module_s* mod){
-	module_reform(mod, mod->i3.full_text, mod->longformat);
-	module_reform(mod, mod->i3.short_text, mod->shortformat);
+	module_reform(mod, mod->i3.full_text, I3BAR_TEXT_MAX,mod->longformat);
+	module_reform(mod, mod->i3.short_text, I3BAR_TEXT_MAX,mod->shortformat);
 }
 
 void modules_refresh_output(modules_s* mods){
@@ -258,7 +258,9 @@ void modules_icons_set(module_s* mod, size_t id, char* ico){
 void modules_dispatch(modules_s* mods, i3event_s* ev){
 	for( size_t i = 0; i < mods->used; ++i ){
 		if( mods->rmod[i].onevent[0] && !strcmp(mods->rmod[i].i3.instance, ev->instance) ){
-			spawn_shell(mods->rmod[i].onevent);
+			char cmd[2048];
+			module_reform(&mods->rmod[i], cmd, 2048, mods->rmod[i].onevent);
+			spawn_shell(cmd);
 		}
 	}
 }

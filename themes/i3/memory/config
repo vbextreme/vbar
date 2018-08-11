@@ -29,5 +29,5 @@ unit = 1073741824
 text.full = "$@ used $13GiB"
 text.short = "$@ $13GiB"
 
-
+#event = "i3-nagbar -t warning -m 'used $13/$4 free $5 swap.used $9/$8 swap.free $9'" 
 ```
