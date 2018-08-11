@@ -204,7 +204,7 @@ void config_load(config_s* cf, char* fconf){
 	
 	char line[CONF_BUFF_LINE_SIZE];
 	while( fgets(line, CONF_BUFF_LINE_SIZE, fd) ){
-		dbg_info("parse %.*s", (int)strlen(line)-1, line);
+		/*dbg_info("parse %.*s", (int)strlen(line)-1, line);*/
 		char* parse = str_skip_h(line);
 		if( 0 == *parse || *parse == CONF_COMMENT || *parse == '\n' ) continue;
 		
@@ -215,7 +215,6 @@ void config_load(config_s* cf, char* fconf){
 			continue;
 		}
 		size_t lenName = parse - name;
-		dbg_info("name:='%.*s'", (int)lenName,name);
 
 		size_t index = 0;
 		parse = str_skip_h(parse);
@@ -230,7 +229,6 @@ void config_load(config_s* cf, char* fconf){
 			++parse;
 			parse = str_skip_h(parse);
 		}
-		dbg_info("index:=%lu", index);
 	
 		if( *parse != CONF_ASSIGN ){
 			dbg_warning("not assigne value on line '%s'", line);
@@ -262,7 +260,6 @@ void config_load(config_s* cf, char* fconf){
 			continue;
 		}
 		size_t lenValue = (parse - value);
-		dbg_info("value:='%.*s'", (int)lenValue, value);
 
 		config_assign(cf,name, lenName, value, lenValue, index);
 	}

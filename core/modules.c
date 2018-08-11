@@ -17,22 +17,23 @@ module_s* modules_pop(modules_s* mods){
 	while( bubble < mods->count ){
 		size_t left = PHQ_LEFT(bubble);
 		size_t right = PHQ_RIGHT(bubble);
-
-		if( mods->mod[bubble]->tick > mods->mod[left]->tick ){
+		
+		if( mods->mod[left] && mods->mod[bubble]->tick > mods->mod[left]->tick ){
 			module_s* tmp = mods->mod[left];
 			mods->mod[left] = mods->mod[bubble];
 			mods->mod[bubble] = tmp;
+			bubble = left;
 		}
-		else if( mods->mod[bubble]->tick > mods->mod[right]->tick ){
+		else if( mods->mod[right] && mods->mod[bubble]->tick > mods->mod[right]->tick ){
 			module_s* tmp = mods->mod[right];
 			mods->mod[right] = mods->mod[bubble];
 			mods->mod[bubble] = tmp;
+			bubble = right;
 		}
 		else{
 			break;
 		}
 	}
-
 	return ret;
 }
 
@@ -134,18 +135,21 @@ __ef_private void module_load(modules_s* mods, char* name, char* path){
 	static char* modsname[] = {
 		"cpu",
 		"memory",
+		"datetime",
 		NULL
 	};
 
 	typedef int(*modload_f)(module_s*,char*);
 	static modload_f modsload[] = {
 		cpu_mod_load,
-		mem_mod_load
+		mem_mod_load,
+		datetime_mod_load
 	};
 	
 	static char* modsconf[] = {
 		"~/.config/vbar/cpu/config",
-		"~/.config/vbar/memory/config"
+		"~/.config/vbar/memory/config",
+		"~/.config/vbar/datetime/config"
 	};
 	
 	dbg_info("load module %s", name);

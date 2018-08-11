@@ -9,7 +9,7 @@
 #endif
 
 #define ICONS_SIZE 8
-
+#define MAX_FORMAT 24
 #define MODULE_NAME_MAX 32
 #define MODULE_SPAWN_MAX 1024
 

@@ -1,6 +1,5 @@
 #include <vbar.h>
 
-#define MAX_FORMAT 24
 #define SYSINFO_ELEMS 14
 typedef struct mem{
 	struct sysinfo si;

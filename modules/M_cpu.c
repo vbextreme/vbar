@@ -9,7 +9,6 @@
 #endif
 typedef enum { CPU_USER, CPU_NICE, CPU_SYSTEM, CPU_IDLE, CPU_IOWAIT, CPU_IRQ, CPU_SOFTIRQ, CPU_STEAL, CPU_GUEST, CPU_GUEST_NICE, CPU_TIME_COUNT } cputime_e;
 
-#define MAX_FORMAT 24
 typedef struct procCpu{
 	double toblink;
 	int ncores;
@@ -92,6 +91,9 @@ __ef_private int cpu_mod_refresh(module_s* mod){
 
 __ef_private int cpu_mod_env(module_s* mod, int id, char* dest){
 	procCpu_s* cpu = mod->data;
+	if( (unsigned)id >= NCORES_MAX ){
+		dbg_error("index to large");
+	}
 	sprintf(dest, cpu->format[id], cpu_average(cpu, id));	
 	return 0;
 }
