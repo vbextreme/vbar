@@ -18,7 +18,7 @@ int main(__ef_unused int argc, __ef_unused char** argv)
 		if( ret & I3BAR_TIMEOUT ){
 			module_s* mod;
 			while( (mod = modules_pop(&mods)) ){
-				mod->refresh(mod);
+				if( mod->refresh) mod->refresh(mod);
 				modules_reformatting(mod);
 				modules_insert(&mods, mod);
 			}

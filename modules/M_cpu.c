@@ -85,7 +85,7 @@ __ef_private int cpu_mod_refresh(module_s* mod){
 	procCpu_s* cpu = mod->data;
 	cpu->current = (cpu->current + 1) & 1;
 	cpu_time(cpu);
-	mod->blinkstatus = ( mod->blink && cpu_average(cpu, 0) > cpu->toblink ) ? TRUE : FALSE;	
+	module_set_urgent(mod, cpu_average(cpu, 0) > cpu->toblink );
 	return 0;
 }
 

@@ -13,8 +13,7 @@ __ef_private int mem_mod_refresh(module_s* mod){
 	mem_s* mem = mod->data;
 	sysinfo(&mem->si);
 	mem->used = mem->si.totalram - mem->si.freeram;
-	mod->blinkstatus = ( mod->blink &&  mem->si.freeram < mem->toblink) ? TRUE : FALSE;
-	
+	module_set_urgent(mod, mem->si.freeram < mem->toblink);
 	return 0;
 }
 
@@ -105,7 +104,7 @@ int mem_mod_load(module_s* mod, char* path){
 	config_s conf;
 	config_init(&conf, 256);
 	modules_default_config(mod, &conf);
-	config_add(&conf, "blink.on", CNF_LF, &mem->toblink, 0, 0);
+	config_add(&conf, "blink.on", CNF_LU, &mem->toblink, 0, 0);
 	config_add(&conf, "format", CNF_S, mem->format, MAX_FORMAT, SYSINFO_ELEMS);
 	config_add(&conf, "unit", CNF_LU, &mem->unit, 0, 0);
 	config_load(&conf, path);

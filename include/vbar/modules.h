@@ -57,5 +57,6 @@ void modules_default_config(module_s* mod, config_s* conf);
 void modules_icons_init(module_s* mod, size_t count);
 void modules_icons_set(module_s* mod, size_t id, char* ico);
 void modules_dispatch(modules_s* mods, i3event_s* ev);
+void module_set_urgent(module_s* mod, int enable);
 
 #endif

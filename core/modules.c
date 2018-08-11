@@ -261,7 +261,7 @@ void modules_icons_set(module_s* mod, size_t id, char* ico){
 
 void modules_dispatch(modules_s* mods, i3event_s* ev){
 	for( size_t i = 0; i < mods->used; ++i ){
-		if( mods->rmod[i].onevent[0] && !strcmp(mods->rmod[i].i3.instance, ev->instance) ){
+		if( mods->rmod[i].onevent[0] && !strcmp(mods->rmod[i].i3.instance, ev->instance) && !strcmp(mods->rmod[i].i3.name, ev->name)){
 			char cmd[2048];
 			module_reform(&mods->rmod[i], cmd, 2048, mods->rmod[i].onevent);
 			spawn_shell(cmd);
@@ -269,5 +269,15 @@ void modules_dispatch(modules_s* mods, i3event_s* ev){
 	}
 }
 
+void module_set_urgent(module_s* mod, int enable){
+	if( mod->blink ){
+		mod->blinkstatus =  enable;
+		if( !enable ) mod->i3.urgent = 0;
+	}
+	else{
+		mod->i3.urgent = enable;
+	}
+
+}
 
 //TODO free modules??????

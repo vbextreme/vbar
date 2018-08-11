@@ -20,7 +20,7 @@ __ef_private int datetime_mod_refresh(module_s* mod){
 	dt->dt[DT_TM] = tm->tm_min;
 	dt->dt[DT_TS] = tm->tm_sec;
 
-	mod->blinkstatus = ( mod->blink && (time_t)dt->toblink == t ) ? TRUE : FALSE;	
+	module_set_urgent(mod, (time_t)dt->toblink == t );	
 	return 0;
 }
 
