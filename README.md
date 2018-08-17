@@ -1,10 +1,11 @@
-# vbar alpha 3
+# vbar alpha 4
 another status bar for i3</br>
 </br>
 Released under GPL v3
 
 ## News
-* **alpha 2** fix bug, add static module</br>
+* **alpha 4** fix format, abstract ipc</br>
+* **alpha 3** fix bug, add static module</br>
 * **alpha 2** fix bug, add datetime module</br>
 * **alpha 1** fix bug, complete core</br>
 * **alpha 0** begin

@@ -6,7 +6,6 @@ typedef enum{ DT_DY, DT_DM, DT_DD, DT_TH, DT_TM, DT_TS, DT_COUNT } datetime_e;
 typedef struct datetime{
 	unsigned long toblink;
 	datetime_e dt[DT_COUNT];
-	char format[DT_COUNT][MAX_FORMAT];
 }datetime_s;
 
 __ef_private int datetime_mod_refresh(module_s* mod){
@@ -30,7 +29,7 @@ __ef_private int datetime_mod_env(module_s* mod, int id, char* dest){
 		dbg_error("index to large");
 		return -1;
 	}
-	sprintf(dest, dt->format[id], dt->dt[id]);	
+	sprintf(dest, modules_format_get(mod, id, "d"), dt->dt[id]);	
 	return 0;
 }
 
@@ -42,35 +41,32 @@ __ef_private int datetime_mod_free(module_s* mod){
 int datetime_mod_load(module_s* mod, char* path){
 	datetime_s* dt = ef_mem_new(datetime_s);
 	dt->toblink = 0;
-	for( size_t i = 0; i < DT_COUNT; ++i){
-		strcpy(dt->format[i], "%d");
-	}
+	
 	mod->data = dt;
 	mod->refresh = datetime_mod_refresh;
 	mod->getenv = datetime_mod_env;
 	mod->free = datetime_mod_free;
-	mod->blink = FALSE;
-	mod->blinktime = 500;
-	mod->blinkstatus = 0;
-	strcpy(mod->longformat, "date $2/$01/$0");
-	strcpy(mod->shortformat, "$2/$1/$0");
-	mod->reftime = 1000;
-	strcpy(mod->i3.name, "generic");
-	strcpy(mod->i3.instance, "datetime");
+
+	strcpy(mod->att.longunformat, "date $2/$01/$0");
+	strcpy(mod->att.shortunformat, "$2/$1/$0");
+	strcpy(mod->att.name, "generic");
+	strcpy(mod->att.instance, "datetime");
 	modules_icons_init(mod, 1);
 	modules_icons_set(mod, 0, "⌚");
+	modules_format_init(mod, DT_COUNT);
+	for( size_t i = 0; i < DT_COUNT; ++i){
+		modules_format_set(mod, i, "d");
+	}
 
 	datetime_mod_refresh(mod);
 
 	config_s conf;
 	config_init(&conf, 256);
 	modules_default_config(mod, &conf);
-	config_add(&conf, "blink.on", CNF_LF, &dt->toblink, 0, 0);
-	config_add(&conf, "format", CNF_S, dt->format, MAX_FORMAT, DT_COUNT);
+	config_add(&conf, "blink.on", CNF_LU, &dt->toblink, 0, 0);
 	config_load(&conf, path);
 	config_destroy(&conf);
 
-	mod->tick = mod->reftime + time_ms();
 	return 0;
 }
 

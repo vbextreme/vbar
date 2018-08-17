@@ -182,7 +182,7 @@ __ef_private void config_assign(config_s* cf, char* name, size_t lenName, char* 
 	}
 
 	if( enparse < value + lenValue || errno != 0 ){
-		dbg_warning("incorrect parsing value on '%.*s[%lu] = %.*s'", (int)lenName, name, index, (int)lenValue, value);
+		dbg_warning("incorrect(%d) parsing value on %.*s[%lu] = '%.*s'", errno,(int)lenName, name, index, (int)lenValue, value);
 	}
 }
 

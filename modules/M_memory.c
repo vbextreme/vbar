@@ -6,7 +6,6 @@ typedef struct mem{
 	unsigned long used;
 	unsigned long unit;
 	unsigned long toblink;
-	char format[SYSINFO_ELEMS][MAX_FORMAT];
 }mem_s;
 
 __ef_private int mem_mod_refresh(module_s* mod){
@@ -21,46 +20,46 @@ __ef_private int mem_mod_env(module_s* mod, int id, char* dest){
 	mem_s* mem = mod->data;
 	switch( id ){
 		case 0:
-			sprintf(dest, mem->format[id], mem->si.uptime);
+			sprintf(dest, modules_format_get(mod, id, "ld"), mem->si.uptime);
 		break;
 		case 1:
-			sprintf(dest, mem->format[id], mem->si.loads[0]);
+			sprintf(dest, modules_format_get(mod, id, "lu"), mem->si.loads[0]);
 		break;
 		case 2:
-			sprintf(dest, mem->format[id], mem->si.loads[1]);
+			sprintf(dest, modules_format_get(mod, id, "lu"), mem->si.loads[1]);
 		break;
 		case 3:
-			sprintf(dest, mem->format[id], mem->si.loads[2]);
+			sprintf(dest, modules_format_get(mod, id, "lu"), mem->si.loads[2]);
 		break;
 		case 4:
-			sprintf(dest, mem->format[id], (double)mem->si.totalram / mem->unit);
+			sprintf(dest, modules_format_get(mod, id, "lu"), (double)mem->si.totalram / mem->unit);
 		break;
 		case 5:
-			sprintf(dest, mem->format[id], (double)mem->si.freeram / mem->unit);
+			sprintf(dest, modules_format_get(mod, id, "lf"), (double)mem->si.freeram / mem->unit);
 		break;
 		case 6:
-			sprintf(dest, mem->format[id], (double)mem->si.sharedram / mem->unit);
+			sprintf(dest, modules_format_get(mod, id, "lf"), (double)mem->si.sharedram / mem->unit);
 		break;
 		case 7:
-			sprintf(dest, mem->format[id], (double)mem->si.bufferram / mem->unit);
+			sprintf(dest, modules_format_get(mod, id, "lf"), (double)mem->si.bufferram / mem->unit);
 		break;
 		case 8:
-			sprintf(dest, mem->format[id], (double)mem->si.totalswap / mem->unit);
+			sprintf(dest, modules_format_get(mod, id, "lf"), (double)mem->si.totalswap / mem->unit);
 		break;
 		case 9:
-			sprintf(dest, mem->format[id], (double)mem->si.freeswap / mem->unit);
+			sprintf(dest, modules_format_get(mod, id, "lf"), (double)mem->si.freeswap / mem->unit);
 		break;
 		case 10:
-			sprintf(dest, mem->format[id], mem->si.procs);
+			sprintf(dest, modules_format_get(mod, id, "d"), mem->si.procs);
 		break;
 		case 11:
-			sprintf(dest, mem->format[id], (double)mem->si.totalhigh / mem->unit);
+			sprintf(dest, modules_format_get(mod, id, "lf"), (double)mem->si.totalhigh / mem->unit);
 		break;
 		case 12:
-			sprintf(dest, mem->format[id], (double)mem->si.freehigh / mem->unit);
+			sprintf(dest, modules_format_get(mod, id, "lf"), (double)mem->si.freehigh / mem->unit);
 		break;
 		case 13:
-			sprintf(dest, mem->format[id], (double)mem->used / (double)mem->unit);
+			sprintf(dest, modules_format_get(mod, id, "lf"), (double)mem->used / (double)mem->unit);
 		break;
 	}
 	return 0;
@@ -75,29 +74,26 @@ int mem_mod_load(module_s* mod, char* path){
 	mem_s* mem = ef_mem_new(mem_s);
 	mem->toblink = 1024*1024*500;
 	mem->unit = 1024*1024*1024;
-	strcpy(mem->format[0], "%ld");
-	strcpy(mem->format[10], "%d");
-	for( size_t i = 1; i < 4; ++i){
-		strcpy(mem->format[i], "%lu");
-	}
-	for( size_t i = 4; i < SYSINFO_ELEMS; ++i){
-		strcpy(mem->format[i], "%.2lf");
-	}
 
 	mod->data = mem;
 	mod->refresh = mem_mod_refresh;
 	mod->getenv = mem_mod_env;
 	mod->free = mem_mod_free;
-	mod->blink = TRUE;
-	mod->blinktime = 500;
-	mod->blinkstatus = 0;
-	strcpy(mod->longformat, "mem $13GiB");
-	strcpy(mod->shortformat, "$13GiB");
-	mod->reftime = 400;
-	strcpy(mod->i3.name, "generic");
-	strcpy(mod->i3.instance, "memory");	
+
+	strcpy(mod->att.longunformat, "mem $13GiB");
+	strcpy(mod->att.shortformat, "$13GiB");
+	strcpy(mod->att.name, "generic");
+	strcpy(mod->att.instance, "memory");	
 	modules_icons_init(mod, 1);
 	modules_icons_set(mod, 0, "🌀");
+	modules_format_init(mod, SYSINFO_ELEMS);
+	for( size_t i = 0; i < 4; ++i){
+		modules_format_set(mod, i, "3");
+	}
+	for( size_t i = 4; i < SYSINFO_ELEMS; ++i){
+		modules_format_set(mod, i, "5.2");
+	}
+	modules_format_set(mod, 10, "3");
 
 	mem_mod_refresh(mod);
 
@@ -105,11 +101,9 @@ int mem_mod_load(module_s* mod, char* path){
 	config_init(&conf, 256);
 	modules_default_config(mod, &conf);
 	config_add(&conf, "blink.on", CNF_LU, &mem->toblink, 0, 0);
-	config_add(&conf, "format", CNF_S, mem->format, MAX_FORMAT, SYSINFO_ELEMS);
 	config_add(&conf, "unit", CNF_LU, &mem->unit, 0, 0);
 	config_load(&conf, path);
 	config_destroy(&conf);
-	mod->tick = mod->reftime + time_ms();
 	
 	return 0;
 }

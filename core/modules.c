@@ -1,20 +1,11 @@
 #include <vbar.h>
-//TODO clean PHQ
+
 #define PHQ_PARENT(I) ((I)/2)
 #define PHQ_LEFT(I) ((I)*2)
 #define PHQ_RIGHT(I) ((I)*2+1)
 
-/*
-__ef_private void dbg_phq(modules_s* mods, int pop){
-	dbg_info("PHQ %s", pop ? "POP":"PUSH");
-	for(size_t i = 1; i <= mods->count; ++i){
-		dbg_info("%10s %ld",mods->mod[i]->i3.instance,mods->mod[i]->tick);
-	}
-}
-*/
-
 module_s* modules_pop(modules_s* mods) {
-	if( mods->mod[1]->tick > (long)time_ms() ){
+	if( mods->mod[1]->att.tick > (long)time_ms() ){
 		return NULL;
 	}
 	
@@ -31,12 +22,12 @@ module_s* modules_pop(modules_s* mods) {
             break;
         }
         if( child < mods->count) {
-            if( mods->mod[child]->tick > mods->mod[child+1]->tick ){
+            if( mods->mod[child]->att.tick > mods->mod[child+1]->att.tick ){
                 ++child;
             }
         }
         
-        if( mods->mod[child]->tick < mods->mod[parent]->tick ){
+        if( mods->mod[child]->att.tick < mods->mod[parent]->att.tick ){
             module_s* tmp = mods->mod[child];
             mods->mod[child] = mods->mod[parent];
             mods->mod[parent] = tmp;
@@ -50,32 +41,31 @@ module_s* modules_pop(modules_s* mods) {
 
 void modules_insert(modules_s* mods, module_s* mod){
 
-	if( mod->blinkstatus ){
-		mod->tick = mod->blinktime;
-		mod->i3.urgent = (mod->i3.urgent + 1) & 1;
+	if( mod->att.blinkstatus ){
+		mod->att.tick = mod->att.blinktime;
+		mod->att.urgent = (mod->att.urgent + 1) & 1;
 	}
 	else{
-		mod->tick = mod->reftime;
+		mod->att.tick = mod->att.reftime;
 	}
 	
-	mod->tick += time_ms();
+	mod->att.tick += time_ms();
 
 	size_t child = ++mods->count;
 	iassert(mods->count < MODULES_MAX);
 
 	size_t parent = PHQ_PARENT(child);
-	while( parent && mod->tick < mods->mod[parent]->tick ){
+	while( parent && mod->att.tick < mods->mod[parent]->att.tick ){
 		mods->mod[child] = mods->mod[parent];
 		child = parent;
 		parent = PHQ_PARENT(child);
 	}
 	
 	mods->mod[child] = mod;
-	//dbg_phq(mods,0);
 }
 
 long modules_next_tick(modules_s* mods){
-	return mods->mod[1]->tick;
+	return mods->mod[1]->att.tick;
 }
 
 __ef_private void module_reform(module_s* mod, char* dst, size_t len, char* src){
@@ -93,11 +83,11 @@ __ef_private void module_reform(module_s* mod, char* dst, size_t len, char* src)
 			break;
 			
 			case '@':{
-				if( mod->iconcount == 0 ){
+				if( mod->att.iconcount == 0 ){
 					dbg_warning("no icons");
 					break;
 				}
-				strcpy(dst, mod->icons[mod->icoindex]);
+				strcpy(dst, mod->att.icons[mod->att.icoindex]);
 				size_t l = strlen(dst);
 				dst += l;
 				if( len < l ){
@@ -129,24 +119,26 @@ __ef_private void module_reform(module_s* mod, char* dst, size_t len, char* src)
 }
 
 void modules_reformatting(module_s* mod){
-	//dbg_info("reform %s", mod->longformat);
-	module_reform(mod, mod->i3.full_text, I3BAR_TEXT_MAX,mod->longformat);
-	//dbg_info("out %s", mod->i3.full_text);
-	module_reform(mod, mod->i3.short_text, I3BAR_TEXT_MAX,mod->shortformat);
+	module_reform(mod, mod->att.longformat, ATTRIBUTE_TEXT_MAX, mod->att.longunformat);
+	module_reform(mod, mod->att.shortformat, ATTRIBUTE_TEXT_MAX, mod->att.shortunformat);
 }
 
 void modules_refresh_output(modules_s* mods){
-	i3bar_begin_elements();
+	ipc_begin_elements();
 	for(size_t i = 0; i < mods->used - 1; ++i){
-		i3bar_write_element( &mods->rmod[i].i3, TRUE);
+		ipc_write_element( &mods->rmod[i].att, TRUE);
 	}
-	i3bar_write_element( &mods->rmod[mods->used - 1].i3, FALSE);
-	i3bar_end_elements();
-	fflush(stdout);
+	ipc_write_element( &mods->rmod[mods->used - 1].att, FALSE);
+	ipc_end_elements();
 }
 
 __ef_private void module_load(modules_s* mods, char* name, char* path){
-	static char* modsname[] = {
+	int cpu_mod_load(module_s* mod, char* path);
+	int mem_mod_load(module_s* mod, char* path);
+	int datetime_mod_load(module_s* mod, char* path);
+	int static_mod_load(module_s* mod, char* path);
+
+	__ef_private char* modsname[] = {
 		"cpu",
 		"memory",
 		"datetime",
@@ -155,14 +147,14 @@ __ef_private void module_load(modules_s* mods, char* name, char* path){
 	};
 
 	typedef int(*modload_f)(module_s*,char*);
-	static modload_f modsload[] = {
+	__ef_private modload_f modsload[] = {
 		cpu_mod_load,
 		mem_mod_load,
 		datetime_mod_load,
 		static_mod_load
 	};
 	
-	static char* modsconf[] = {
+	__ef_private char* modsconf[] = {
 		"~/.config/vbar/cpu/config",
 		"~/.config/vbar/memory/config",
 		"~/.config/vbar/datetime/config",
@@ -175,15 +167,15 @@ __ef_private void module_load(modules_s* mods, char* name, char* path){
 		if( 0 == strcmp(name, modsname[i]) ){
 			iassert(mods->used < MODULES_MAX);
 			module_s* mod = &mods->rmod[mods->used++];
-			mod->i3 = mods->def;
-			mod->onevent[0] = 0;
+			mod->att = mods->def;
+			mod->att.onevent[0] = 0;
 			if( *path ){
 				modsload[i](mod, path);
 			}
 			else{
 				modsload[i](mod, modsconf[i]);
 			}
-			modules_insert(mods, mod);
+			if( mod->att.reftime > 0) modules_insert(mods, mod);
 		}
 	}
 }
@@ -199,8 +191,10 @@ void modules_load(modules_s* mods){
 	mods->def.background = 0;
 	mods->def.color = 0xFFFFFF;
 	mods->def.border = 0x0000FF;
-	strcpy(mods->def.full_text, "err");
-	mods->def.short_text[0] = 0;
+	strcpy(mods->def.longunformat, "error text unset");
+	strcpy(mods->def.longformat, "error text unset");
+	mods->def.shortunformat[0] = 0;
+	mods->def.shortformat[0] = 0;
 	mods->def.instance[0] = 0;
 	mods->def.markup = 0;
 	mods->def.min_width = -1;
@@ -208,8 +202,19 @@ void modules_load(modules_s* mods){
 	mods->def.seaparator = 1;
 	mods->def.separator_block_width = -1;
 	mods->def.urgent = -1;
+	mods->def.blink = 0;
+	mods->def.blinkstatus = 0;
+	mods->def.blinktime = -1;
+	mods->def.format = NULL;
+	mods->def.formatcount = 0;
+	mods->def.icons = NULL;
+	mods->def.iconcount = 0;
+	mods->def.icoindex = 0;
+	mods->def.onevent[0] = 0;
+	mods->def.reftime = 1000;
+	mods->def.tick = 0;
 
-	char** listModules = ef_mem_matrix_new(MODULES_MAX, sizeof(char) * I3BAR_TEXT_MAX);
+	char** listModules = ef_mem_matrix_new(MODULES_MAX, sizeof(char) * ATTRIBUTE_TEXT_MAX);
 	char** listModulesDir = ef_mem_matrix_new(MODULES_MAX, sizeof(char) * PATH_MAX);
 	for( size_t i = 0; i < MODULES_MAX; ++i){
 		listModules[i][0] = 0;
@@ -218,7 +223,7 @@ void modules_load(modules_s* mods){
 
 	config_s conf;
 	config_init(&conf, 256);
-	config_add(&conf, "module.type", CNF_S, listModules, I3BAR_TEXT_MAX, MODULES_MAX);
+	config_add(&conf, "module.type", CNF_S, listModules, ATTRIBUTE_TEXT_MAX, MODULES_MAX);
 	config_add(&conf, "module.path", CNF_S, listModulesDir, PATH_MAX, MODULES_MAX);
 	config_add(&conf, "color", CNF_U, &mods->def.color, 0, 0);
 	config_add(&conf, "background", CNF_U, &mods->def.background, 0, 0);
@@ -246,54 +251,75 @@ void modules_load(modules_s* mods){
 }
 
 void modules_default_config(module_s* mod, config_s* conf){
-	config_add(conf, "name", CNF_S, mod->i3.name, I3BAR_TEXT_MAX, 0);
-	config_add(conf, "blink", CNF_D, &mod->blink, 0, 0);
-	config_add(conf, "blink.time", CNF_LD, &mod->blinktime, 0, 0);
-	config_add(conf, "text.full", CNF_S, &mod->longformat, I3BAR_TEXT_MAX, 0);
-	config_add(conf, "text.short", CNF_S, &mod->shortformat, I3BAR_TEXT_MAX, 0);
-	config_add(conf, "refresh", CNF_LD, &mod->reftime, 0, 0);
-	config_add(conf, "color", CNF_U, &mod->i3.color, 0, 0);
-	config_add(conf, "background", CNF_U, &mod->i3.background, 0, 0);
-	config_add(conf, "border", CNF_U, &mod->i3.border, 0, 0);
-	config_add(conf, "min_width", CNF_U, &mod->i3.min_width, 0, 0);
-	config_add(conf, "align", CNF_U, &mod->i3.color, 0, 0);
-	config_add(conf, "seaparator", CNF_U, &mod->i3.seaparator, 0, 0);
-	config_add(conf, "separator_block_width", CNF_U, &mod->i3.separator_block_width, 0, 0);
-	config_add(conf, "markup", CNF_U, &mod->i3.markup, 0, 0);
-	config_add(conf, "icon", CNF_S, mod->icons, ICONS_SIZE, mod->iconcount);
-	config_add(conf, "event", CNF_S, mod->onevent, MODULE_SPAWN_MAX, 0);
+	config_add(conf, "name", CNF_S, mod->att.name, ATTRIBUTE_TEXT_MAX, 0);
+	config_add(conf, "blink", CNF_D, &mod->att.blink, 0, 0);
+	config_add(conf, "blink.time", CNF_LD, &mod->att.blinktime, 0, 0);
+	config_add(conf, "text.full", CNF_S, &mod->att.longunformat, ATTRIBUTE_TEXT_MAX, 0);
+	config_add(conf, "text.short", CNF_S, &mod->att.shortunformat, ATTRIBUTE_TEXT_MAX, 0);
+	config_add(conf, "refresh", CNF_LD, &mod->att.reftime, 0, 0);
+	config_add(conf, "color", CNF_D, &mod->att.color, 0, 0);
+	config_add(conf, "background", CNF_D, &mod->att.background, 0, 0);
+	config_add(conf, "border", CNF_D, &mod->att.border, 0, 0);
+	config_add(conf, "min_width", CNF_D, &mod->att.min_width, 0, 0);
+	config_add(conf, "align", CNF_D, &mod->att.color, 0, 0);
+	config_add(conf, "seaparator", CNF_D, &mod->att.seaparator, 0, 0);
+	config_add(conf, "separator_block_width", CNF_D, &mod->att.separator_block_width, 0, 0);
+	config_add(conf, "markup", CNF_U, &mod->att.markup, 0, 0);
+	config_add(conf, "icon", CNF_S, mod->att.icons, ATTRIBUTE_ICONS_SIZE, mod->att.iconcount);
+	config_add(conf, "format", CNF_S, mod->att.format, ATTRIBUTE_FORMAT_MAX, mod->att.formatcount);
+	config_add(conf, "event", CNF_S, mod->att.onevent, ATTRIBUTE_SPAWN_MAX, 0);
 }
 
 void modules_icons_init(module_s* mod, size_t count){
-	mod->icons = ef_mem_matrix_new(count, sizeof(char) * ICONS_SIZE);
-	mod->iconcount = count;
+	mod->att.icons = ef_mem_matrix_new(count, sizeof(char) * ATTRIBUTE_ICONS_SIZE);
+	mod->att.iconcount = count;
 }
 
 void modules_icons_set(module_s* mod, size_t id, char* ico){
-	if( id >= mod->iconcount){
+	if( id >= mod->att.iconcount){
 		dbg_warning("id icon out of range");
 		return;
 	}
-	strcpy(mod->icons[id],ico);
+	strcpy(mod->att.icons[id],ico);
 }
 
-void modules_dispatch(modules_s* mods, i3event_s* ev){
+void modules_format_init(module_s* mod, size_t count){
+	mod->att.format = ef_mem_matrix_new(count, sizeof(char) * ATTRIBUTE_FORMAT_MAX);
+	mod->att.formatcount = count;
+}
+
+void modules_format_set(module_s* mod, size_t id, char* format){
+	if( id >= mod->att.formatcount){
+		dbg_warning("id format out of range");
+		return;
+	}
+	strcpy(mod->att.format[id],format);
+}
+
+char* modules_format_get(module_s* mod, size_t id, char* type){
+	__ef_private char frm[ATTRIBUTE_FORMAT_MAX+5] = "%";
+	strcpy(&frm[1], mod->att.format[id]);
+	strcpy(&frm[strlen(frm)], type);
+	return frm;
+}
+
+void modules_dispatch(modules_s* mods, event_s* ev){
 	for( size_t i = 0; i < mods->used; ++i ){
-		if( mods->rmod[i].onevent[0] && !strcmp(mods->rmod[i].i3.instance, ev->instance) && !strcmp(mods->rmod[i].i3.name, ev->name)){
+		if( mods->rmod[i].att.onevent[0] && !strcmp(mods->rmod[i].att.instance, ev->instance) && !strcmp(mods->rmod[i].att.name, ev->name)){
 			char cmd[2048];
-			module_reform(&mods->rmod[i], cmd, 2048, mods->rmod[i].onevent);
+			module_reform(&mods->rmod[i], cmd, 2048, mods->rmod[i].att.onevent);
 			spawn_shell(cmd);
 		}
 	}
 }
 
 void module_set_urgent(module_s* mod, int enable){
-	if( mod->blink ){
-		mod->blinkstatus =  enable;
-		if( !enable ) mod->i3.urgent = 0;
+	if( mod->att.blink ){
+		mod->att.blinkstatus =  enable;
+		if( !enable ) mod->att.urgent = 0;
 	}
 	else{
-		mod->i3.urgent = enable;
+		mod->att.urgent = enable;
 	}
 
 }

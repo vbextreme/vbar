@@ -14,7 +14,6 @@ typedef struct procCpu{
 	int ncores;
 	size_t current;
 	uint64_t tick[2][NCORES_MAX][CPU_TIME_COUNT];
-	char format[NCORES_MAX][MAX_FORMAT];
 }procCpu_s;
 
 __ef_private int cpu_count(void){
@@ -94,7 +93,7 @@ __ef_private int cpu_mod_env(module_s* mod, int id, char* dest){
 	if( (unsigned)id >= NCORES_MAX ){
 		dbg_error("index to large");
 	}
-	sprintf(dest, cpu->format[id], cpu_average(cpu, id));	
+	sprintf(dest, modules_format_get(mod, id, "lf"), cpu_average(cpu, id));	
 	return 0;
 }
 
@@ -107,23 +106,23 @@ int cpu_mod_load(module_s* mod, char* path){
 	procCpu_s* cpu = ef_mem_new(procCpu_s);
 	cpu->ncores = cpu_count();
 	cpu->toblink = 99.0;
-	for( size_t i = 0; i < NCORES_MAX; ++i){
-		strcpy(cpu->format[i], "%.2lf");
-	}
+
 	mod->data = cpu;
 	mod->refresh = cpu_mod_refresh;
 	mod->getenv = cpu_mod_env;
 	mod->free = cpu_mod_free;
-	mod->blink = TRUE;
-	mod->blinktime = 500;
-	mod->blinkstatus = 0;
-	strcpy(mod->longformat, "cpu $0%");
-	strcpy(mod->shortformat, "$0%");
-	mod->reftime = 400;
-	strcpy(mod->i3.name, "generic");
-	strcpy(mod->i3.instance, "cpu");
+
+	strcpy(mod->att.longunformat, "cpu $0%");
+	strcpy(mod->att.shortunformat, "$0%");
+	mod->att.reftime = 1000;
+	strcpy(mod->att.name, "generic");
+	strcpy(mod->att.instance, "cpu");
 	modules_icons_init(mod, 1);
 	modules_icons_set(mod, 0, "💻");
+	modules_format_init(mod, NCORES_MAX);
+	for( size_t i = 0; i < NCORES_MAX; ++i){
+		modules_format_set(mod, i, "6.2");
+	}
 
 	cpu_mod_refresh(mod);
 	cpu_mod_refresh(mod);
@@ -132,11 +131,9 @@ int cpu_mod_load(module_s* mod, char* path){
 	config_init(&conf, 256);
 	modules_default_config(mod, &conf);
 	config_add(&conf, "blink.on", CNF_LF, &cpu->toblink, 0, 0);
-	config_add(&conf, "format", CNF_S, cpu->format, MAX_FORMAT, NCORES_MAX);
 	config_load(&conf, path);
 	config_destroy(&conf);
 
-	mod->tick = mod->reftime + time_ms();
 	return 0;
 }
 
