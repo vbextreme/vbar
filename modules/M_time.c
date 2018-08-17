@@ -55,8 +55,9 @@ int datetime_mod_load(module_s* mod, char* path){
 	modules_icons_set(mod, 0, "⌚");
 	modules_format_init(mod, DT_COUNT);
 	for( size_t i = 0; i < DT_COUNT; ++i){
-		modules_format_set(mod, i, "d");
+		modules_format_set(mod, i, "2");
 	}
+	modules_format_set(mod, DT_DY, "4");
 
 	datetime_mod_refresh(mod);
 
