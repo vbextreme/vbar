@@ -110,6 +110,9 @@ icon = "💻"
 text.full = "$@ cpu $0%"
 text.short = "$@ $0%"
 
+#change format specific output
+format[0] = 5.1
+
 #change common property
 color = 0x00FF00
 
