@@ -2,11 +2,12 @@ project('vbar', 'c')
 
 src = [ 'core/vbar.c', 'core/config.c', 'core/delay.c', 'core/string.c', 'core/memory.c', 'core/modules.c', 'core/spawn.c' ]
 src += [ 'ipc/i3pc.c' ]
-src += ['modules/M_cpu.c' , 'modules/M_memory.c', 'modules/M_time.c', 'modules/M_static.c']
+src += ['modules/M_cpu.c' , 'modules/M_memory.c', 'modules/M_time.c', 'modules/M_static.c', 'modules/M_power.c']
 
 incdir = include_directories('include')
 
 add_global_arguments('-std=gnu11', language: 'c')
+add_global_arguments('-Wall', language: 'c')
 add_global_arguments('-Wextra', language: 'c')
 
 add_global_link_arguments('-lrt', language: 'c') 

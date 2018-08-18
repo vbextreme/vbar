@@ -1,9 +1,10 @@
-# vbar alpha 4
+# vbar alpha 5
 another status bar for i3</br>
 </br>
 Released under GPL v3
 
 ## News
+* **alpha 5** fix some bug, add power module</br>
 * **alpha 4** fix format, abstract ipc</br>
 * **alpha 3** fix bug, add static module</br>
 * **alpha 2** fix bug, add datetime module</br>
@@ -30,11 +31,11 @@ Released under GPL v3
 	- [X] date
 	- [X] static
 	- [ ] net
-	- [ ] time
-	- [ ] power
+	- [X] power
 	- [ ] temperature
-	- [ ] exec
-- [X] documentation
+	- [ ] cpufreq
+	- [ ] pcre?
+- [ ] documentation
 
 ## How To
 

@@ -137,12 +137,14 @@ __ef_private void module_load(modules_s* mods, char* name, char* path){
 	int mem_mod_load(module_s* mod, char* path);
 	int datetime_mod_load(module_s* mod, char* path);
 	int static_mod_load(module_s* mod, char* path);
+	int power_mod_load(module_s* mod, char* path);
 
 	__ef_private char* modsname[] = {
 		"cpu",
 		"memory",
 		"datetime",
 		"static",
+		"power",
 		NULL
 	};
 
@@ -151,14 +153,16 @@ __ef_private void module_load(modules_s* mods, char* name, char* path){
 		cpu_mod_load,
 		mem_mod_load,
 		datetime_mod_load,
-		static_mod_load
+		static_mod_load,
+		power_mod_load
 	};
 	
 	__ef_private char* modsconf[] = {
 		"~/.config/vbar/cpu/config",
 		"~/.config/vbar/memory/config",
 		"~/.config/vbar/datetime/config",
-		"~/.config/vbar/static/config"
+		"~/.config/vbar/static/config",
+		"~/.config/vbar/power/config"
 	};
 	
 	dbg_info("load module %s", name);
