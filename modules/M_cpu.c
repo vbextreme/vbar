@@ -124,15 +124,15 @@ int cpu_mod_load(module_s* mod, char* path){
 		modules_format_set(mod, i, "6.2");
 	}
 
-	cpu_mod_refresh(mod);
-	cpu_mod_refresh(mod);
-
 	config_s conf;
 	config_init(&conf, 256);
 	modules_default_config(mod, &conf);
 	config_add(&conf, "blink.on", CNF_LF, &cpu->toblink, 0, 0);
 	config_load(&conf, path);
 	config_destroy(&conf);
+
+	cpu_mod_refresh(mod);
+	cpu_mod_refresh(mod);
 
 	return 0;
 }
