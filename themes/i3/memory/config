@@ -2,32 +2,26 @@
 blink = 1
 #speed of blink in ms
 blink.time = 450
-#blink when memory used is over 5GiB
-blink.on = 5073741824
+#blink when remain memory is less 1GiB, unit in KB
+blink.on = 1048576
 #refresh time in ms
 refresh = 5000
-#set unit to GiB
-unit = 1073741824
+#set unit to GiB, 1 unit = 1 KB
+unit = 1048576
 
 #formatting output
 #$@ icon 
-#$0 uptime
-#$1 loads[0]
-#$2 [1]
-#$3 [2]
-#$4 totalram
-#$5 freeram
-#$6 sharedram
-#$7 bufferram
-#$8 totalswap
-#$9 freeswap
-#$10 procs
-#$11 totalhigh
-#$12 freehigh
-#$13 used
+#$0 total
+#$1 free
+#$2 shared
+#$3 buffers+cached
+#$4 available
+#$5 total swap
+#$6 free swap
+#$7 used
 
-text.full = "$@ used $13GiB"
-text.short = "$@ $13GiB"
+text.full = "$@ used $7 GiB"
+text.short = "$@ $7 GiB"
 
 #event = "i3-nagbar -t warning -m 'used $13/$4 free $5 swap.used $9/$8 swap.free $9'" 
 ```

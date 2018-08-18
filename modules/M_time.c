@@ -12,8 +12,8 @@ __ef_private int datetime_mod_refresh(module_s* mod){
 	datetime_s* dt = mod->data;
 	time_t t = time(NULL);
 	struct tm* tm = localtime(&t);
-	dt->dt[DT_DY] = tm->tm_year;
-	dt->dt[DT_DM] = tm->tm_mon;
+	dt->dt[DT_DY] = tm->tm_year + 1900;
+	dt->dt[DT_DM] = tm->tm_mon + 1;
 	dt->dt[DT_DD] = tm->tm_mday;
 	dt->dt[DT_TH] = tm->tm_hour;
 	dt->dt[DT_TM] = tm->tm_min;
