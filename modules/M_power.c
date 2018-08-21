@@ -65,9 +65,12 @@ __ef_private int power_mod_refresh(module_s* mod){
 	powerstat_s* pw = mod->data;
 	power_stat(pw);
 	pw->timeleft = (double)pw->energyNow / (double)pw->powerNow;
-	mod->att.icoindex =(unsigned)((double)pw->capacity / (100.0 / (double)mod->att.iconcount));
-	//TODO debug and remove warning
-	//dbg_info("ICON %lu %lu %lf %lf",mod->att.icoindex, pw->capacity,(double)pw->capacity / (100.0 / (double)mod->att.iconcount),(100.0 / (double)mod->att.iconcount));
+	if( strcmp(pw->status, "Discharging") ) {	
+		modules_icons_select(mod, mod->att.iconcount-1);
+	}
+	else{
+		modules_icons_select(mod,(unsigned)((double)pw->capacity / (100.0 / (double)(mod->att.iconcount-1))));
+	}
 	module_set_urgent(mod, (pw->capacity < pw->toblink) );	
 	return 0;
 }
@@ -156,7 +159,7 @@ int power_mod_load(module_s* mod, char* path){
 	config_init(&conf, 256);
 	modules_default_config(mod, &conf);
 	config_add(&conf, "blink.on", CNF_LU, &pw->toblink, 0, 0);
-	config_add(&conf, "powersupply", CNF_S, fname, PATH_MAX, 0);
+	config_add(&conf, "powersupply", CNF_S, fname, PATH_MAX-33, 0);
 	config_load(&conf, path);
 	config_destroy(&conf);
 

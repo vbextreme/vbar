@@ -287,6 +287,14 @@ void modules_icons_set(module_s* mod, size_t id, char* ico){
 	strcpy(mod->att.icons[id],ico);
 }
 
+void modules_icons_select(module_s* mod, size_t id){
+	if( id >= mod->att.iconcount){
+		dbg_warning("id icon out of range");
+		return;
+	}
+	mod->att.icoindex = id;
+}
+
 void modules_format_init(module_s* mod, size_t count){
 	mod->att.format = ef_mem_matrix_new(count, sizeof(char) * ATTRIBUTE_FORMAT_MAX);
 	mod->att.formatcount = count;
