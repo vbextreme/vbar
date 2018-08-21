@@ -4,6 +4,7 @@ another status bar for i3</br>
 Released under GPL v3
 
 ## News
+* **alpha 6** fix some bug, add network module</br>
 * **alpha 5** fix some bug, add power module</br>
 * **alpha 4** fix format, abstract ipc</br>
 * **alpha 3** fix bug, add static module</br>
@@ -25,12 +26,14 @@ Released under GPL v3
 		- [ ] custom directory for config file
 - [X] ipc
 	- [X] i3
+	- [ ] dwm
+	- [ ] spectrwm
 - [ ] module
 	- [X] cpu
 	- [X] memory
 	- [X] date
 	- [X] static
-	- [ ] net
+	- [X] net
 	- [X] power
 	- [ ] temperature
 	- [ ] cpufreq

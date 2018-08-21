@@ -40,6 +40,10 @@ typedef int err_t;
 
 typedef enum { FALSE, TRUE } bool_t;
 
+#define DO_PRAGMA(DOP) _Pragma(#DOP)
+#define UNSAFE_BEGIN(FLAGS) DO_PRAGMA(GCC diagnostic push); DO_PRAGMA(GCC diagnostic ignored FLAGS)
+#define UNSAFE_END DO_PRAGMA(GCC diagnostic pop)
+
 #define DBG_OUTPUT stderr
 
 #ifdef EF_DEBUG_COLOR

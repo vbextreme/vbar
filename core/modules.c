@@ -138,46 +138,36 @@ __ef_private void module_load(modules_s* mods, char* name, char* path){
 	int datetime_mod_load(module_s* mod, char* path);
 	int static_mod_load(module_s* mod, char* path);
 	int power_mod_load(module_s* mod, char* path);
+	int net_mod_load(module_s* mod, char* path);
 
-	__ef_private char* modsname[] = {
-		"cpu",
-		"memory",
-		"datetime",
-		"static",
-		"power",
-		NULL
+	__ef_private struct selective {
+		char* name;
+		int(*modload)(module_s*, char*);
+		char* conf;
+	} modsconf[] = {
+		{"cpu",      cpu_mod_load,      "~/.config/vbar/cpu/config"},
+		{"memory",   mem_mod_load,      "~/.config/vbar/memory/config"},
+		{"datetime", datetime_mod_load, "~/.config/vbar/datetime/config"},
+		{"static",   static_mod_load,   "~/.config/vbar/static/config"},
+		{"power",    power_mod_load,    "~/.config/vbar/power/config"},
+		{"network",  net_mod_load,      "~/.config/vbar/network/config"},
+		{NULL, NULL, NULL}
 	};
 
-	typedef int(*modload_f)(module_s*,char*);
-	__ef_private modload_f modsload[] = {
-		cpu_mod_load,
-		mem_mod_load,
-		datetime_mod_load,
-		static_mod_load,
-		power_mod_load
-	};
-	
-	__ef_private char* modsconf[] = {
-		"~/.config/vbar/cpu/config",
-		"~/.config/vbar/memory/config",
-		"~/.config/vbar/datetime/config",
-		"~/.config/vbar/static/config",
-		"~/.config/vbar/power/config"
-	};
-	
+
 	dbg_info("load module %s", name);
 
-	for(size_t i = 0; modsname[i]; ++i){
-		if( 0 == strcmp(name, modsname[i]) ){
+	for(size_t i = 0; modsconf[i].name; ++i){
+		if( 0 == strcmp(name, modsconf[i].name) ){
 			iassert(mods->used < MODULES_MAX);
 			module_s* mod = &mods->rmod[mods->used++];
 			mod->att = mods->def;
 			mod->att.onevent[0] = 0;
 			if( *path ){
-				modsload[i](mod, path);
+				modsconf[i].modload(mod, path);
 			}
 			else{
-				modsload[i](mod, modsconf[i]);
+				modsconf[i].modload(mod, modsconf[i].conf);
 			}
 			if( mod->att.reftime > 0) modules_insert(mods, mod);
 		}
@@ -206,9 +196,9 @@ void modules_load(modules_s* mods){
 	mods->def.seaparator = 1;
 	mods->def.separator_block_width = -1;
 	mods->def.urgent = -1;
-	mods->def.blink = 0;
+	mods->def.blink = 1;
 	mods->def.blinkstatus = 0;
-	mods->def.blinktime = -1;
+	mods->def.blinktime = 400;
 	mods->def.format = NULL;
 	mods->def.formatcount = 0;
 	mods->def.icons = NULL;

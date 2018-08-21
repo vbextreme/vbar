@@ -162,9 +162,11 @@ int power_mod_load(module_s* mod, char* path){
 	config_add(&conf, "powersupply", CNF_S, fname, PATH_MAX-33, 0);
 	config_load(&conf, path);
 	config_destroy(&conf);
-
-	snprintf(pw->powersupply, PATH_MAX, "/sys/class/power_supply/%s/uevent", fname);
 	
+	UNSAFE_BEGIN("-Wformat-truncation");
+		snprintf(pw->powersupply, PATH_MAX, "/sys/class/power_supply/%s/uevent", fname);
+	UNSAFE_END;
+
 	power_mod_refresh(mod);
 	return 0;
 }

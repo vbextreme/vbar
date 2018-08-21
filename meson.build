@@ -2,7 +2,7 @@ project('vbar', 'c')
 
 src = [ 'core/vbar.c', 'core/config.c', 'core/delay.c', 'core/string.c', 'core/memory.c', 'core/modules.c', 'core/spawn.c' ]
 src += [ 'ipc/i3pc.c' ]
-src += ['modules/M_cpu.c' , 'modules/M_memory.c', 'modules/M_time.c', 'modules/M_static.c', 'modules/M_power.c']
+src += ['modules/M_cpu.c' , 'modules/M_memory.c', 'modules/M_time.c', 'modules/M_static.c', 'modules/M_power.c', 'modules/M_net.c']
 
 incdir = include_directories('include')
 
@@ -10,7 +10,9 @@ add_global_arguments('-std=gnu11', language: 'c')
 add_global_arguments('-Wall', language: 'c')
 add_global_arguments('-Wextra', language: 'c')
 
-add_global_link_arguments('-lrt', language: 'c') 
+#cc = meson.get_compiler('c')
+#m_dep = cc.find_library('m', required : true)
+deps = [  ] 
 
 opt_mcpuncores = get_option('m-cpu-ncores')
 if opt_mcpuncores > 0
@@ -49,5 +51,5 @@ endif
 message('copyright vbextreme 2018')
 message('release under GPLv3')
 
-executable('vbar', src, include_directories: incdir, install: true)
+executable('vbar', src, include_directories: incdir, dependencies: deps, install: true)
 
