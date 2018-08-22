@@ -3,11 +3,11 @@
 int main(__ef_unused int argc, __ef_unused char** argv)
 {
 	spawn_init();
+	ipc_init(TRUE);
+
 	modules_s mods;
 	modules_load(&mods);
 		
-	ipc_init(TRUE);
-	
 	for(size_t i = 0; i < mods.used; ++i){
 		modules_reformatting(&mods.rmod[i]);
 	}

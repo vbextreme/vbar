@@ -1,5 +1,5 @@
 #include <vbar.h>
-//#include <math.h>
+#include <sys/inotify.h>
 
 #ifndef NET_DEVICES_NAME_MAX
 	#define NET_DEVICES_NAME_MAX 128
@@ -7,6 +7,10 @@
 
 #ifndef PROC_NET_DEV
 	#define PROC_NET_DEV "/proc/net/dev"
+#endif
+
+#ifndef PROC_NET_WIRELESS
+	#define PROC_NET_WIRELESS "/proc/net/wireless"
 #endif
 
 typedef enum { ND_BYTES, ND_PACKETS, ND_ERRS, ND_DROP, ND_FIFO, ND_FRAME, ND_COMPRESSED, ND_MULTICAST, ND_COUNT } netdev_e;
@@ -28,6 +32,10 @@ typedef struct nets{
 	size_t current;
 	size_t unit;
 }nets_s;
+
+__ef_private void wireless_ssid_refresh(__ef_unused void* arg){
+	dbg_info("REFRESH SSID");
+}
 
 __ef_private void net_device(nets_s* net){
 	net->ref[net->current] = 1;
@@ -180,6 +188,8 @@ int net_mod_load(module_s* mod, char* path){
 	net->scaler = 1;
 	net->scalet = 1;
 	net->oldtime = time_ms();
+
+	ipc_register_inotify(PROC_NET_WIRELESS, IN_ALL_EVENTS, wireless_ssid_refresh, NULL);
 
 	mod->data = net;
 	mod->refresh = net_mod_refresh;
