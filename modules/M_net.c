@@ -18,6 +18,7 @@ typedef struct netdev {
 
 typedef struct nets{
 	netdev_s devs[2];
+	long oldtime;
 	double rx;
 	double tx;
 	size_t scaler;
@@ -115,7 +116,8 @@ __ef_private int net_mod_refresh(module_s* mod){
 	nets_s* net = mod->data;
 	net->current = (net->current + 1) & 1;
 	net_device(net);
-	double time = (double)mod->att.reftime / 1000.0;
+	double time = (double)(time_ms() - net->oldtime) / 1000.0;
+	net->oldtime = time_ms();
 	net->rx = (double)net_receive(net) / time;
 	net->tx = (double)net_transmit(net) / time;
 	double po;
@@ -143,7 +145,6 @@ __ef_private int net_mod_env(module_s* mod, int id, char* dest){
 		
 		case 1:
 			if( net->scaler > 3 ){
-				//dbg_error("rx out of scale");
 				return -1;
 			}
 			sprintf(dest, modules_format_get(mod, id, "s"), dspunit[net->scaler]);	
@@ -155,7 +156,6 @@ __ef_private int net_mod_env(module_s* mod, int id, char* dest){
 		
 		case 3:
 			if( net->scalet > 3 ){
-				//dbg_error("tx out of scale");
 				return -1;
 			}
 			sprintf(dest, modules_format_get(mod, id, "s"), dspunit[net->scalet]);	
@@ -179,6 +179,7 @@ int net_mod_load(module_s* mod, char* path){
 	net->selected[0] = 0;
 	net->scaler = 1;
 	net->scalet = 1;
+	net->oldtime = time_ms();
 
 	mod->data = net;
 	mod->refresh = net_mod_refresh;
