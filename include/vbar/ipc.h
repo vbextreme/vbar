@@ -9,6 +9,12 @@
 #define ATTRIBUTE_SPAWN_MAX 1024
 #define ATTRIBUTE_TEXT_MAX 126
 
+#ifndef IPC_CALLBACK_MAX 
+	#define IPC_CALLBACK_MAX 32
+#endif
+
+typedef void(*ipcCallBack_f)(void*);
+
 typedef enum {ALIGN_CENTER, ALIGN_RIGHT, ALIGN_LEFT} align_e;
 
 typedef struct attribute{
@@ -45,7 +51,7 @@ typedef struct attribute{
 	
 	char** format;
 	size_t formatcount;
-
+	
 	char onevent[ATTRIBUTE_SPAWN_MAX];
 }attribute_s;
 
@@ -65,6 +71,7 @@ typedef struct event{
 	int height;
 }event_s;
 
+int ipc_register_callback(int fd, ipcCallBack_f cbk, void* arg);
 void ipc_init(bool_t clickevents);
 void ipc_write_element(attribute_s* el, bool_t next);
 void ipc_event_reset(event_s* ev);

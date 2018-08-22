@@ -16,6 +16,11 @@ int main(__ef_unused int argc, __ef_unused char** argv)
 	while(1){
 		event_s ev;
 		int ret = ipc_wait(&ev, modules_next_tick(&mods));
+		if( ret == -1 ){
+			dbg_error("ipc_wait");
+			continue;
+		}
+
 		if( ret & IPC_EVENT ){
 			dbg_info("event %s %s", ev.instance, ev.name); 
 			modules_dispatch(&mods, &ev);
