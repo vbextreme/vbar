@@ -216,7 +216,7 @@ int ipc_register_callback(int fd, ipcCallBack_f cbk, void* arg){
 	ime.cb[ime.evcount].arg = arg;
 	ime.cb[ime.evcount].cb = cbk;
 	ev.data.ptr = &ime.cb[ime.evcount];
-	ev.events = EPOLLIN;// | EPOLLET;
+	ev.events = EPOLLIN | EPOLLET | EPOLLPRI;
 	if( epoll_ctl(ime.epfd, EPOLL_CTL_ADD, fd, &ev) ){
 		dbg_error("epoll_ctl on fd:%d", fd);
 		dbg_errno();
