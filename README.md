@@ -1,9 +1,10 @@
-# vbar alpha 5
+# vbar alpha 7
 another status bar for i3</br>
 </br>
 Released under GPL v3
 
 ## News
+* **alpha 7** fix some bug, add event and notify event</br>
 * **alpha 6** fix some bug, add network module</br>
 * **alpha 5** fix some bug, add power module</br>
 * **alpha 4** fix format, abstract ipc</br>
