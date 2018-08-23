@@ -30,12 +30,12 @@ typedef struct nets{
 	char selected[NET_DEVICES_NAME_MAX];
 	int socket;
 	struct iwreq rqsk;
-	char essid[IW_ESSID_MAX_SIZE+1];
+	char essid[IW_ESSID_MAX_SIZE];
 }nets_s;
 
 __ef_private void wireless_ssid_refresh(nets_s* net){
 	if( net->socket == -1 ){
-	
+		dbg_info("init socket");	
 		if( (net->socket = socket(AF_INET, SOCK_DGRAM, 0)) == -1 ){
 			dbg_error("socket");
 			dbg_errno();
@@ -46,10 +46,13 @@ __ef_private void wireless_ssid_refresh(nets_s* net){
 		net->rqsk.u.essid.length = IW_ESSID_MAX_SIZE;
 		net->rqsk.u.essid.pointer = net->essid;
 	}
-
+	
+	net->essid[0] = 0;
     if( ioctl(net->socket, SIOCGIWESSID, &net->rqsk) == -1 ){
         dbg_error("ioctl");
 		dbg_errno();
+		close(net->socket);
+		net->socket = -1;
     }
 }
 
@@ -228,9 +231,9 @@ int net_mod_load(module_s* mod, char* path){
 	modules_icons_set(mod, 0, "🖧");
 
 	modules_format_init(mod, 5);
-	modules_format_set(mod, 0, "5.2");
+	modules_format_set(mod, 0, "6.2");
 	modules_format_set(mod, 1, "");
-	modules_format_set(mod, 2, "5.2");
+	modules_format_set(mod, 2, "6.2");
 	modules_format_set(mod, 3, "");
 	modules_format_set(mod, 4, "");
 
