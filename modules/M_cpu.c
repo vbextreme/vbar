@@ -1,5 +1,19 @@
 #include <vbar.h>
 
+//TODO
+#ifndef SYS_CLASS_THERMAL
+	#define SYS_CLASS_THERMAL "/sys/class/thermal/thermal_zone0/temp"
+#endif
+#ifndef SYS_DEVICES_SYSTEM_CPUFREQ_CURFQ
+	#define SYS_DEVICES_SYSTEM_CPUFREQ "/sys/devices/system/cpu/cpu0/cpufreq/scaling_cur_freq"
+#endif
+#ifndef SYS_DEVICES_SYSTEM_CPUFREQ_GOV
+	#define SYS_DEVICES_SYSTEM_CPUFREQ_GOV "/sys/devices/system/cpu/cpu0/cpufreq/scaling_governor"
+#endif
+#ifndef SYS_DEVICES_SYSTEM_CPUFREQ_GOV_AV
+	#define SYS_DEVICES_SYSTEM_CPUFREQ_GOV_AV "/sys/devices/system/cpu/cpu0/cpufreq/scaling_available_governors"
+#endif
+
 #ifndef PROC_STAT
 	#define PROC_STAT "/proc/stat"
 #endif

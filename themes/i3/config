@@ -9,18 +9,33 @@ module.type[1] = memory
 #default path
 #module.path[1] = ~/.config/vbar/memory/config
 
-#load datetime module
-module.type[2] = datetime
+#load power module
+module.type[2] = power
 #default path
-#module.path[2] = ~/.config/vbar/datetime/config
+#module.path[2] = ~/.config/vbar/power/config
+
+
+#load wireless module
+module.type[3] = wireless
+#default path
+#module.path[3] = ~/.config/vbar/wireless/config
+
+module.type[4] = network
+#default path
+#module.path[4] = ~/.config/vbar/network/config
+
+#load datetime module
+module.type[5] = datetime
+#default path
+#module.path[5] = ~/.config/vbar/datetime/config
 
 #load static module, config for power button
-module.type[3] = static
-module.path[3] = ~/.config/vbar/static/power
+module.type[6] = static
+module.path[6] = ~/.config/vbar/static/power
 
 #common property
 #color = 0xFF
-#background = 0x0
+background = 0x44
 #border = 0xFFFFFF
 #min_width = 300
 #align = center

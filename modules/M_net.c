@@ -1,7 +1,4 @@
 #include <vbar.h>
-#include <sys/ioctl.h>
-#include <sys/socket.h>
-#include <linux/wireless.h>
 
 #ifndef NET_DEVICES_NAME_MAX
 	#define NET_DEVICES_NAME_MAX 128
@@ -28,33 +25,7 @@ typedef struct nets{
 	size_t current;
 	size_t unit;
 	char selected[NET_DEVICES_NAME_MAX];
-	int socket;
-	struct iwreq rqsk;
-	char essid[IW_ESSID_MAX_SIZE];
 }nets_s;
-
-__ef_private void wireless_ssid_refresh(nets_s* net){
-	if( net->socket == -1 ){
-		dbg_info("init socket");	
-		if( (net->socket = socket(AF_INET, SOCK_DGRAM, 0)) == -1 ){
-			dbg_error("socket");
-			dbg_errno();
-			return;
-		}	
-		memset(&net->rqsk, 0, sizeof(struct iwreq));
-		strcpy(net->rqsk.ifr_name, net->selected);
-		net->rqsk.u.essid.length = IW_ESSID_MAX_SIZE;
-		net->rqsk.u.essid.pointer = net->essid;
-	}
-	
-	net->essid[0] = 0;
-    if( ioctl(net->socket, SIOCGIWESSID, &net->rqsk) == -1 ){
-        dbg_error("ioctl");
-		dbg_errno();
-		close(net->socket);
-		net->socket = -1;
-    }
-}
 
 __ef_private void net_device(nets_s* net){
 	net->ref[net->current] = 1;
@@ -152,7 +123,6 @@ __ef_private int net_mod_refresh(module_s* mod){
 	net->rx /= po;
 	net->scalet = net_scale(&po, net->tx, (double)net->unit);
 	net->tx /= po;
-	wireless_ssid_refresh(net);
 	return 0;
 }
 
@@ -189,10 +159,6 @@ __ef_private int net_mod_env(module_s* mod, int id, char* dest){
 			sprintf(dest, modules_format_get(mod, id, "s"), dspunit[net->scalet]);	
 		break;
 
-		case 4:
-			sprintf(dest, modules_format_get(mod, id, "s"), net->essid);
-		break;
-
 		default:
 			dbg_error("index to large");
 		return -1;
@@ -215,8 +181,6 @@ int net_mod_load(module_s* mod, char* path){
 	net->scaler = 1;
 	net->scalet = 1;
 	net->oldtime = time_ms();
-	net->socket = -1;
-	net->essid[0] = 0;
 
 	mod->data = net;
 	mod->refresh = net_mod_refresh;
@@ -230,12 +194,11 @@ int net_mod_load(module_s* mod, char* path){
 	modules_icons_init(mod, 1);
 	modules_icons_set(mod, 0, "🖧");
 
-	modules_format_init(mod, 5);
+	modules_format_init(mod, 4);
 	modules_format_set(mod, 0, "6.2");
 	modules_format_set(mod, 1, "");
 	modules_format_set(mod, 2, "6.2");
 	modules_format_set(mod, 3, "");
-	modules_format_set(mod, 4, "");
 
 	config_s conf;
 	config_init(&conf, 256);

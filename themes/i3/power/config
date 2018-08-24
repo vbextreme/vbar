@@ -16,5 +16,5 @@ text.short = "$2% $7:$8 GiB"
 # blink when capaciti < blink.on
 blink.on = 10
 
-refresh = 1000
+refresh = 30000
 

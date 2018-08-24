@@ -3,9 +3,8 @@
 #$1 unit data/s
 #$2 transmit data
 #$3 unit data/s
-#$4 essid
 
-text.full = "$@ net $4 ⇩$0 $1 ⇧$2 $3"
+text.full = "$@ net ⇩$0 $1 ⇧$2 $3"
 text.short = "$@ $0$1 $2$3"
 
 # unit use 1000 or 1024

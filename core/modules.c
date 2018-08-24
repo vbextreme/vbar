@@ -139,6 +139,7 @@ __ef_private void module_load(modules_s* mods, char* name, char* path){
 	int static_mod_load(module_s* mod, char* path);
 	int power_mod_load(module_s* mod, char* path);
 	int net_mod_load(module_s* mod, char* path);
+	int wireless_mod_load(module_s* mod, char* path);
 
 	__ef_private struct selective {
 		char* name;
@@ -151,9 +152,9 @@ __ef_private void module_load(modules_s* mods, char* name, char* path){
 		{"static",   static_mod_load,   "~/.config/vbar/static/config"},
 		{"power",    power_mod_load,    "~/.config/vbar/power/config"},
 		{"network",  net_mod_load,      "~/.config/vbar/network/config"},
+		{"wireless", wireless_mod_load, "~/.config/vbar/wireless/config"},
 		{NULL, NULL, NULL}
 	};
-
 
 	dbg_info("load module %s", name);
 
