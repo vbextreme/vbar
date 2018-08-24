@@ -119,16 +119,27 @@ __ef_private void module_reform(module_s* mod, char* dst, size_t len, char* src)
 }
 
 void modules_reformatting(module_s* mod){
-	module_reform(mod, mod->att.longformat, ATTRIBUTE_TEXT_MAX, mod->att.longunformat);
+	if( mod->att.useshort ){
+		module_reform(mod, mod->att.longformat, ATTRIBUTE_TEXT_MAX, mod->att.shortunformat);
+	}
+	else{
+		module_reform(mod, mod->att.longformat, ATTRIBUTE_TEXT_MAX, mod->att.longunformat);
+	}
 	module_reform(mod, mod->att.shortformat, ATTRIBUTE_TEXT_MAX, mod->att.shortunformat);
 }
 
 void modules_refresh_output(modules_s* mods){
 	ipc_begin_elements();
-	for(size_t i = 0; i < mods->used - 1; ++i){
-		ipc_write_element( &mods->rmod[i].att, TRUE);
+
+	size_t last = mods->used - 1;
+	while( last > 0 && mods->rmod[last].att.hide ) --last;
+
+	for(size_t i = 0; i < last; ++i){
+		if( !mods->rmod[i].att.hide )
+			ipc_write_element( &mods->rmod[i].att, TRUE);
 	}
-	ipc_write_element( &mods->rmod[mods->used - 1].att, FALSE);
+	ipc_write_element( &mods->rmod[last].att, FALSE);
+
 	ipc_end_elements();
 }
 
@@ -208,6 +219,8 @@ void modules_load(modules_s* mods){
 	mods->def.onevent[0] = 0;
 	mods->def.reftime = 1000;
 	mods->def.tick = 0;
+	mods->def.hide = 0;
+	mods->def.useshort = 0;
 
 	char** listModules = ef_mem_matrix_new(MODULES_MAX, sizeof(char) * ATTRIBUTE_TEXT_MAX);
 	char** listModulesDir = ef_mem_matrix_new(MODULES_MAX, sizeof(char) * PATH_MAX);
@@ -263,6 +276,7 @@ void modules_default_config(module_s* mod, config_s* conf){
 	config_add(conf, "icon", CNF_S, mod->att.icons, ATTRIBUTE_ICONS_SIZE, mod->att.iconcount);
 	config_add(conf, "format", CNF_S, mod->att.format, ATTRIBUTE_FORMAT_MAX, mod->att.formatcount);
 	config_add(conf, "event", CNF_S, mod->att.onevent, ATTRIBUTE_SPAWN_MAX, 0);
+	config_add(conf, "hide", CNF_D, &mod->att.hide, 0, 0);
 }
 
 void modules_icons_init(module_s* mod, size_t count){

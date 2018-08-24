@@ -22,7 +22,8 @@ typedef struct attribute{
 	char shortformat[ATTRIBUTE_TEXT_MAX];
 	char longunformat[ATTRIBUTE_TEXT_MAX];
 	char shortunformat[ATTRIBUTE_TEXT_MAX];
-	
+	int useshort;
+		
 	int color;
 	int border;
 	int background;
@@ -53,6 +54,7 @@ typedef struct attribute{
 	size_t formatcount;
 	
 	char onevent[ATTRIBUTE_SPAWN_MAX];
+	int hide;
 }attribute_s;
 
 

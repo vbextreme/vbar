@@ -1,9 +1,10 @@
-# vbar alpha 7
+# vbar alpha 8
 another status bar for i3</br>
 </br>
 Released under GPL v3
 
 ## News
+* **alpha 8** separate wireless from network, introduce module hide and force short format</br>
 * **alpha 7** fix some bug, add event and notify event</br>
 * **alpha 6** fix some bug, add network module</br>
 * **alpha 5** fix some bug, add power module</br>
@@ -89,6 +90,7 @@ align = center
 separator = 1
 separator_block_width = 1
 markup = 0
+hide = 0
 ```
 
 for each module can overwrite the common property and setting others config</br>
