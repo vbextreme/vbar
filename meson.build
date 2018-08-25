@@ -1,6 +1,9 @@
 project('vbar', 'c')
 
-# compiler flags
+##################
+# compiler flags #
+##################
+
 incdir = include_directories('include')
 
 add_global_arguments('-std=gnu11', language: 'c')
@@ -17,11 +20,16 @@ deps = [  ]
 
 conf = configuration_data()
 
+########
+# core #
+########
 
-# core
 src = [ 'core/vbar.c', 'core/config.c', 'core/delay.c', 'core/string.c', 'core/memory.c', 'core/modules.c', 'core/spawn.c' ]
 
-# select ipc
+##############
+# select ipc #
+##############
+
 opt_wm = get_option('wm')
 if opt_wm == '' 
 	if (find_program('i3', required: false, native: true)).found()
@@ -35,7 +43,10 @@ if opt_wm == 'i3wm'
 	src += [ 'ipc/i3pc.c' ]
 endif
 
-# select modules
+##################
+# select modules #
+##################
+
 v_mod = ''
 p_mod = ''
 gen_mod = 'int @0@_mod_load(module_s* mod, char* path);'
@@ -156,7 +167,10 @@ endif
 conf.set('AUTO_VECTOR_MODULE', v_mod)
 conf.set('AUTO_PROTO_MODULE', p_mod)
 
-# debug
+#########
+# debug #
+#########
+
 opt_debug = get_option('debug')
 if opt_debug > 0
 	message('debug enabled')
@@ -178,11 +192,17 @@ if get_option('assert') > 0
 	add_global_arguments('-DEF_ASSERT_ENABLE=1', language: 'c')
 endif
 
-# license
+###########
+# license #
+###########
+
 message('copyright vbextreme 2018')
 message('release under GPLv3')
 
-# build
+#########
+# build #
+#########
+
 configure_file(output: 'config.h', configuration: conf)
 executable('vbar', src, include_directories: incdir, dependencies: deps, install: true)
 

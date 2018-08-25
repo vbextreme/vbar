@@ -4,7 +4,7 @@ another status bar for i3</br>
 Released under GPL v3
 
 ## News
-* **alpha 10** add temperature module</br>
+* **alpha 10** add temperature module, modularize build</br>
 * **alpha  9** add cpufreq module</br>
 * **alpha  8** separate wireless from network, introduce module hide and force short format</br>
 * **alpha  7** fix some bug, add event and notify event</br>
