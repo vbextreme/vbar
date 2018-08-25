@@ -53,5 +53,6 @@ void module_set_urgent(module_s* mod, int enable);
 void modules_format_init(module_s* mod, size_t count);
 void modules_format_set(module_s* mod, size_t id, char* format);
 char* modules_format_get(module_s* mod, size_t id, char* type);
+size_t os_read_lu(char* fname);
 
 #endif

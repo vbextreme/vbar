@@ -152,20 +152,22 @@ __ef_private void module_load(modules_s* mods, char* name, char* path){
 	int net_mod_load(module_s* mod, char* path);
 	int wireless_mod_load(module_s* mod, char* path);
 	int cpufreq_mod_load(module_s* mod, char* path);
+	int temp_mod_load(module_s* mod, char* path);
 
 	__ef_private struct selective {
 		char* name;
 		int(*modload)(module_s*, char*);
 		char* conf;
 	} modsconf[] = {
-		{"cpu",      cpu_mod_load,      "~/.config/vbar/cpu/config"},
-		{"memory",   mem_mod_load,      "~/.config/vbar/memory/config"},
-		{"datetime", datetime_mod_load, "~/.config/vbar/datetime/config"},
-		{"static",   static_mod_load,   "~/.config/vbar/static/config"},
-		{"power",    power_mod_load,    "~/.config/vbar/power/config"},
-		{"network",  net_mod_load,      "~/.config/vbar/network/config"},
-		{"wireless", wireless_mod_load, "~/.config/vbar/wireless/config"},
-		{"cpufreq",  cpufreq_mod_load,  "~/.config/vbar/cpufreq/config"},
+		{"cpu",          cpu_mod_load,      "~/.config/vbar/cpu/config"},
+		{"memory",       mem_mod_load,      "~/.config/vbar/memory/config"},
+		{"datetime",     datetime_mod_load, "~/.config/vbar/datetime/config"},
+		{"static",       static_mod_load,   "~/.config/vbar/static/config"},
+		{"power",        power_mod_load,    "~/.config/vbar/power/config"},
+		{"network",      net_mod_load,      "~/.config/vbar/network/config"},
+		{"wireless",     wireless_mod_load, "~/.config/vbar/wireless/config"},
+		{"cpufreq",      cpufreq_mod_load,  "~/.config/vbar/cpufreq/config"},
+		{"temperature",  temp_mod_load,     "~/.config/vbar/temperature/config"},
 		{NULL, NULL, NULL}
 	};
 
@@ -342,5 +344,22 @@ void module_set_urgent(module_s* mod, int enable){
 	}
 
 }
+
+size_t os_read_lu(char* fname){
+	FILE* fd = fopen(fname, "r");
+	if( fd == NULL ){
+		dbg_error("fopen %s", fname);
+		dbg_errno();
+		return 0;
+	}
+
+	char inp[64];
+	inp[0] = 0;
+	fgets(inp, 64, fd);
+	fclose(fd);
+
+	return strtoul(inp, NULL, 10);
+}
+
 
 //TODO free modules??????

@@ -1,0 +1,11 @@
+#$@ current icon
+#$0 temperature
+
+text.full = "$@ $0"
+text.short = "$@ $0"
+
+refresh = 5000
+
+blink.on = 80
+
+unit = 1000

@@ -9,34 +9,39 @@ module.type[1] = cpufreq
 #default path
 #module.path[1] = ~/.config/vbar/cpufreq/config
 
-#load memory module
-module.type[2] = memory
+#load temperature module
+module.type[2] = temperature
 #default path
-#module.path[2] = ~/.config/vbar/memory/config
+#module.path[2] = ~/.config/vbar/temperature/config
+
+#load memory module
+module.type[3] = memory
+#default path
+#module.path[3] = ~/.config/vbar/memory/config
 
 #load power module
-module.type[3] = power
+module.type[4] = power
 #default path
-#module.path[3] = ~/.config/vbar/power/config
+#module.path[4] = ~/.config/vbar/power/config
 
 
 #load wireless module
-module.type[4] = wireless
+module.type[5] = wireless
 #default path
-#module.path[4] = ~/.config/vbar/wireless/config
+#module.path[5] = ~/.config/vbar/wireless/config
 
-module.type[5] = network
+module.type[6] = network
 #default path
-#module.path[5] = ~/.config/vbar/network/config
+#module.path[6] = ~/.config/vbar/network/config
 
 #load datetime module
-module.type[6] = datetime
+module.type[7] = datetime
 #default path
-#module.path[6] = ~/.config/vbar/datetime/config
+#module.path[7] = ~/.config/vbar/datetime/config
 
 #load static module, config for power button
-module.type[7] = static
-module.path[7] = ~/.config/vbar/static/power
+module.type[8] = static
+module.path[8] = ~/.config/vbar/static/power
 
 #common property
 #color = 0xFF

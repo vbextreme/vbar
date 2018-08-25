@@ -1,10 +1,5 @@
 #include <vbar.h>
 
-//TODO
-#ifndef SYS_CLASS_THERMAL
-	#define SYS_CLASS_THERMAL "/sys/class/thermal/thermal_zone0/temp"
-#endif
-
 #ifndef SYS_DEVICES_SYSTEM_CPUFREQ_CURFQ
 	#define SYS_DEVICES_SYSTEM_CPUFREQ_CURFQ "/sys/devices/system/cpu/cpu0/cpufreq/scaling_cur_freq"
 #endif
@@ -40,22 +35,6 @@ typedef struct cpufreq{
 	size_t countgovernor;
 	size_t unit;
 }cpufreq_s;
-
-__ef_private size_t cpufreq_read_lu(char* fname){
-	FILE* fd = fopen(fname, "r");
-	if( fd == NULL ){
-		dbg_error("fopen %s", fname);
-		dbg_errno();
-		return 0;
-	}
-
-	char inp[64];
-	inp[0] = 0;
-	fgets(inp, 64, fd);
-	fclose(fd);
-
-	return strtoul(inp, NULL, 10);
-}
 
 __ef_private void cpufreq_read_gov(cpufreq_s* cf){
 	FILE* fd = fopen( SYS_DEVICES_SYSTEM_CPUFREQ_GOV_AV, "r");
@@ -107,9 +86,9 @@ __ef_private void cpufreq_select_gov(cpufreq_s* cf){
 
 __ef_private int cpufreq_mod_refresh(module_s* mod){
 	cpufreq_s* cf = mod->data;
-	cf->minfq = cpufreq_read_lu(SYS_DEVICES_SYSTEM_CPUFREQ_MINFQ);
-	cf->maxfq = cpufreq_read_lu(SYS_DEVICES_SYSTEM_CPUFREQ_MAXFQ);
-	cf->curfq = cpufreq_read_lu(SYS_DEVICES_SYSTEM_CPUFREQ_CURFQ);
+	cf->minfq = os_read_lu(SYS_DEVICES_SYSTEM_CPUFREQ_MINFQ);
+	cf->maxfq = os_read_lu(SYS_DEVICES_SYSTEM_CPUFREQ_MAXFQ);
+	cf->curfq = os_read_lu(SYS_DEVICES_SYSTEM_CPUFREQ_CURFQ);
 	cpufreq_read_gov(cf);
 	cpufreq_select_gov(cf);
 	return 0;
