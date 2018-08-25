@@ -1,19 +1,20 @@
-# vbar alpha 9
+# vbar alpha 10
 another status bar for i3</br>
 </br>
 Released under GPL v3
 
 ## News
-* **alpha 9** add cpufreq module</br>
-* **alpha 8** separate wireless from network, introduce module hide and force short format</br>
-* **alpha 7** fix some bug, add event and notify event</br>
-* **alpha 6** fix some bug, add network module</br>
-* **alpha 5** fix some bug, add power module</br>
-* **alpha 4** fix format, abstract ipc</br>
-* **alpha 3** fix bug, add static module</br>
-* **alpha 2** fix bug, add datetime module</br>
-* **alpha 1** fix bug, complete core</br>
-* **alpha 0** begin
+* **alpha 10** add temperature module</br>
+* **alpha  9** add cpufreq module</br>
+* **alpha  8** separate wireless from network, introduce module hide and force short format</br>
+* **alpha  7** fix some bug, add event and notify event</br>
+* **alpha  6** fix some bug, add network module</br>
+* **alpha  5** fix some bug, add power module</br>
+* **alpha  4** fix format, abstract ipc</br>
+* **alpha  3** fix bug, add static module</br>
+* **alpha  2** fix bug, add datetime module</br>
+* **alpha  1** fix bug, complete core</br>
+* **alpha  0** begin
 
 ## TODO
 - [ ] core
@@ -39,9 +40,10 @@ Released under GPL v3
 	- [X] static
 	- [X] net
 	- [X] power
-	- [ ] temperature
+	- [X] temperature
 	- [X] cpufreq
-	- [ ] pcre?
+	- [ ] extern ipc event
+	- [ ] ip
 - [ ] documentation
 
 ## How To

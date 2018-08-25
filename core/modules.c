@@ -1,4 +1,5 @@
 #include <vbar.h>
+#include <config.h>
 
 #define PHQ_PARENT(I) ((I)/2)
 #define PHQ_LEFT(I) ((I)*2)
@@ -144,7 +145,9 @@ void modules_refresh_output(modules_s* mods){
 }
 
 __ef_private void module_load(modules_s* mods, char* name, char* path){
-	int cpu_mod_load(module_s* mod, char* path);
+	AUTO_PROTO_MODULE
+	
+	/*int cpu_mod_load(module_s* mod, char* path);
 	int mem_mod_load(module_s* mod, char* path);
 	int datetime_mod_load(module_s* mod, char* path);
 	int static_mod_load(module_s* mod, char* path);
@@ -153,23 +156,12 @@ __ef_private void module_load(modules_s* mods, char* name, char* path){
 	int wireless_mod_load(module_s* mod, char* path);
 	int cpufreq_mod_load(module_s* mod, char* path);
 	int temp_mod_load(module_s* mod, char* path);
-
+*/
 	__ef_private struct selective {
 		char* name;
 		int(*modload)(module_s*, char*);
 		char* conf;
-	} modsconf[] = {
-		{"cpu",          cpu_mod_load,      "~/.config/vbar/cpu/config"},
-		{"memory",       mem_mod_load,      "~/.config/vbar/memory/config"},
-		{"datetime",     datetime_mod_load, "~/.config/vbar/datetime/config"},
-		{"static",       static_mod_load,   "~/.config/vbar/static/config"},
-		{"power",        power_mod_load,    "~/.config/vbar/power/config"},
-		{"network",      net_mod_load,      "~/.config/vbar/network/config"},
-		{"wireless",     wireless_mod_load, "~/.config/vbar/wireless/config"},
-		{"cpufreq",      cpufreq_mod_load,  "~/.config/vbar/cpufreq/config"},
-		{"temperature",  temp_mod_load,     "~/.config/vbar/temperature/config"},
-		{NULL, NULL, NULL}
-	};
+	} modsconf[] = { AUTO_VECTOR_MODULE {NULL, NULL, NULL}	};
 
 	dbg_info("load module %s", name);
 
