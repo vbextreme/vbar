@@ -7,6 +7,7 @@ typedef struct intpcmd{
 	struct intpcmd* next;
 	char* name;
 	intpcall_f call;
+	void* autoarg;
 }intpcmd_s;
 
 typedef struct intpapi{
@@ -15,11 +16,13 @@ typedef struct intpapi{
 
 __ef_private intpapi_s intp;
 
-void intp_register_command(char* name, intpcall_f call){
+void intp_register_command(char* name, intpcall_f call, void* autoarg){
+	dbg_info("%s", name);
 	size_t hash = kr_hash(name, HASH_CMD);
 	intpcmd_s* cmd = ef_mem_new(intpcmd_s);
 	cmd->name = name;
 	cmd->call = call;
+	cmd->autoarg = autoarg;
 	cmd->next = intp.cmd[hash];
 	intp.cmd[hash] = cmd;
 }
@@ -112,7 +115,7 @@ char* intp_interpretate(char* line){
 		return NULL;
 	}
 
-	cmd->call(blk.arg0, blk.lenArg0, blk.arg1, blk.lenArg1);
+	cmd->call(cmd->autoarg, blk.arg0, blk.lenArg0, blk.arg1, blk.lenArg1);
 	return line+1;
 }
 

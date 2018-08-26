@@ -181,7 +181,48 @@ __ef_private void module_load(modules_s* mods, char* name, char* path){
 	}
 }
 
+__ef_private module_s* modules_search(modules_s* mods, char* instance, size_t lenI, char* name, size_t lenN){
+	for( size_t i = 0; i < mods->used; ++i ){
+		char* minstance = mods->rmod[i].att.instance;
+		char* mname = mods->rmod[i].att.name;
+	
+		if( !str_len_cmp(minstance, strlen(minstance), instance, lenI) && !str_len_cmp(mname, strlen(mname), name, lenN) ){
+			return &mods->rmod[i];
+		}
+	}
+	return NULL;
+}
+
+__ef_private void icmd_module_hide(void* autoarg, char* instance, size_t lenI, char* name, size_t lenN){
+	module_s* mod = modules_search(autoarg, instance, lenI, name, lenN);
+	if( mod ){
+		mod->att.hide = 1;
+	}
+}
+
+__ef_private void icmd_module_show(void* autoarg, char* instance, size_t lenI, char* name, size_t lenN){
+	module_s* mod = modules_search(autoarg, instance, lenI, name, lenN);
+	if( mod ){
+		mod->att.hide = 0;
+	}
+}
+
+__ef_private void icmd_module_toggle(void* autoarg, char* instance, size_t lenI, char* name, size_t lenN){
+	module_s* mod = modules_search(autoarg, instance, lenI, name, lenN);
+	mod->att.hide = !mod->att.hide;
+}
+
+__ef_private void icmd_modules_refresh(void* autoarg, __ef_unused char* a0, __ef_unused size_t len0, __ef_unused char* a1, __ef_unused size_t len1){
+	modules_refresh_output(autoarg);
+}
+
 void modules_load(modules_s* mods, char* config){
+	intp_register_command("module.hide", icmd_module_hide, mods);
+	intp_register_command("module.show", icmd_module_show, mods);
+	intp_register_command("module.toggle", icmd_module_toggle, mods);
+	intp_register_command("modules.refresh", icmd_modules_refresh, mods);
+
+	
 	mods->used = 0;
 	for( size_t i = 0; i < MODULES_MAX; ++i ){
 		mods->mod[i] = NULL;
