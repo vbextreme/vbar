@@ -40,7 +40,7 @@ typedef struct modules{
 module_s* modules_pop(modules_s* mods);
 void modules_insert(modules_s* mods, module_s* mod);
 void modules_refresh_tick(modules_s* mods, long ellapsems);
-void modules_load(modules_s* mod);
+void modules_load(modules_s* mod, char* config);
 long modules_next_tick(modules_s* mods);
 void modules_reformatting(module_s* mod);
 void modules_refresh_output(modules_s* mods);

@@ -1,20 +1,21 @@
-# vbar alpha 10
+# vbar alpha 0.11
 another status bar for i3</br>
 </br>
 Released under GPL v3
 
 ## News
-* **alpha 10** add temperature module, modularize build</br>
-* **alpha  9** add cpufreq module</br>
-* **alpha  8** separate wireless from network, introduce module hide and force short format</br>
-* **alpha  7** fix some bug, add event and notify event</br>
-* **alpha  6** fix some bug, add network module</br>
-* **alpha  5** fix some bug, add power module</br>
-* **alpha  4** fix format, abstract ipc</br>
-* **alpha  3** fix bug, add static module</br>
-* **alpha  2** fix bug, add datetime module</br>
-* **alpha  1** fix bug, complete core</br>
-* **alpha  0** begin
+* **alpha 0.11** add option to change main config file</br>
+* **alpha 0.10** add temperature module, modularize build</br>
+* **alpha 0.9** add cpufreq module</br>
+* **alpha 0.8** separate wireless from network, introduce module hide and force short format</br>
+* **alpha 0.7** fix some bug, add event and notify event</br>
+* **alpha 0.6** fix some bug, add network module</br>
+* **alpha 0.5** fix some bug, add power module</br>
+* **alpha 0.4** fix format, abstract ipc</br>
+* **alpha 0.3** fix bug, add static module</br>
+* **alpha 0.2** fix bug, add datetime module</br>
+* **alpha 0.1** fix bug, complete core</br>
+* **alpha 0.0** begin
 
 ## TODO
 - [ ] core
@@ -26,9 +27,9 @@ Released under GPL v3
 		- [ ] dinamic
 	- [ ] spawn
 		- [ ] add enviroment and argument
-	- [ ] vbar
+	- [X] vbar
 		- [X] call event
-		- [ ] custom directory for config file
+		- [X] custom directory for config file
 - [X] ipc
 	- [X] i3
 	- [ ] dwm

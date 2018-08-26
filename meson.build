@@ -24,7 +24,7 @@ conf = configuration_data()
 # core #
 ########
 
-src = [ 'core/vbar.c', 'core/config.c', 'core/delay.c', 'core/string.c', 'core/memory.c', 'core/modules.c', 'core/spawn.c' ]
+src = [ 'core/vbar.c', 'core/config.c', 'core/delay.c', 'core/string.c', 'core/memory.c', 'core/modules.c', 'core/spawn.c', 'core/optex.c' ]
 
 ##############
 # select ipc #

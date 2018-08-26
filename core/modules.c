@@ -147,16 +147,6 @@ void modules_refresh_output(modules_s* mods){
 __ef_private void module_load(modules_s* mods, char* name, char* path){
 	AUTO_PROTO_MODULE
 	
-	/*int cpu_mod_load(module_s* mod, char* path);
-	int mem_mod_load(module_s* mod, char* path);
-	int datetime_mod_load(module_s* mod, char* path);
-	int static_mod_load(module_s* mod, char* path);
-	int power_mod_load(module_s* mod, char* path);
-	int net_mod_load(module_s* mod, char* path);
-	int wireless_mod_load(module_s* mod, char* path);
-	int cpufreq_mod_load(module_s* mod, char* path);
-	int temp_mod_load(module_s* mod, char* path);
-*/
 	__ef_private struct selective {
 		char* name;
 		int(*modload)(module_s*, char*);
@@ -182,7 +172,7 @@ __ef_private void module_load(modules_s* mods, char* name, char* path){
 	}
 }
 
-void modules_load(modules_s* mods){
+void modules_load(modules_s* mods, char* config){
 	mods->used = 0;
 	for( size_t i = 0; i < MODULES_MAX; ++i ){
 		mods->mod[i] = NULL;
@@ -237,7 +227,7 @@ void modules_load(modules_s* mods){
 	config_add(&conf, "seaparator", CNF_U, &mods->def.seaparator, 0, 0);
 	config_add(&conf, "separator_block_width", CNF_U, &mods->def.separator_block_width, 0, 0);
 	config_add(&conf, "markup", CNF_U, &mods->def.markup, 0, 0);
-	config_load(&conf, VBAR_CONFIG);
+	config_load(&conf, config);
 	config_destroy(&conf);
 	
 	for( size_t i = 0; i < MODULES_MAX; ++i ){

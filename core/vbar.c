@@ -1,12 +1,38 @@
 #include <vbar.h>
+#include "optex.h"
+
+__ef_private argdef_s args[] = {
+	{ 0, 'c', "config", ARGDEF_STR, VBAR_CONFIG, "path to config file, default ~/.config/vbar/config"},
+#ifdef EF_DEBUG_ENABLE
+	{ 0, 'd', "debug", ARGDEF_STR, NULL, "path to output debug"},
+#endif
+	{ 0, 0  , NULL    , 0         , NULL, NULL }
+};
 
 int main(__ef_unused int argc, __ef_unused char** argv)
 {
+	int ret = opt_parse(args, argv, argc);
+	if( ret == -1 ){
+		opt_usage(args, argv[0]);
+		return -1;
+	}
+
+#ifdef EF_DEBUG_ENABLE 
+	FILE* ferr;
+	if( args[1].hasset ){
+		ferr = fopen(args[1].autoset, "w+");
+		if( ferr ){
+			fclose(stderr);
+			stderr = ferr;
+		}
+	}
+#endif
+
 	spawn_init();
 	ipc_init(TRUE);
 
 	modules_s mods;
-	modules_load(&mods);
+	modules_load(&mods, args[0].autoset);
 		
 	for(size_t i = 0; i < mods.used; ++i){
 		modules_reformatting(&mods.rmod[i]);
