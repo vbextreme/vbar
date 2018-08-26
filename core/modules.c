@@ -1,5 +1,6 @@
 #include <vbar.h>
 #include <config.h>
+#include "intp.h"
 
 #define PHQ_PARENT(I) ((I)/2)
 #define PHQ_LEFT(I) ((I)*2)
@@ -97,6 +98,14 @@ __ef_private void module_reform(module_s* mod, char* dst, size_t len, char* src)
 				len -= l;
 				++src;
 			}break;	
+			
+			case '{':
+				src = intp_interpretate(src);
+				if( NULL == src ){
+					*dst = 0;   
+					return;
+				}
+			break;
 
 			default: {
 				char* chk;
@@ -311,7 +320,7 @@ void modules_dispatch(modules_s* mods, event_s* ev){
 		if( mods->rmod[i].att.onevent[0] && !strcmp(mods->rmod[i].att.instance, ev->instance) && !strcmp(mods->rmod[i].att.name, ev->name)){
 			char cmd[2048];
 			module_reform(&mods->rmod[i], cmd, 2048, mods->rmod[i].att.onevent);
-			spawn_shell(cmd);
+			if(*cmd) spawn_shell(cmd);
 		}
 	}
 }
@@ -343,5 +352,3 @@ size_t os_read_lu(char* fname){
 	return strtoul(inp, NULL, 10);
 }
 
-
-//TODO free modules??????

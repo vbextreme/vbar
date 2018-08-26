@@ -57,14 +57,14 @@ __ef_private int path_resolve(char* path, char* res){
 	return 0;
 }
 
-__ef_private size_t kr_hash(char*s, size_t size){
+size_t kr_hash(char*s, size_t size){
 	size_t hash;
 	for( hash = 0; *s; ++s)
 		hash = *s + 31 * hash;
 	return hash % size;
 }
 
-__ef_private size_t kr_nhash(char*s, size_t len, size_t size){
+size_t kr_nhash(char*s, size_t len, size_t size){
 	size_t hash = 0;
 	for( size_t i = 0; i < len; ++i)
 		hash = s[i] + 31 * hash;
