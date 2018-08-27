@@ -176,6 +176,10 @@ __ef_private void config_assign(config_s* cf, char* name, size_t lenName, char* 
 			else
 				enparse = str_nncpy_src(ce->ptr, ce->maxlen, value, lenValue - 1);
 		break;
+		
+		case CNF_CBK:
+			((cnfg_f)ce->ptr)(ce->cbkarg, name, lenName, value, lenValue);
+		break;
 
 		default:
 			dbg_error("type configElems not exists");
