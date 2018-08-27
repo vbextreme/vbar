@@ -3,9 +3,14 @@
 #ifndef SYS_CLASS_THERMAL
 	#define SYS_CLASS_THERMAL "/sys/class/thermal/thermal_zone0/temp"
 #endif
+#ifndef SYS_CLASS_THERMAL_CRITIC
+	#define SYS_CLASS_THERMAL_CRITIC "/sys/class/hwmon/hwmon0/temp1_crit"
+#endif
+
 
 typedef struct temperature{
 	size_t temp;
+	size_t crit;
 	size_t blinkon;
 	size_t unit;
 }temperature_s;
@@ -13,6 +18,7 @@ typedef struct temperature{
 __ef_private int temp_mod_refresh(module_s* mod){
 	temperature_s* tm = mod->data;
 	tm->temp = os_read_lu(SYS_CLASS_THERMAL);
+	tm->crit = os_read_lu(SYS_CLASS_THERMAL_CRITIC);
 	module_set_urgent(mod, tm->temp >= tm->blinkon);
 	return 0;
 }
@@ -23,6 +29,9 @@ __ef_private int temp_mod_env(module_s* mod, int id, char* dest){
 	switch( id ){
 		case 0:
 			sprintf(dest, modules_format_get(mod, id, "lf"), (double)tm->temp / (double)tm->unit);
+		break;
+		case 1:
+			sprintf(dest, modules_format_get(mod, id, "lf"), (double)tm->crit / (double)tm->unit);
 		break;
 
 		default:
@@ -54,8 +63,9 @@ int temp_mod_load(module_s* mod, char* path){
 	modules_icons_init(mod, 1);
 	modules_icons_set(mod, 0, "🌡");
 
-	modules_format_init(mod, 1);
+	modules_format_init(mod, 2);
 	modules_format_set(mod, 0, "6.2");
+	modules_format_set(mod, 1, "6.2");
 
 	config_s conf;
 	config_init(&conf, 256);
