@@ -4,7 +4,7 @@ another status bar for i3</br>
 Released under GPL v3
 
 ## News
-* **alpha 0.12** fix some bug, add critic temperature</br>
+* **alpha 0.12** fix some bug, add critic temperature, begin optimization module event and dinamic load</br>
 * **alpha 0.11** add option to change main config file, continue develope interpretate events </br>
 * **alpha 0.10** add temperature module, modularize build</br>
 * **alpha 0.9 ** add cpufreq module</br>

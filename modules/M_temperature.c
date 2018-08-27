@@ -70,8 +70,8 @@ int temp_mod_load(module_s* mod, char* path){
 	config_s conf;
 	config_init(&conf, 256);
 	modules_default_config(mod, &conf);
-	config_add(&conf, "unit", CNF_LU, &tm->unit, 0, 0);
-	config_add(&conf, "blink.on", CNF_LU, &tm->blinkon, 0, 0);
+	config_add(&conf, "unit", CNF_LU, &tm->unit, 0, 0, NULL);
+	config_add(&conf, "blink.on", CNF_LU, &tm->blinkon, 0, 0, NULL);
 	config_load(&conf, path);
 	config_destroy(&conf);
 	

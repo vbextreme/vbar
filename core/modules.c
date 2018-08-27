@@ -276,16 +276,16 @@ void modules_load(modules_s* mods, char* config){
 
 	config_s conf;
 	config_init(&conf, 256);
-	config_add(&conf, "module.type", CNF_S, listModules, ATTRIBUTE_TEXT_MAX, MODULES_MAX);
-	config_add(&conf, "module.path", CNF_S, listModulesDir, PATH_MAX, MODULES_MAX);
-	config_add(&conf, "color", CNF_U, &mods->def.color, 0, 0);
-	config_add(&conf, "background", CNF_U, &mods->def.background, 0, 0);
-	config_add(&conf, "border", CNF_U, &mods->def.border, 0, 0);
-	config_add(&conf, "min_width", CNF_U, &mods->def.min_width, 0, 0);
-	config_add(&conf, "align", CNF_U, &mods->def.color, 0, 0);
-	config_add(&conf, "seaparator", CNF_U, &mods->def.seaparator, 0, 0);
-	config_add(&conf, "separator_block_width", CNF_U, &mods->def.separator_block_width, 0, 0);
-	config_add(&conf, "markup", CNF_U, &mods->def.markup, 0, 0);
+	config_add(&conf, "module.type", CNF_S, listModules, ATTRIBUTE_TEXT_MAX, MODULES_MAX, NULL);
+	config_add(&conf, "module.path", CNF_S, listModulesDir, PATH_MAX, MODULES_MAX, NULL);
+	config_add(&conf, "color", CNF_U, &mods->def.color, 0, 0, NULL);
+	config_add(&conf, "background", CNF_U, &mods->def.background, 0, 0, NULL);
+	config_add(&conf, "border", CNF_U, &mods->def.border, 0, 0, NULL);
+	config_add(&conf, "min_width", CNF_U, &mods->def.min_width, 0, 0, NULL);
+	config_add(&conf, "align", CNF_U, &mods->def.color, 0, 0, NULL);
+	config_add(&conf, "seaparator", CNF_U, &mods->def.seaparator, 0, 0, NULL);
+	config_add(&conf, "separator_block_width", CNF_U, &mods->def.separator_block_width, 0, 0, NULL);
+	config_add(&conf, "markup", CNF_U, &mods->def.markup, 0, 0, NULL);
 	config_load(&conf, config);
 	config_destroy(&conf);
 	
@@ -304,24 +304,24 @@ void modules_load(modules_s* mods, char* config){
 }
 
 void modules_default_config(module_s* mod, config_s* conf){
-	config_add(conf, "name", CNF_S, mod->att.name, ATTRIBUTE_TEXT_MAX, 0);
-	config_add(conf, "blink", CNF_D, &mod->att.blink, 0, 0);
-	config_add(conf, "blink.time", CNF_LD, &mod->att.blinktime, 0, 0);
-	config_add(conf, "text.full", CNF_S, &mod->att.longunformat, ATTRIBUTE_TEXT_MAX, 0);
-	config_add(conf, "text.short", CNF_S, &mod->att.shortunformat, ATTRIBUTE_TEXT_MAX, 0);
-	config_add(conf, "refresh", CNF_LD, &mod->att.reftime, 0, 0);
-	config_add(conf, "color", CNF_D, &mod->att.color, 0, 0);
-	config_add(conf, "background", CNF_D, &mod->att.background, 0, 0);
-	config_add(conf, "border", CNF_D, &mod->att.border, 0, 0);
-	config_add(conf, "min_width", CNF_D, &mod->att.min_width, 0, 0);
-	config_add(conf, "align", CNF_D, &mod->att.color, 0, 0);
-	config_add(conf, "seaparator", CNF_D, &mod->att.seaparator, 0, 0);
-	config_add(conf, "separator_block_width", CNF_D, &mod->att.separator_block_width, 0, 0);
-	config_add(conf, "markup", CNF_U, &mod->att.markup, 0, 0);
-	config_add(conf, "icon", CNF_S, mod->att.icons, ATTRIBUTE_ICONS_SIZE, mod->att.iconcount);
-	config_add(conf, "format", CNF_S, mod->att.format, ATTRIBUTE_FORMAT_MAX, mod->att.formatcount);
-	config_add(conf, "event", CNF_S, mod->att.onevent, ATTRIBUTE_SPAWN_MAX, 0);
-	config_add(conf, "hide", CNF_D, &mod->att.hide, 0, 0);
+	config_add(conf, "name", CNF_S, mod->att.name, ATTRIBUTE_TEXT_MAX, 0, NULL);
+	config_add(conf, "blink", CNF_D, &mod->att.blink, 0, 0, NULL);
+	config_add(conf, "blink.time", CNF_LD, &mod->att.blinktime, 0, 0, NULL);
+	config_add(conf, "text.full", CNF_S, &mod->att.longunformat, ATTRIBUTE_TEXT_MAX, 0, NULL);
+	config_add(conf, "text.short", CNF_S, &mod->att.shortunformat, ATTRIBUTE_TEXT_MAX, 0, NULL);
+	config_add(conf, "refresh", CNF_LD, &mod->att.reftime, 0, 0, NULL);
+	config_add(conf, "color", CNF_D, &mod->att.color, 0, 0, NULL);
+	config_add(conf, "background", CNF_D, &mod->att.background, 0, 0, NULL);
+	config_add(conf, "border", CNF_D, &mod->att.border, 0, 0, NULL);
+	config_add(conf, "min_width", CNF_D, &mod->att.min_width, 0, 0, NULL);
+	config_add(conf, "align", CNF_D, &mod->att.color, 0, 0, NULL);
+	config_add(conf, "seaparator", CNF_D, &mod->att.seaparator, 0, 0, NULL);
+	config_add(conf, "separator_block_width", CNF_D, &mod->att.separator_block_width, 0, 0, NULL);
+	config_add(conf, "markup", CNF_U, &mod->att.markup, 0, 0, NULL);
+	config_add(conf, "icon", CNF_S, mod->att.icons, ATTRIBUTE_ICONS_SIZE, mod->att.iconcount, NULL);
+	config_add(conf, "format", CNF_S, mod->att.format, ATTRIBUTE_FORMAT_MAX, mod->att.formatcount, NULL);
+	config_add(conf, "event", CNF_S, mod->att.onevent, ATTRIBUTE_SPAWN_MAX, 0, NULL);
+	config_add(conf, "hide", CNF_D, &mod->att.hide, 0, 0, NULL);
 }
 
 void modules_icons_init(module_s* mod, size_t count){

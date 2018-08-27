@@ -9,12 +9,14 @@
 	#define VBAR_CONFIG "~/.config/vbar/config"
 #endif
 
-typedef enum { CNF_D, CNF_U, CNF_LD, CNF_LU, CNF_F, CNF_LF, CNF_S, CNF_C } config_e;
+typedef enum { CNF_D, CNF_U, CNF_LD, CNF_LU, CNF_F, CNF_LF, CNF_S, CNF_C, CNF_CBK } config_e;
+typedef void(*cnfg_f)(void*, char*, size_t, char*, size_t);
 
 typedef struct configElement{
 	struct configElement* next;
 	char* name;
 	void* ptr;
+	void* cbkarg;
 	size_t isvector;
 	size_t maxlen;
 	config_e type;
@@ -29,7 +31,7 @@ size_t kr_hash(char*s, size_t size);
 size_t kr_nhash(char*s, size_t len, size_t size);
 void config_init(config_s* cf, size_t maxhash);
 void config_destroy(config_s* cf);
-void config_add(config_s* cf, char* name, config_e type, void* ptr, size_t maxlen, size_t isvector);
+void config_add(config_s* cf, char* name, config_e type, void* ptr, size_t maxlen, size_t isvector, void* cbkarg);
 void config_load(config_s* cf, char* fconf);
 
 #endif

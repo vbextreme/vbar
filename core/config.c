@@ -90,13 +90,14 @@ void config_destroy(config_s* cf){
 	free(cf->elems);
 }
 
-void config_add(config_s* cf, char* name, config_e type, void* ptr, size_t maxlen, size_t isvector){
+void config_add(config_s* cf, char* name, config_e type, void* ptr, size_t maxlen, size_t isvector, void* cbkarg){
 	size_t hash = kr_hash(name, cf->count);
 	configElement_s* ce = ef_mem_new(configElement_s);
 	ce->name = name;
 	ce->type = type;
 	ce->isvector = isvector;
 	ce->ptr = ptr;
+	ce->cbkarg = cbkarg;
 	ce->maxlen = maxlen;
 	ce->next = cf->elems[hash];
 	cf->elems[hash] = ce;

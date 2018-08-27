@@ -203,8 +203,8 @@ int net_mod_load(module_s* mod, char* path){
 	config_s conf;
 	config_init(&conf, 256);
 	modules_default_config(mod, &conf);
-	config_add(&conf, "device", CNF_S, net->selected, NET_DEVICES_NAME_MAX, 0);
-	config_add(&conf, "unit", CNF_LU, &net->unit, 0, 0);
+	config_add(&conf, "device", CNF_S, net->selected, NET_DEVICES_NAME_MAX, 0, NULL);
+	config_add(&conf, "unit", CNF_LU, &net->unit, 0, 0, NULL);
 	config_load(&conf, path);
 	config_destroy(&conf);
 	
