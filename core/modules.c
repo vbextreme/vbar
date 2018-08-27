@@ -185,7 +185,6 @@ __ef_private module_s* modules_search(modules_s* mods, char* instance, size_t le
 	for( size_t i = 0; i < mods->used; ++i ){
 		char* minstance = mods->rmod[i].att.instance;
 		char* mname = mods->rmod[i].att.name;
-	
 		if( !str_len_cmp(minstance, strlen(minstance), instance, lenI) && !str_len_cmp(mname, strlen(mname), name, lenN) ){
 			return &mods->rmod[i];
 		}
@@ -198,18 +197,28 @@ __ef_private void icmd_module_hide(void* autoarg, char* instance, size_t lenI, c
 	if( mod ){
 		mod->att.hide = 1;
 	}
+	else{
+		dbg_warning("no module %.*s::%.*s", (int)lenI, instance, (int)lenN, name);
+	}
 }
 
 __ef_private void icmd_module_show(void* autoarg, char* instance, size_t lenI, char* name, size_t lenN){
 	module_s* mod = modules_search(autoarg, instance, lenI, name, lenN);
 	if( mod ){
 		mod->att.hide = 0;
+	}else{
+		dbg_warning("no module %.*s::%.*s", (int)lenI, instance, (int)lenN, name);
 	}
 }
 
 __ef_private void icmd_module_toggle(void* autoarg, char* instance, size_t lenI, char* name, size_t lenN){
 	module_s* mod = modules_search(autoarg, instance, lenI, name, lenN);
-	mod->att.hide = !mod->att.hide;
+	if( mod ){
+		mod->att.hide = !mod->att.hide;
+	}
+	else{
+		dbg_warning("no module %.*s::%.*s", (int)lenI, instance, (int)lenN, name);
+	}
 }
 
 __ef_private void icmd_modules_refresh(void* autoarg, __ef_unused char* a0, __ef_unused size_t len0, __ef_unused char* a1, __ef_unused size_t len1){

@@ -47,7 +47,7 @@ __ef_private char* intp_parse(blkel_s* blk, char* line){
 	while( *line && (*line == '{' || *line == ' ' || *line == '\t') ) ++line;
 	
 	blk->name = line;
-	while( *line && (*line != '(' || *line != '}') ) ++line;
+	while( *line && *line != '(' && *line != '}' ) ++line;
 
 	if( !(blk->lenName = line - blk->name) ){
 		dbg_warning("no function name");
@@ -77,7 +77,7 @@ __ef_private char* intp_parse(blkel_s* blk, char* line){
 				dbg_warning("%s",stline);
 				return NULL;
 			}
-			blk->lenArg1 = blk->arg1 - line;
+			blk->lenArg1 = line - blk->arg1;
 		}
 
 		if( *line != ')' ){
@@ -93,6 +93,8 @@ __ef_private char* intp_parse(blkel_s* blk, char* line){
 		dbg_warning("%s",stline);
 		return NULL;
 	}
+
+	dbg_info("parse: %.*s %.*s %.*s", (int)blk->lenName, blk->name, (int)blk->lenArg0, blk->arg0, (int)blk->lenArg1, blk->arg1);
 	return line;
 }
 
@@ -105,6 +107,9 @@ __ef_private intpcmd_s* intp_find(char* name, size_t len){
 
 char* intp_interpretate(char* line){
 	blkel_s blk;
+	blk.arg1 = NULL;
+	blk.arg0 = NULL;
+
 	if( !(line = intp_parse(&blk, line)) ){
 		return NULL;
 	}
