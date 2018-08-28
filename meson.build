@@ -132,7 +132,7 @@ if get_option('Mpower') != 0
 endif
 
 if get_option('Mnet') != 0
-	NAME='net'
+	NAME='network'
 	PROT='net'
 
 	src += ['modules/M_net.c']
