@@ -25,7 +25,7 @@ Released under GPL v3
 	- [X] delay
 	- [X] config
 	- [X] modules
-		- [ ] dinamic
+		- [X] dinamic
 	- [ ] spawn
 		- [ ] add enviroment and argument
 	- [X] vbar
@@ -48,6 +48,7 @@ Released under GPL v3
 	- [ ] ip
 	- [ ] audio
 	- [ ] email
+	- [ ] kconnect
 - [ ] documentation
 
 ## How To
@@ -79,17 +80,7 @@ the file vbar/config is a global configuration file, you can set attribute for a
 on main configuration file you decide order and location of modules
 
 ```
-#load cpu module
-module.type[0] = cpu
-#set path of cpu config file, is optional and this is a default path:
-module.path[0] = ~/.config/vbar/cpu/config
-
-#load memory module
-module.type[1] = memory
-#default path
-module.path[1] = ~/.config/vbar/memory/config
-
-#common property
+#set common property before load modules
 color = 0xFF
 background = 0x0
 border = 0xFFFFFF
@@ -99,6 +90,16 @@ separator = 1
 separator_block_width = 1
 markup = 0
 hide = 0
+
+#set config path if not use standard path
+module.path = ~/.config/vbar/cpu/config
+#load cpu module
+module.load = cpu
+
+#load memory module
+#use default path ~/.config/vbar/memory/config
+module.load = memory
+
 ```
 
 for each module can overwrite the common property and setting others config</br>

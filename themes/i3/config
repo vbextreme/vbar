@@ -1,47 +1,4 @@
-
-#load cpu module
-module.type[0] = cpu
-#default path
-#module.path[0] = ~/.config/vbar/cpu/config
-
-#load cpu module
-module.type[1] = cpufreq
-#default path
-#module.path[1] = ~/.config/vbar/cpufreq/config
-
-#load temperature module
-module.type[2] = temperature
-#default path
-#module.path[2] = ~/.config/vbar/temperature/config
-
-#load memory module
-module.type[3] = memory
-#default path
-#module.path[3] = ~/.config/vbar/memory/config
-
-#load power module
-module.type[4] = power
-#default path
-#module.path[4] = ~/.config/vbar/power/config
-
-
-#load wireless module
-module.type[5] = wireless
-#default path
-#module.path[5] = ~/.config/vbar/wireless/config
-
-module.type[6] = network
-#default path
-#module.path[6] = ~/.config/vbar/network/config
-
-#load datetime module
-module.type[7] = datetime
-#default path
-#module.path[7] = ~/.config/vbar/datetime/config
-
-#load static module, config for power button
-module.type[8] = static
-module.path[8] = ~/.config/vbar/static/power
+#write common property before load module
 
 #common property
 #color = 0xFF
@@ -51,5 +8,33 @@ background = 0x44
 #align = center
 #separator = 1
 #separator_block_width = 1
+
+#load static module, config for power button
+module.path = ~/.config/vbar/static/power
+module.load = static
+
+#module.path = ~/.config/vbar/datetime/config
+module.load = datetime
+
+#module.path = ~/.config/vbar/network/config
+module.load = network
+
+#module.path[5] = ~/.config/vbar/wireless/config
+module.load = wireless
+
+#module.path = ~/.config/vbar/temperature/config
+module.load = temperature
+
+#module.path = ~/.config/vbar/power/config
+module.load = power
+
+#module.path = ~/.config/vbar/memory/config
+module.type = memory
+
+#module.path = ~/.config/vbar/cpufreq/config
+module.load = cpufreq
+
+#module.path = ~/.config/vbar/cpu/config
+module.load = cpu
 
 
