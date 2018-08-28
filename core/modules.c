@@ -140,15 +140,20 @@ void modules_reformatting(module_s* mod){
 
 void modules_refresh_output(modules_s* mods){
 	ipc_begin_elements();
-
-	size_t last = mods->used - 1;
-	while( last > 0 && mods->rmod[last].att.hide ) --last;
-
-	for(size_t i = 0; i < last; ++i){
-		if( !mods->rmod[i].att.hide )
-			ipc_write_element( &mods->rmod[i].att, TRUE);
+	
+	module_s* last;
+	module_s* it;
+	it = last = mods->rmod;
+	for(; it; it = it->next ){
+		if( !it->att.hide ){
+			last = it;
+		}
 	}
-	ipc_write_element( &mods->rmod[last].att, FALSE);
+	for(it = mods->rmod; it != last; it = it->next){
+		if( !it->att.hide )
+			ipc_write_element( &it->att, TRUE);
+	}
+	ipc_write_element( &last->att, FALSE);
 
 	ipc_end_elements();
 }
@@ -167,7 +172,10 @@ __ef_private void module_load(modules_s* mods, char* name, char* path){
 	for(size_t i = 0; modsconf[i].name; ++i){
 		if( 0 == strcmp(name, modsconf[i].name) ){
 			iassert(mods->used < MODULES_MAX);
-			module_s* mod = &mods->rmod[mods->used++];
+			++mods->used;
+			module_s* mod = ef_mem_new(module_s);
+			mod->next = mods->rmod;
+			mods->rmod = mod;
 			mod->att = mods->def;
 			mod->att.onevent[0] = 0;
 			if( *path ){
@@ -182,12 +190,13 @@ __ef_private void module_load(modules_s* mods, char* name, char* path){
 }
 
 __ef_private module_s* modules_search(modules_s* mods, char* instance, size_t lenI, char* name, size_t lenN){
-	for( size_t i = 0; i < mods->used; ++i ){
-		char* minstance = mods->rmod[i].att.instance;
-		char* mname = mods->rmod[i].att.name;
+	for(module_s* it = mods->rmod; it; it = it->next){
+		char* minstance = it->att.instance;
+		char* mname = it->att.name;
 		if( !str_len_cmp(minstance, strlen(minstance), instance, lenI) && !str_len_cmp(mname, strlen(mname), name, lenN) ){
-			return &mods->rmod[i];
+			return it;
 		}
+
 	}
 	return NULL;
 }
@@ -225,17 +234,24 @@ __ef_private void icmd_modules_refresh(void* autoarg, __ef_unused char* a0, __ef
 	modules_refresh_output(autoarg);
 }
 
+__ef_private void cbk_module_load(void* arg, __ef_unused char* name, __ef_unused size_t lenName, char* value, size_t lenValue){
+	modules_s* mods = arg;
+	char nn[ATTRIBUTE_TEXT_MAX];
+	sprintf(nn,"%.*s", (int)lenValue, value);
+	module_load(mods, nn, mods->generic);
+	*((char*)mods->generic) = 0;
+}
+
 void modules_load(modules_s* mods, char* config){
 	intp_register_command("module.hide", icmd_module_hide, mods);
 	intp_register_command("module.show", icmd_module_show, mods);
 	intp_register_command("module.toggle", icmd_module_toggle, mods);
 	intp_register_command("modules.refresh", icmd_modules_refresh, mods);
 
-	
 	mods->used = 0;
-	for( size_t i = 0; i < MODULES_MAX; ++i ){
-		mods->mod[i] = NULL;
-	}	
+	mods->rmod = NULL;
+	mods->generic = ef_mem_many(char, PATH_MAX);
+	*((char*)mods->generic)=0;
 	
 	mods->count = 0;
 	mods->def.align = 0;
@@ -267,17 +283,10 @@ void modules_load(modules_s* mods, char* config){
 	mods->def.hide = 0;
 	mods->def.useshort = 0;
 
-	char** listModules = ef_mem_matrix_new(MODULES_MAX, sizeof(char) * ATTRIBUTE_TEXT_MAX);
-	char** listModulesDir = ef_mem_matrix_new(MODULES_MAX, sizeof(char) * PATH_MAX);
-	for( size_t i = 0; i < MODULES_MAX; ++i){
-		listModules[i][0] = 0;
-		listModulesDir[i][0] = 0;
-	}
-
 	config_s conf;
 	config_init(&conf, 256);
-	config_add(&conf, "module.type", CNF_S, listModules, ATTRIBUTE_TEXT_MAX, MODULES_MAX, NULL);
-	config_add(&conf, "module.path", CNF_S, listModulesDir, PATH_MAX, MODULES_MAX, NULL);
+	config_add(&conf, "module.load", CNF_CBK, cbk_module_load, 0, 0, mods);
+	config_add(&conf, "module.path", CNF_S, mods->generic, PATH_MAX, 0, NULL);
 	config_add(&conf, "color", CNF_U, &mods->def.color, 0, 0, NULL);
 	config_add(&conf, "background", CNF_U, &mods->def.background, 0, 0, NULL);
 	config_add(&conf, "border", CNF_U, &mods->def.border, 0, 0, NULL);
@@ -289,15 +298,8 @@ void modules_load(modules_s* mods, char* config){
 	config_load(&conf, config);
 	config_destroy(&conf);
 	
-	for( size_t i = 0; i < MODULES_MAX; ++i ){
-		if( listModules[i][0] ){
-			module_load(mods, listModules[i], listModulesDir[i]);
-		}
-	}
-	
-	ef_mem_matrix_free(listModules, MODULES_MAX);
-	ef_mem_matrix_free(listModulesDir, MODULES_MAX);
-	
+	free(mods->generic);
+	mods->generic = NULL;
 	if( mods->used == 0 ){
 		dbg_fail("need set module to run");
 	}
@@ -366,10 +368,10 @@ char* modules_format_get(module_s* mod, size_t id, char* type){
 }
 
 void modules_dispatch(modules_s* mods, event_s* ev){
-	for( size_t i = 0; i < mods->used; ++i ){
-		if( mods->rmod[i].att.onevent[0] && !strcmp(mods->rmod[i].att.instance, ev->instance) && !strcmp(mods->rmod[i].att.name, ev->name)){
+	for( module_s* it = mods->rmod; it; it = it->next ){
+		if( it->att.onevent[0] && !strcmp(it->att.instance, ev->instance) && !strcmp(it->att.name, ev->name)){
 			char cmd[2048];
-			module_reform(&mods->rmod[i], cmd, 2048, mods->rmod[i].att.onevent);
+			module_reform(it, cmd, 2048, it->att.onevent);
 			if(*cmd) spawn_shell(cmd);
 		}
 	}

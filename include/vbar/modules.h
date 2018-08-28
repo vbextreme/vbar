@@ -22,6 +22,7 @@ typedef int (*modself_f)(module_s*);
 typedef int (*modselfds_f)(module_s*,int,char*);
 
 typedef struct module{
+	struct module* next;
 	attribute_s att;
 	void* data;
 	modself_f refresh;
@@ -30,7 +31,8 @@ typedef struct module{
 }module_s;
 
 typedef struct modules{
-	module_s rmod[MODULES_MAX];
+	void* generic;
+	module_s* rmod;
 	size_t used;
 	module_s* mod[MODULES_MAX];
 	size_t count;

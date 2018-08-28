@@ -168,6 +168,7 @@ __ef_private void config_assign(config_s* cf, char* name, size_t lenName, char* 
 		
 		case CNF_C:
 			((char*)ce->ptr)[index] = *value;
+			++enparse;
 		break;
 
 		case CNF_S:
@@ -179,6 +180,7 @@ __ef_private void config_assign(config_s* cf, char* name, size_t lenName, char* 
 		
 		case CNF_CBK:
 			((cnfg_f)ce->ptr)(ce->cbkarg, name, lenName, value, lenValue);
+			enparse += lenValue;
 		break;
 
 		default:

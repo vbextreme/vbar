@@ -33,9 +33,9 @@ int main(__ef_unused int argc, __ef_unused char** argv)
 
 	modules_s mods;
 	modules_load(&mods, args[0].autoset);
-		
-	for(size_t i = 0; i < mods.used; ++i){
-		modules_reformatting(&mods.rmod[i]);
+	
+	for(module_s* it = mods.rmod; it; it = it->next){
+		modules_reformatting(it);
 	}
 	modules_refresh_output(&mods);
 
