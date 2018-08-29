@@ -1,22 +1,23 @@
-# vbar alpha 0.12
+# vbar 0.13 alpha
 another status bar for i3</br>
 </br>
 Released under GPL v3
 
 ## News
-* **alpha 0.12** fix some bug, add critic temperature, begin optimization module event and dinamic load</br>
-* **alpha 0.11** add option to change main config file, continue develope interpretate events </br>
-* **alpha 0.10** add temperature module, modularize build</br>
-* **alpha 0.9 ** add cpufreq module</br>
-* **alpha 0.8 ** separate wireless from network, introduce module hide and force short format</br>
-* **alpha 0.7 ** fix some bug, add event and notify event</br>
-* **alpha 0.6 ** fix some bug, add network module</br>
-* **alpha 0.5 ** fix some bug, add power module</br>
-* **alpha 0.4 ** fix format, abstract ipc</br>
-* **alpha 0.3 ** fix bug, add static module</br>
-* **alpha 0.2 ** fix bug, add datetime module</br>
-* **alpha 0.1 ** fix bug, complete core</br>
-* **alpha 0.0 ** begin
+* ** 0.13 alpha ** add gperf, automatize build</br>
+* ** 0.12 alpha ** fix some bug, add critic temperature, begin optimization module event and dinamic load</br>
+* ** 0.11 alpha ** add option to change main config file, continue develope interpretate events </br>
+* ** 0.10 alpha ** add temperature module, modularize build</br>
+* ** 0.9  alpha ** add cpufreq module</br>
+* ** 0.8  alpha ** separate wireless from network, introduce module hide and force short format</br>
+* ** 0.7  alpha ** fix some bug, add event and notify event</br>
+* ** 0.6  alpha ** fix some bug, add network module</br>
+* ** 0.5  alpha ** fix some bug, add power module</br>
+* ** 0.4  alpha ** fix format, abstract ipc</br>
+* ** 0.3  alpha ** fix bug, add static module</br>
+* ** 0.2  alpha ** fix bug, add datetime module</br>
+* ** 0.1  alpha ** fix bug, complete core</br>
+* ** 0.0  alpha ** begin
 
 ## TODO
 - [ ] core
