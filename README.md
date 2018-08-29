@@ -4,7 +4,7 @@ another status bar for i3</br>
 Released under GPL v3
 
 ## News
-* ** 0.13 alpha ** add gperf, automatize build</br>
+* ** 0.13 alpha ** add gperf, automatize build, complete optimization search event</br>
 * ** 0.12 alpha ** fix some bug, add critic temperature, begin optimization module event and dinamic load</br>
 * ** 0.11 alpha ** add option to change main config file, continue develope interpretate events </br>
 * ** 0.10 alpha ** add temperature module, modularize build</br>

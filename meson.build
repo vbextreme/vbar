@@ -98,6 +98,16 @@ if( run_command('bash', '-c', gpf.format(gperf_mod)).returncode() != 0 )
   error('on generate gperf file')
 endif
 
+gpf='grep \'#define MAX_HASH_VALUE\' @0@ | cut -d\  -f3'
+r = run_command('bash', '-c', gpf.format(gperf_h))
+if( r.returncode() != 0 )
+  error('h gperf not generated')
+endif
+maxhash = r.stdout().strip()
+debugstr = '-DMODULES_HASH_MAX=@0@'
+debugstr = debugstr.format(maxhash)
+add_global_arguments(debugstr, language: 'c')
+
 ############################
 ### extra option modules ###
 ############################
@@ -151,9 +161,6 @@ message('release under GPLv3')
 # build #
 #########
 
-if( run_command('bash', '-c', gperf_build.format(gperf_mod,gperf_h)).returncode() != 0 )
-  error('h gperf not generated')
-endif
 configure_file(output: 'config_mod.h', configuration: conf_mod)
 executable('vbar', src, include_directories: incdir, dependencies: deps, install: true)
 

@@ -14,7 +14,9 @@
 #ifndef MODULES_MAX
 	#define MODULES_MAX 32
 #endif
-#define MODULE_NAME_MAX 32
+#ifndef MODULES_HASH_MAX
+	#pragma error "no hash size"
+#endif
 
 typedef struct module module_s;
 
@@ -23,6 +25,7 @@ typedef int (*modselfds_f)(module_s*,int,char*);
 
 typedef struct module{
 	struct module* next;
+	struct module* hnext;
 	attribute_s att;
 	void* data;
 	modself_f refresh;
@@ -36,6 +39,7 @@ typedef struct modules{
 	size_t used;
 	module_s* mod[MODULES_MAX];
 	size_t count;
+	module_s* hmod[MODULES_HASH_MAX + 1];
 	attribute_s def;
 }modules_s;
 

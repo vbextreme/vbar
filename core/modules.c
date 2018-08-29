@@ -1,11 +1,16 @@
 #include <vbar.h>
 #include <config_mod.h>
-#include <hash_mods.h>
 #include "intp.h"
+
+#include <hash_mods.h>
 
 #define PHQ_PARENT(I) ((I)/2)
 #define PHQ_LEFT(I) ((I)*2)
 #define PHQ_RIGHT(I) ((I)*2+1)
+
+#if MODULES_HASH_MAX != MAX_HASH_VALUE
+	#pragma error "invalid hash matching"
+#endif
 
 module_s* modules_pop(modules_s* mods) {
 	if( mods->mod[1]->att.tick > (long)time_ms() ){
@@ -159,6 +164,13 @@ void modules_refresh_output(modules_s* mods){
 	ipc_end_elements();
 }
 
+__ef_private void modules_insert_inhash(modules_s* mods, module_s* mod){
+	size_t h = hash(mod->att.instance, strlen(mod->att.instance));
+	mod->hnext = mods->hmod[h];
+	mods->hmod[h] = mod;
+	dbg_info("hash %lu insert '%s'", h, mod->att.instance);
+}
+
 __ef_private void module_load(modules_s* mods, char* name, char* path){
 	AUTO_PROTO_MODULE
 	
@@ -186,18 +198,18 @@ __ef_private void module_load(modules_s* mods, char* name, char* path){
 				modsconf[i].modload(mod, modsconf[i].conf);
 			}
 			if( mod->att.reftime > 0) modules_insert(mods, mod);
+			modules_insert_inhash(mods, mod);
 		}
 	}
 }
 
 __ef_private module_s* modules_search(modules_s* mods, char* instance, size_t lenI, char* name, size_t lenN){
-	for(module_s* it = mods->rmod; it; it = it->next){
-		char* minstance = it->att.instance;
-		char* mname = it->att.name;
-		if( !str_len_cmp(minstance, strlen(minstance), instance, lenI) && !str_len_cmp(mname, strlen(mname), name, lenN) ){
+	size_t h = hash(instance, lenI);
+	if( h > MODULES_HASH_MAX ) return NULL;
+	for(module_s* it = mods->hmod[h]; it; it = it->hnext){
+		if( !str_len_cmp(it->att.name, strlen(it->att.name), name, lenN) ){
 			return it;
 		}
-
 	}
 	return NULL;
 }
@@ -253,7 +265,10 @@ void modules_load(modules_s* mods, char* config){
 	mods->rmod = NULL;
 	mods->generic = ef_mem_many(char, PATH_MAX);
 	*((char*)mods->generic)=0;
-	
+	for( size_t i = 0; i < MODULES_HASH_MAX; ++i ){
+		mods->hmod[i] = NULL;
+	}
+
 	mods->count = 0;
 	mods->def.align = 0;
 	mods->def.background = 0;
@@ -369,14 +384,19 @@ char* modules_format_get(module_s* mod, size_t id, char* type){
 }
 
 void modules_dispatch(modules_s* mods, event_s* ev){
-	for( module_s* it = mods->rmod; it; it = it->next ){
-		if( it->att.onevent[0] && !strcmp(it->att.instance, ev->instance) && !strcmp(it->att.name, ev->name)){
+	size_t h = hash(ev->instance, strlen(ev->instance));
+	dbg_info("hash %lu name %s", h, ev->name);
+	if( h > MODULES_HASH_MAX ) return;
+	for( module_s* it = mods->hmod[h]; it; it = it->hnext ){
+		dbg_info("dispatch mod %s", it->att.name);
+		if( it->att.onevent[0] && !strcmp(it->att.name, ev->name)){
 			char cmd[2048];
 			module_reform(it, cmd, 2048, it->att.onevent);
 			if(*cmd) spawn_shell(cmd);
 		}
 	}
 }
+
 
 void module_set_urgent(module_s* mod, int enable){
 	if( mod->att.blink ){
