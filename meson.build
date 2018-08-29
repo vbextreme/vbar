@@ -10,15 +10,22 @@ add_global_arguments('-std=gnu11', language: 'c')
 add_global_arguments('-Wall', language: 'c')
 add_global_arguments('-Wextra', language: 'c')
 if( get_option('optimize') > 0 )
-	add_global_arguments('-O2', language: 'c')
-	add_global_arguments('-march=native', language: 'c')
+  add_global_arguments('-O2', language: 'c')
+  add_global_arguments('-march=native', language: 'c')
 endif
 
 #cc = meson.get_compiler('c')
 #m_dep = cc.find_library('m', required : true)
 deps = [  ] 
 
-conf = configuration_data()
+
+#########################
+# software dependencies #
+#########################
+
+if (find_program('gperf', required: true)).found() == false
+  error('Install gpref software')
+endif
 
 ########
 # core #
@@ -32,140 +39,82 @@ src = [ 'core/vbar.c', 'core/config.c', 'core/delay.c', 'core/string.c', 'core/m
 
 opt_wm = get_option('wm')
 if opt_wm == '' 
-	if (find_program('i3', required: false, native: true)).found()
-		opt_wm = 'i3wm'
-	else
-		error('no wm available')
-	endif
+  if (find_program('i3', required: false, native: true)).found()
+	opt_wm = 'i3wm'
+  else
+	error('no wm available')
+  endif
 endif
 
 if opt_wm == 'i3wm'
-	src += [ 'ipc/i3pc.c' ]
+  src += [ 'ipc/i3pc.c' ]
 endif
 
 ##################
 # select modules #
 ##################
 
+modules = [ 'cpu', 'cpufreq', 'memory', 'datetime', 'static', 'power', 'network', 'wireless', 'temperature']
+
 v_mod = ''
 p_mod = ''
 gen_mod = 'int @0@_mod_load(module_s* mod, char* path);'
+gen_vec = '{"@0@", @0@_mod_load, "~/.config/vbar/@0@/config"},'
+gen_msg = 'enable @0@ module'
+conf_mod = configuration_data()
+gperf_mod = meson.current_build_dir() + '/mods.gperf'
+gperf_h = meson.current_build_dir() + '/hash_mods.h'
+optmod = 'M@0@'
 
-if get_option('Mcpu') != 0
-	NAME='cpu'
-	PROT='cpu'
-	
-	src += ['modules/M_cpu.c']
-	
-	opt_mcpuncores = get_option('m-cpu-ncores')
-	if opt_mcpuncores > 0
-		debugstr = '-DNCORES_MAX=@0@'
-		debugstr = debugstr.format(opt_mcpuncores)
-		add_global_arguments(debugstr, language: 'c')
-	else
-		warning('use more memory with default ncores')
+gpf = 'echo %% > @0@'
+if( (run_command('bash', '-c', gpf.format(gperf_mod))).returncode() != 0 )
+  message(gpf)
+  message(gpf.format(gperf_mod))
+  error('on generate gperf file')
+endif
+gpf = 'echo @0@ >> @1@'
+gperf_build = 'gperf -7 -L C @0@ >> @1@'
+
+foreach mod : modules
+  enm = get_option(optmod.format(mod))
+  if( enm > 0 )
+    tmp = 'modules/M_@0@.c'
+	sss = tmp.format(mod)
+	src += [ sss ]
+
+	v_mod += gen_vec.format(mod)
+	p_mod += gen_mod.format(mod)
+	message(gen_msg.format(mod))
+	if( run_command('bash', '-c', gpf.format(mod,gperf_mod)).returncode() != 0 )
+	  error('on generate gperf file')
 	endif
+  endif
+endforeach 
 
-	am = '{"@0@", @1@_mod_load, "~/.config/vbar/@0@/config"},'
-	v_mod += am.format(NAME,PROT)
-	p_mod += gen_mod.format(PROT)
-	message('module cpu enabled')
+conf_mod.set('AUTO_VECTOR_MODULE', v_mod)
+conf_mod.set('AUTO_PROTO_MODULE', p_mod)
+
+gpf = 'echo %% >> @0@'
+if( run_command('bash', '-c', gpf.format(gperf_mod)).returncode() != 0 )
+  error('on generate gperf file')
 endif
 
-if get_option('Mcpufreq') != 0
-	NAME='cpufreq'
-	PROT='cpufreq'
-	
-	src += ['modules/M_cpufreq.c']
-	
-	am = '{"@0@", @1@_mod_load, "~/.config/vbar/@0@/config"},'
-	v_mod += am.format(NAME,PROT)
-	p_mod += gen_mod.format(PROT)
-	message('module cpufreq enabled')
+############################
+### extra option modules ###
+############################
+
+opt_mcpuncores = get_option('m-cpu-ncores')
+if opt_mcpuncores > 0
+  debugstr = '-DNCORES_MAX=@0@'
+  debugstr = debugstr.format(opt_mcpuncores)
+  add_global_arguments(debugstr, language: 'c')
+else
+  r = run_command('bash', '-c', 'cat /proc/cpuinfo | grep processor | wc -l')
+  l = r.stdout().strip()
+  ncpu = l.to_int()
+  mmm = 'autoset cpu to @0@'
+  message(mmm.format(ncpu))
 endif
-
-if get_option('Mmemory') != 0
-	NAME='memory'
-	PROT='mem'
-
-	src += ['modules/M_memory.c']
-	
-	am = '{"@0@", @1@_mod_load, "~/.config/vbar/@0@/config"},'
-	v_mod += am.format(NAME,PROT)
-	p_mod += gen_mod.format(PROT)
-	message('module memory enabled')
-endif
-
-if get_option('Mtime') != 0
-	NAME='datetime'
-	PROT='datetime'
-
-	src += ['modules/M_time.c']
-
-	am = '{"@0@", @1@_mod_load, "~/.config/vbar/@0@/config"},'
-	v_mod += am.format(NAME,PROT)
-	p_mod += gen_mod.format(PROT)
-	message('module time enabled')
-endif
-
-if get_option('Mstatic') != 0
-	NAME='static'
-	PROT='static'
-
-	src += ['modules/M_static.c']
-	
-	am = '{"@0@", @1@_mod_load, "~/.config/vbar/@0@/config"},'
-	v_mod += am.format(NAME,PROT)
-	p_mod += gen_mod.format(PROT)
-	message('module static enabled')
-endif
-
-if get_option('Mpower') != 0
-	NAME='power'
-	PROT='power'
-
-	src += ['modules/M_power.c']
-	am = '{"@0@", @1@_mod_load, "~/.config/vbar/@0@/config"},'
-	v_mod += am.format(NAME,PROT)
-	p_mod += gen_mod.format(PROT)
-	message('module power enabled')
-endif
-
-if get_option('Mnet') != 0
-	NAME='network'
-	PROT='net'
-
-	src += ['modules/M_net.c']
-	am = '{"@0@", @1@_mod_load, "~/.config/vbar/@0@/config"},'
-	v_mod += am.format(NAME,PROT)
-	p_mod += gen_mod.format(PROT)
-	message('module net enabled')
-endif
-
-if get_option('Mwireless') != 0
-	NAME='wireless'
-	PROT='wireless'
-
-	src += ['modules/M_wireless.c']
-	am = '{"@0@", @1@_mod_load, "~/.config/vbar/@0@/config"},'
-	v_mod += am.format(NAME,PROT)
-	p_mod += gen_mod.format(PROT)
-	message('module wireless enabled')
-endif
-
-if get_option('Mtemperature') != 0
-	NAME='temperature'
-	PROT='temp'
-
-    src += ['modules/M_temperature.c']
-	am = '{"@0@", @1@_mod_load, "~/.config/vbar/@0@/config"},'
-	v_mod += am.format(NAME,PROT)
-	p_mod += gen_mod.format(PROT)
-	message('module temperature enabled')
-endif
-
-conf.set('AUTO_VECTOR_MODULE', v_mod)
-conf.set('AUTO_PROTO_MODULE', p_mod)
 
 #########
 # debug #
@@ -173,23 +122,23 @@ conf.set('AUTO_PROTO_MODULE', p_mod)
 
 opt_debug = get_option('debug')
 if opt_debug > 0
-	message('debug enabled')
-	debugstr = '-DEF_DEBUG_ENABLE=@0@'
-	debugstr = debugstr.format(opt_debug)
-	add_global_arguments(debugstr, language: 'c')
+  message('debug enabled')
+  debugstr = '-DEF_DEBUG_ENABLE=@0@'
+  debugstr = debugstr.format(opt_debug)
+  add_global_arguments(debugstr, language: 'c')
 endif
 
 opt_debug_color = get_option('dolor')
 if opt_debug_color > 0
-	message('color debug enabled')
-	debugstr = '-DEF_DEBUG_COLOR=@0@'
-	debugstr = debugstr.format(opt_debug_color)
-	add_global_arguments(debugstr, language: 'c')
+  message('color debug enabled')
+  debugstr = '-DEF_DEBUG_COLOR=@0@'
+  debugstr = debugstr.format(opt_debug_color)
+  add_global_arguments(debugstr, language: 'c')
 endif
 
 if get_option('assert') > 0
-	message('assertion enabled')
-	add_global_arguments('-DEF_ASSERT_ENABLE=1', language: 'c')
+  message('assertion enabled')
+  add_global_arguments('-DEF_ASSERT_ENABLE=1', language: 'c')
 endif
 
 ###########
@@ -203,6 +152,9 @@ message('release under GPLv3')
 # build #
 #########
 
-configure_file(output: 'config.h', configuration: conf)
+if( run_command('bash', '-c', gperf_build.format(gperf_mod,gperf_h)).returncode() != 0 )
+  error('h gperf not generated')
+endif
+configure_file(output: 'config.h', configuration: conf_mod)
 executable('vbar', src, include_directories: incdir, dependencies: deps, install: true)
 

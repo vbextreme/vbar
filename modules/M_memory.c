@@ -122,7 +122,7 @@ __ef_private int mem_mod_free(module_s* mod){
 	return 0;
 }
 
-int mem_mod_load(module_s* mod, char* path){
+int memory_mod_load(module_s* mod, char* path){
 	mem_s* mem = ef_mem_new(mem_s);
 	mem->toblink = 1024*1024*500;
 	mem->unit = 1024*1024*1024;

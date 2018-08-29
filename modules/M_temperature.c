@@ -46,7 +46,7 @@ __ef_private int temp_mod_free(module_s* mod){
 	return 0;
 }
 
-int temp_mod_load(module_s* mod, char* path){
+int temperature_mod_load(module_s* mod, char* path){
 	temperature_s* tm = ef_mem_new(temperature_s);
 	tm->unit = 1000;
 	tm->blinkon = 80000;
