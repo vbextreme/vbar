@@ -1,5 +1,6 @@
 #include <vbar.h>
-#include <config.h>
+#include <config_mod.h>
+#include <hash_mods.h>
 #include "intp.h"
 
 #define PHQ_PARENT(I) ((I)/2)

@@ -66,10 +66,9 @@ gperf_mod = meson.current_build_dir() + '/mods.gperf'
 gperf_h = meson.current_build_dir() + '/hash_mods.h'
 optmod = 'M@0@'
 
+run_command('rm', '-f', gperf_mod)
 gpf = 'echo %% > @0@'
 if( (run_command('bash', '-c', gpf.format(gperf_mod))).returncode() != 0 )
-  message(gpf)
-  message(gpf.format(gperf_mod))
   error('on generate gperf file')
 endif
 gpf = 'echo @0@ >> @1@'
@@ -155,6 +154,6 @@ message('release under GPLv3')
 if( run_command('bash', '-c', gperf_build.format(gperf_mod,gperf_h)).returncode() != 0 )
   error('h gperf not generated')
 endif
-configure_file(output: 'config.h', configuration: conf_mod)
+configure_file(output: 'config_mod.h', configuration: conf_mod)
 executable('vbar', src, include_directories: incdir, dependencies: deps, install: true)
 
