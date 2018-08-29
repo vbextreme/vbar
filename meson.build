@@ -67,6 +67,8 @@ gperf_h = meson.current_build_dir() + '/hash_mods.h'
 optmod = 'M@0@'
 
 run_command('rm', '-f', gperf_mod)
+run_command('rm', '-f', gperf_h)
+
 gpf = 'echo %% > @0@'
 if( (run_command('bash', '-c', gpf.format(gperf_mod))).returncode() != 0 )
   error('on generate gperf file')
@@ -97,7 +99,9 @@ gpf = 'echo %% >> @0@'
 if( run_command('bash', '-c', gpf.format(gperf_mod)).returncode() != 0 )
   error('on generate gperf file')
 endif
-
+if( run_command('bash', '-c', gperf_build.format(gperf_mod,gperf_h)).returncode() != 0 )
+  error('on generate gperf file')
+endif
 gpf='grep \'#define MAX_HASH_VALUE\' @0@ | cut -d\  -f3'
 r = run_command('bash', '-c', gpf.format(gperf_h))
 if( r.returncode() != 0 )
@@ -155,7 +159,7 @@ endif
 ###########
 
 message('copyright vbextreme 2018')
-message('release under GPLv3')
+message('released under GPLv3')
 
 #########
 # build #
