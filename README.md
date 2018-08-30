@@ -1,9 +1,10 @@
-# vbar 0.13 alpha
+# vbar 0.14 alpha
 another status bar for i3</br>
 </br>
 Released under GPL v3
 
 ## News
+* ** 0.14 alpha ** fix some bug, optimize intp, add intp module.iconsel command</br>
 * ** 0.13 alpha ** add gperf, automatize build, complete optimization search event</br>
 * ** 0.12 alpha ** fix some bug, add critic temperature, begin optimization module event and dinamic load</br>
 * ** 0.11 alpha ** add option to change main config file, continue develope interpretate events </br>
