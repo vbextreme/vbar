@@ -5,7 +5,6 @@
 #define ARGS_MAX 4
 
 typedef struct intpcmd{
-//	struct intpcmd* next;
 	char* name;
 	intpcall_f call;
 	void* autoarg;
@@ -20,14 +19,12 @@ __ef_private intpapi_s intp;
 void intp_register_command(char* name, intpcall_f call, void* autoarg){
 	dbg_info("%s", name);
 	size_t hash = hash_intp(name, strlen(name));
-	//intpcmd_s* cmd = ef_mem_new(intpcmd_s);
 	if( intp.cmd[hash].call ){
 		dbg_fail("hash collision on %s hash %lu", name, hash);
 	}
 	intp.cmd[hash].name = name;
 	intp.cmd[hash].call = call;
 	intp.cmd[hash].autoarg = autoarg;
-//	intp.cmd[hash] = cmd;
 }
 
 typedef struct blkel{
