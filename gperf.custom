@@ -1,0 +1,7 @@
+#!/bin/bash
+#$1 function name
+#$2 define prefix
+#$3 input
+#$4 output
+
+gperf -I -7 -L C -H $1 --constants-prefix $2 $3 | sed '/^const char */,/^#line/d' > $4
