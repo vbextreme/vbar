@@ -5,5 +5,5 @@ hide = 1
 separator = 0 
 icon = "⏻"
 
-#event = "poweroff"
+event = "poweroff"
 
