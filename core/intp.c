@@ -1,31 +1,33 @@
 #include <vbar.h>
 #include "intp.h"
+#include "hash_intp.h"
 
 #define ARGS_MAX 4
-#define HASH_CMD 256
 
 typedef struct intpcmd{
-	struct intpcmd* next;
+//	struct intpcmd* next;
 	char* name;
 	intpcall_f call;
 	void* autoarg;
 }intpcmd_s;
 
 typedef struct intpapi{
-	intpcmd_s* cmd[HASH_CMD];
+	intpcmd_s cmd[HINTP_MAX_HASH_VALUE];
 }intpapi_s;
 
 __ef_private intpapi_s intp;
 
 void intp_register_command(char* name, intpcall_f call, void* autoarg){
 	dbg_info("%s", name);
-	size_t hash = kr_hash(name, HASH_CMD);
-	intpcmd_s* cmd = ef_mem_new(intpcmd_s);
-	cmd->name = name;
-	cmd->call = call;
-	cmd->autoarg = autoarg;
-	cmd->next = intp.cmd[hash];
-	intp.cmd[hash] = cmd;
+	size_t hash = hash_intp(name, strlen(name));
+	//intpcmd_s* cmd = ef_mem_new(intpcmd_s);
+	if( intp.cmd[hash].call ){
+		dbg_fail("hash collision on %s hash %lu", name, hash);
+	}
+	intp.cmd[hash].name = name;
+	intp.cmd[hash].call = call;
+	intp.cmd[hash].autoarg = autoarg;
+//	intp.cmd[hash] = cmd;
 }
 
 typedef struct blkel{
@@ -87,10 +89,9 @@ __ef_private char* intp_parse(blkel_s* blk, char* line){
 }
 
 __ef_private intpcmd_s* intp_find(char* name, size_t len){
-	size_t hash = kr_nhash( name, len, HASH_CMD );
-	intpcmd_s* find = intp.cmd[hash];
-	for(; find && str_len_cmp(find->name, strlen(find->name), name, len);	find = find->next);
-	return find;
+	size_t hash = hash_intp( name, len );
+	intpcmd_s* find = &intp.cmd[hash];
+	return find->call ? find : NULL;
 }
 
 char* intp_interpretate(char* line){

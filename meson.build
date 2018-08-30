@@ -102,6 +102,13 @@ else
   message(mmm.format(ncpu))
 endif
 
+gperf_intp_src = custom_target('gperf hash_intp.h', 
+  output: 'hash_intp.h',
+  input: 'gperf/intp.gperf', 
+  command: [gperf_custom_software, 'hash_intp', 'HINTP_', '@INPUT@', '@OUTPUT@']
+)
+src += [ gperf_intp_src ]
+
 #########
 # debug #
 #########

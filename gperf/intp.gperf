@@ -1,0 +1,7 @@
+%%
+module.hide
+module.show
+module.toggle
+module.seticon
+modules.refresh
+%%
