@@ -12,6 +12,6 @@ refresh = 3000
 #$4 governor
 
 hide = 1
-text.full = "$2 $4"
-text.short = "$2 $4"
+text.full = "$2ghz $4"
+text.short = "$2ghz $4"
 

@@ -9,12 +9,14 @@
 #$7 hours time left
 #$8 minutes time left
 
-text.full = "$@ power $2% $7:$8"
-text.short = "$2% $7:$8 GiB"
-
+text.full = "$@ $2% $5 $6 $7:$8"
+text.short = "$@ $2% $7:$8"
+text.short.enable = 1
 
 # blink when capaciti < blink.on
 blink.on = 10
 
-refresh = 30000
+refresh = 5000
+
+event = "${module.text.short.toggle(power,generic)}${modules.refresh()}" 
 
