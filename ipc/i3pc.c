@@ -289,7 +289,7 @@ void ipc_write_element(attribute_s* el, bool_t next){
 	json_write_str("name", el->name, TRUE);
 	json_write_str("instance", el->instance, TRUE);
 	json_write_bool("urgent", el->urgent, TRUE);
-	json_write_bool("separator", el->seaparator, TRUE);
+	json_write_bool("separator", el->separator, TRUE);
 	json_write_int("separator_block_width", el->separator_block_width, TRUE);
 	json_write_bool("markup", el->markup, FALSE);
 	json_end_block();

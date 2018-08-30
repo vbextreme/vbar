@@ -35,7 +35,7 @@ typedef struct attribute{
 	char instance[ATTRIBUTE_TEXT_MAX];
 
 	int urgent;
-	int seaparator;
+	int separator;
 	int separator_block_width;
 	int markup;
 

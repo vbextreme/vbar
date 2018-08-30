@@ -7,6 +7,6 @@ text.short = "$@ $0"
 
 refresh = 5000
 
-blink.on = 80
+blink.on = 80000
 
 unit = 1000

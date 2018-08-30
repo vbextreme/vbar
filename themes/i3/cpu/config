@@ -16,9 +16,10 @@ refresh = 1000
 #$2 core 2
 #$n etc etc
 
-text.full = "$@ cpu $0%"
+text.full = "$@ $0%"
 text.short = "$@ $0%"
 
-#event = "urxvt -e htop"
+event = "${module.toggle(cpufreq,generic)}${modules.refresh()}"
 
+separator = 0
 ```

@@ -11,7 +11,9 @@ refresh = 3000
 #$3 available governor
 #$4 governor
 
-text.full = "$@ $2 $4"
-text.short = "$@ $2"
+hide = 1
+text.full = "$2 $4"
+text.short = "$2 $4"
 
+separator = 0
 ```

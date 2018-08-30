@@ -310,7 +310,7 @@ void modules_load(modules_s* mods, char* config){
 	mods->def.markup = 0;
 	mods->def.min_width = -1;
 	mods->def.name[0] = 0;
-	mods->def.seaparator = 1;
+	mods->def.separator = 1;
 	mods->def.separator_block_width = -1;
 	mods->def.urgent = -1;
 	mods->def.blink = 1;
@@ -336,7 +336,7 @@ void modules_load(modules_s* mods, char* config){
 	config_add(&conf, "border", CNF_U, &mods->def.border, 0, 0, NULL);
 	config_add(&conf, "min_width", CNF_U, &mods->def.min_width, 0, 0, NULL);
 	config_add(&conf, "align", CNF_U, &mods->def.color, 0, 0, NULL);
-	config_add(&conf, "seaparator", CNF_U, &mods->def.seaparator, 0, 0, NULL);
+	config_add(&conf, "separator", CNF_U, &mods->def.separator, 0, 0, NULL);
 	config_add(&conf, "separator_block_width", CNF_U, &mods->def.separator_block_width, 0, 0, NULL);
 	config_add(&conf, "markup", CNF_U, &mods->def.markup, 0, 0, NULL);
 	config_load(&conf, config);
@@ -361,7 +361,7 @@ void modules_default_config(module_s* mod, config_s* conf){
 	config_add(conf, "border", CNF_D, &mod->att.border, 0, 0, NULL);
 	config_add(conf, "min_width", CNF_D, &mod->att.min_width, 0, 0, NULL);
 	config_add(conf, "align", CNF_D, &mod->att.color, 0, 0, NULL);
-	config_add(conf, "seaparator", CNF_D, &mod->att.seaparator, 0, 0, NULL);
+	config_add(conf, "separator", CNF_D, &mod->att.separator, 0, 0, NULL);
 	config_add(conf, "separator_block_width", CNF_D, &mod->att.separator_block_width, 0, 0, NULL);
 	config_add(conf, "markup", CNF_U, &mod->att.markup, 0, 0, NULL);
 	config_add(conf, "icon", CNF_S, mod->att.icons, ATTRIBUTE_ICONS_SIZE, mod->att.iconcount, NULL);
