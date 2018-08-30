@@ -1,9 +1,9 @@
 name = power
 text.full = "$@"
 text.short = "$@"
-
+hide = 1
+separator = 0 
 icon = "⏻"
-#♼
-#🚪
-event = "i3-nagbar -t warning -m 'You pressed the Power shortcut. What do you wanna do? You can lose your file m8, watch out!' -b 'Poweroff' 'poweroff' -b 'Reboot' 'reboot' -b 'Logout' 'i3-msg exit'"
+
+#event = "poweroff"
 

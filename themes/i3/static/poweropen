@@ -1,0 +1,7 @@
+name = poweropen
+text.full = "$@"
+text.short = "$@"
+icon = "⏻"
+
+event = "${module.hide(static,poweropen)}${module.show(static,logout)}${module.show(static,reboot)}${module.show(static,power)}${module.show(static,powerclose)}${modules.refresh()}"
+

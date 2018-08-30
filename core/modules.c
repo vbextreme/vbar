@@ -215,7 +215,7 @@ __ef_private void icmd_module_hide(void* autoarg, size_t argc, char* argv[], siz
 		return;
 	}
 
-	module_s* mod = modules_search(autoarg, argv[0], argl[0], argv[1], argl[0]);
+	module_s* mod = modules_search(autoarg, argv[0], argl[0], argv[1], argl[1]);
 	if( mod ){
 		mod->att.hide = 1;
 	}

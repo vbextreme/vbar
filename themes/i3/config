@@ -10,7 +10,23 @@ separator = 1
 separator_block_width = 10
 
 #load static module, config for power button
+module.path = ~/.config/vbar/static/poweropen
+module.load = static
+
+#load static module, config for power button
+module.path = ~/.config/vbar/static/powerclose
+module.load = static
+
+#load static module, config for power button
 module.path = ~/.config/vbar/static/power
+module.load = static
+
+#load static module, config for power button
+module.path = ~/.config/vbar/static/reboot
+module.load = static
+
+#load static module, config for power button
+module.path = ~/.config/vbar/static/logout
 module.load = static
 
 #module.path = ~/.config/vbar/datetime/config
