@@ -3,5 +3,7 @@ module.hide
 module.show
 module.toggle
 module.iconsel
+module.separator
+module.separator.toggle
 modules.refresh
 %%

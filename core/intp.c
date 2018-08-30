@@ -11,7 +11,7 @@ typedef struct intpcmd{
 }intpcmd_s;
 
 typedef struct intpapi{
-	intpcmd_s cmd[HINTP_MAX_HASH_VALUE];
+	intpcmd_s cmd[HINTP_MAX_HASH_VALUE + 1];
 }intpapi_s;
 
 __ef_private intpapi_s intp;

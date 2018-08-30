@@ -6,7 +6,7 @@
 border = 0x0
 #min_width = 300
 #align = center
-separator = 0
+separator = 1
 separator_block_width = 10
 
 #load static module, config for power button

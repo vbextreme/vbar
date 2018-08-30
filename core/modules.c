@@ -258,7 +258,7 @@ __ef_private void icmd_modules_refresh(void* autoarg, __ef_unused size_t argc, _
 	modules_refresh_output(autoarg);
 }
 
-__ef_private void icmd_modules_iconsel(void* autoarg, __ef_unused size_t argc, __ef_unused char* argv[], __ef_unused size_t* argl){
+__ef_private void icmd_modules_iconsel(void* autoarg, size_t argc, char* argv[], size_t* argl){
 	if( argc != 3 ){
 		dbg_warning("wrong args %lu", argc);
 		return;
@@ -271,7 +271,36 @@ __ef_private void icmd_modules_iconsel(void* autoarg, __ef_unused size_t argc, _
 	else{
 		dbg_warning("no module %.*s::%.*s", (int)argl[0], argv[0], (int)argl[1], argv[1]);
 	}
+}
 
+__ef_private void icmd_modules_separator(void* autoarg, size_t argc, char* argv[], size_t* argl){
+	if( argc != 3 ){
+		dbg_warning("wrong args %lu", argc);
+		return;
+	}
+
+	module_s* mod = modules_search(autoarg, argv[0], argl[0], argv[1], argl[1]);
+	if( mod ){
+		mod->att.separator = strtoul(argv[2], NULL, 10);
+	}
+	else{
+		dbg_warning("no module %.*s::%.*s", (int)argl[0], argv[0], (int)argl[1], argv[1]);
+	}
+}
+
+__ef_private void icmd_modules_separator_toggle(void* autoarg, size_t argc, char* argv[], size_t* argl){
+	if( argc != 2 ){
+		dbg_warning("wrong args %lu", argc);
+		return;
+	}
+
+	module_s* mod = modules_search(autoarg, argv[0], argl[0], argv[1], argl[1]);
+	if( mod ){
+		mod->att.separator = !mod->att.separator;
+	}
+	else{
+		dbg_warning("no module %.*s::%.*s", (int)argl[0], argv[0], (int)argl[1], argv[1]);
+	}
 }
 
 __ef_private void cbk_module_load(void* arg, __ef_unused char* name, __ef_unused size_t lenName, char* value, size_t lenValue){
@@ -287,6 +316,8 @@ void modules_load(modules_s* mods, char* config){
 	intp_register_command("module.show", icmd_module_show, mods);
 	intp_register_command("module.toggle", icmd_module_toggle, mods);
 	intp_register_command("module.iconsel", icmd_modules_iconsel, mods);
+	intp_register_command("module.separator", icmd_modules_separator, mods);
+	intp_register_command("module.separator.toggle", icmd_modules_separator_toggle, mods);
 	intp_register_command("modules.refresh", icmd_modules_refresh, mods);
 
 	mods->used = 0;
