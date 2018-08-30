@@ -5,5 +5,6 @@ module.toggle
 module.iconsel
 module.separator
 module.separator.toggle
+module.text.short.toggle
 modules.refresh
 %%

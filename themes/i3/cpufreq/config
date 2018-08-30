@@ -1,6 +1,6 @@
 #refresh time in ms
 refresh = 3000
-#icon default 
+ 
 #icon = "💻"
 
 #formatting output

@@ -303,6 +303,21 @@ __ef_private void icmd_modules_separator_toggle(void* autoarg, size_t argc, char
 	}
 }
 
+__ef_private void icmd_modules_text_short_toggle(void* autoarg, size_t argc, char* argv[], size_t* argl){
+	if( argc != 2 ){
+		dbg_warning("wrong args %lu", argc);
+		return;
+	}
+
+	module_s* mod = modules_search(autoarg, argv[0], argl[0], argv[1], argl[1]);
+	if( mod ){
+		mod->att.useshort = !mod->att.useshort;
+	}
+	else{
+		dbg_warning("no module %.*s::%.*s", (int)argl[0], argv[0], (int)argl[1], argv[1]);
+	}
+}
+
 __ef_private void cbk_module_load(void* arg, __ef_unused char* name, __ef_unused size_t lenName, char* value, size_t lenValue){
 	modules_s* mods = arg;
 	char nn[ATTRIBUTE_TEXT_MAX];
@@ -318,6 +333,7 @@ void modules_load(modules_s* mods, char* config){
 	intp_register_command("module.iconsel", icmd_modules_iconsel, mods);
 	intp_register_command("module.separator", icmd_modules_separator, mods);
 	intp_register_command("module.separator.toggle", icmd_modules_separator_toggle, mods);
+	intp_register_command("module.text.short.toggle", icmd_modules_text_short_toggle, mods);
 	intp_register_command("modules.refresh", icmd_modules_refresh, mods);
 
 	mods->used = 0;
@@ -386,6 +402,7 @@ void modules_default_config(module_s* mod, config_s* conf){
 	config_add(conf, "blink.time", CNF_LD, &mod->att.blinktime, 0, 0, NULL);
 	config_add(conf, "text.full", CNF_S, &mod->att.longunformat, ATTRIBUTE_TEXT_MAX, 0, NULL);
 	config_add(conf, "text.short", CNF_S, &mod->att.shortunformat, ATTRIBUTE_TEXT_MAX, 0, NULL);
+	config_add(conf, "text.short.enable", CNF_D, &mod->att.useshort, 0, 0, NULL);
 	config_add(conf, "refresh", CNF_LD, &mod->att.reftime, 0, 0, NULL);
 	config_add(conf, "color", CNF_D, &mod->att.color, 0, 0, NULL);
 	config_add(conf, "background", CNF_D, &mod->att.background, 0, 0, NULL);

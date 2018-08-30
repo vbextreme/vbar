@@ -6,7 +6,6 @@ blink.time = 450
 blink.on = 90
 #refresh time in ms
 refresh = 1000
-#icon default 
 #icon = "💻"
 
 #formatting output
@@ -19,6 +18,4 @@ refresh = 1000
 text.full = "$@ $0%"
 text.short = "$@ $0%"
 
-event = "${module.toggle(cpufreq,generic)}${modules.refresh()}"
-
-separator = 0
+event = "${module.toggle(cpufreq,generic)}${module.separator.toggle(cpu,generic)}${modules.refresh()}"
