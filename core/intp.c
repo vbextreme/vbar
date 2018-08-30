@@ -17,8 +17,9 @@ typedef struct intpapi{
 __ef_private intpapi_s intp;
 
 void intp_register_command(char* name, intpcall_f call, void* autoarg){
-	dbg_info("%s", name);
 	size_t hash = hash_intp(name, strlen(name));
+	dbg_info("%s [%lu]", name, hash);
+
 	if( intp.cmd[hash].call ){
 		dbg_fail("hash collision on %s hash %lu", name, hash);
 	}
@@ -43,6 +44,7 @@ __ef_private char* intp_parse(blkel_s* blk, char* line){
 	while( *line && (*line == '{' || *line == ' ' || *line == '\t') ) ++line;
 	
 	blk->name = line;
+	blk->count = 0;
 	while( *line && *line != '(' && *line != '}' ) ++line;
 
 	if( !(blk->lenName = line - blk->name) ){
@@ -54,7 +56,7 @@ __ef_private char* intp_parse(blkel_s* blk, char* line){
 	if( *line == '(' ){
 		++line;
 		
-		for( blk->count = 0; blk->count < ARGS_MAX; ++blk->count ){
+		for(; blk->count < ARGS_MAX; ++blk->count ){
 			while( *line && (*line == ' ' || *line == '\t') ) ++line;
 			blk->arg[blk->count] = line;
 			while( *line && *line != ')' && *line != ',') ++line;
@@ -68,7 +70,7 @@ __ef_private char* intp_parse(blkel_s* blk, char* line){
 			if( *line == ')' ) break;
 			++line;
 		}
-		++blk->count;
+		if( blk->count ) ++blk->count;
 
 		if( *line != ')' ){
 			dbg_warning("no close call");
@@ -90,6 +92,10 @@ __ef_private char* intp_parse(blkel_s* blk, char* line){
 
 __ef_private intpcmd_s* intp_find(char* name, size_t len){
 	size_t hash = hash_intp( name, len );
+	dbg_info("%.*s hash %lu/%d", (int)len, name, hash,HINTP_MAX_HASH_VALUE);
+	if( hash > HINTP_MAX_HASH_VALUE ){
+		return NULL;
+	}
 	intpcmd_s* find = &intp.cmd[hash];
 	return find->call ? find : NULL;
 }
@@ -106,7 +112,13 @@ char* intp_interpretate(char* line){
 		dbg_warning("function %.*s not exists", (int)blk.lenName, blk.name);
 		return NULL;
 	}
+	
+	if( strncmp(cmd->name, blk.name, blk.lenName) ){
+		dbg_warning("function %.*s not exists", (int)blk.lenName, blk.name);
+		return NULL;
+	}
 
+	dbg_info("%.*s(%lu)", (int)blk.lenName, blk.name, blk.count);
 	cmd->call(cmd->autoarg, blk.count, blk.arg, blk.lenArg);
 	return line+1;
 }

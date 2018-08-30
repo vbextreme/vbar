@@ -20,8 +20,10 @@ unit = 1048576
 #$6 free swap
 #$7 used
 
-text.full = "$@ used $7 GiB"
+text.full = "$@ $7/$0 GiB"
 text.short = "$@ $7 GiB"
+text.short.enable = 1
 
-#event = "i3-nagbar -t warning -m 'used $13/$4 free $5 swap.used $9/$8 swap.free $9'" 
-```
+event = "${module.text.short.toggle(memory,generic)}${modules.refresh()}" 
+ 
+

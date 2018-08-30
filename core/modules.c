@@ -312,6 +312,7 @@ __ef_private void icmd_modules_text_short_toggle(void* autoarg, size_t argc, cha
 	module_s* mod = modules_search(autoarg, argv[0], argl[0], argv[1], argl[1]);
 	if( mod ){
 		mod->att.useshort = !mod->att.useshort;
+		modules_reformatting(mod);
 	}
 	else{
 		dbg_warning("no module %.*s::%.*s", (int)argl[0], argv[0], (int)argl[1], argv[1]);
@@ -340,7 +341,7 @@ void modules_load(modules_s* mods, char* config){
 	mods->rmod = NULL;
 	mods->generic = ef_mem_many(char, PATH_MAX);
 	*((char*)mods->generic)=0;
-	for( size_t i = 0; i < HMODS_MAX_HASH_VALUE; ++i ){
+	for( size_t i = 0; i < HMODS_MAX_HASH_VALUE + 1; ++i ){
 		mods->hmod[i] = NULL;
 	}
 
@@ -472,7 +473,6 @@ void modules_dispatch(modules_s* mods, event_s* ev){
 		}
 	}
 }
-
 
 void module_set_urgent(module_s* mod, int enable){
 	if( mod->att.blink ){
