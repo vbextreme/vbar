@@ -59,18 +59,21 @@ __ef_private char* intp_parse(blkel_s* blk, char* line){
 			blk->arg[blk->count] = line;
 			while( *line && *line != ')' && *line != ',') ++line;
 			if( !*line ){
-				dbg_warning("no close call");
-				dbg_warning("%s",stline);
+				dbg_warning("no close call in loop arguments");
+				dbg_warning("line::%s",stline);
+				dbg_warning("parsed::%s", line);
 				return NULL;
 			}
 			blk->lenArg[blk->count] = line - blk->arg[blk->count];
 			if( *line == ')' ) break;
+			++line;
 		}
 		++blk->count;
 
 		if( *line != ')' ){
 			dbg_warning("no close call");
-			dbg_warning("%s",stline);
+			dbg_warning("line::%s", stline);
+			dbg_warning("parsed::%s", line);
 			return NULL;
 		}
 		while(*line && *line != '}') ++line;

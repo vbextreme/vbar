@@ -2,6 +2,6 @@
 module.hide
 module.show
 module.toggle
-module.seticon
+module.iconsel
 modules.refresh
 %%
