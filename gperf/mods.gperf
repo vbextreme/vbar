@@ -1,0 +1,11 @@
+%%
+cpu
+cpufreq
+memory
+datetime
+static
+power
+network
+wireless
+temperature
+%%

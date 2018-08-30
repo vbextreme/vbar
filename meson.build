@@ -23,9 +23,10 @@ deps = [  ]
 # software dependencies #
 #########################
 
-if (find_program('gperf', required: true)).found() == false
-  error('Install gpref software')
-endif
+bash = find_program('bash', required: true)
+sed = find_program('sed', required: true)
+gperf_software = find_program('gperf', required: true)
+gperf_custom_software = find_program('gperf.custom', required: true)
 
 ########
 # core #
@@ -53,7 +54,6 @@ endif
 ##################
 # select modules #
 ##################
-
 modules = [ 'cpu', 'cpufreq', 'memory', 'datetime', 'static', 'power', 'network', 'wireless', 'temperature']
 
 v_mod = ''
@@ -62,55 +62,28 @@ gen_mod = 'int @0@_mod_load(module_s* mod, char* path);'
 gen_vec = '{"@0@", @0@_mod_load, "~/.config/vbar/@0@/config"},'
 gen_msg = 'enable @0@ module'
 conf_mod = configuration_data()
-gperf_mod = meson.current_build_dir() + '/mods.gperf'
-gperf_h = meson.current_build_dir() + '/hash_mods.h'
-optmod = 'M@0@'
-
-run_command('rm', '-f', gperf_mod)
-run_command('rm', '-f', gperf_h)
-
-gpf = 'echo %% > @0@'
-if( (run_command('bash', '-c', gpf.format(gperf_mod))).returncode() != 0 )
-  error('on generate gperf file')
-endif
-gpf = 'echo @0@ >> @1@'
-gperf_build = 'gperf -7 -L C @0@ >> @1@'
 
 foreach mod : modules
-  enm = get_option(optmod.format(mod))
+  enm = get_option('M@0@'.format(mod))
   if( enm > 0 )
-    tmp = 'modules/M_@0@.c'
-	sss = tmp.format(mod)
+	sss = 'modules/M_@0@.c'.format(mod)
 	src += [ sss ]
 
 	v_mod += gen_vec.format(mod)
 	p_mod += gen_mod.format(mod)
 	message(gen_msg.format(mod))
-	if( run_command('bash', '-c', gpf.format(mod,gperf_mod)).returncode() != 0 )
-	  error('on generate gperf file')
-	endif
   endif
 endforeach 
 
 conf_mod.set('AUTO_VECTOR_MODULE', v_mod)
 conf_mod.set('AUTO_PROTO_MODULE', p_mod)
 
-gpf = 'echo %% >> @0@'
-if( run_command('bash', '-c', gpf.format(gperf_mod)).returncode() != 0 )
-  error('on generate gperf file')
-endif
-if( run_command('bash', '-c', gperf_build.format(gperf_mod,gperf_h)).returncode() != 0 )
-  error('on generate gperf file')
-endif
-gpf='grep \'#define MAX_HASH_VALUE\' @0@ | cut -d\  -f3'
-r = run_command('bash', '-c', gpf.format(gperf_h))
-if( r.returncode() != 0 )
-  error('h gperf not generated')
-endif
-maxhash = r.stdout().strip()
-debugstr = '-DMODULES_HASH_MAX=@0@'
-debugstr = debugstr.format(maxhash)
-add_global_arguments(debugstr, language: 'c')
+gperf_mod_src = custom_target('gperf hash_mods.h', 
+  output: 'hash_mods.h',
+  input: 'gperf/mods.gperf', 
+  command: [gperf_custom_software, 'hash_mods', 'HMODS_', '@INPUT@', '@OUTPUT@']
+)
+src += [ gperf_mod_src ]
 
 ############################
 ### extra option modules ###

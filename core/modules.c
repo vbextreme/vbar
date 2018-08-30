@@ -1,16 +1,11 @@
+#define PRIVATE_MODULES
 #include <vbar.h>
 #include <config_mod.h>
 #include "intp.h"
 
-#include <hash_mods.h>
-
 #define PHQ_PARENT(I) ((I)/2)
 #define PHQ_LEFT(I) ((I)*2)
 #define PHQ_RIGHT(I) ((I)*2+1)
-
-#if MODULES_HASH_MAX != MAX_HASH_VALUE
-	#pragma error "invalid hash matching"
-#endif
 
 module_s* modules_pop(modules_s* mods) {
 	if( mods->mod[1]->att.tick > (long)time_ms() ){
@@ -165,7 +160,7 @@ void modules_refresh_output(modules_s* mods){
 }
 
 __ef_private void modules_insert_inhash(modules_s* mods, module_s* mod){
-	size_t h = hash(mod->att.instance, strlen(mod->att.instance));
+	size_t h = hash_mods(mod->att.instance, strlen(mod->att.instance));
 	mod->hnext = mods->hmod[h];
 	mods->hmod[h] = mod;
 	dbg_info("hash %lu insert '%s'", h, mod->att.instance);
@@ -204,8 +199,8 @@ __ef_private void module_load(modules_s* mods, char* name, char* path){
 }
 
 __ef_private module_s* modules_search(modules_s* mods, char* instance, size_t lenI, char* name, size_t lenN){
-	size_t h = hash(instance, lenI);
-	if( h > MODULES_HASH_MAX ) return NULL;
+	size_t h = hash_mods(instance, lenI);
+	if( h > HMODS_MAX_HASH_VALUE ) return NULL;
 	for(module_s* it = mods->hmod[h]; it; it = it->hnext){
 		if( !str_len_cmp(it->att.name, strlen(it->att.name), name, lenN) ){
 			return it;
@@ -214,36 +209,52 @@ __ef_private module_s* modules_search(modules_s* mods, char* instance, size_t le
 	return NULL;
 }
 
-__ef_private void icmd_module_hide(void* autoarg, char* instance, size_t lenI, char* name, size_t lenN){
-	module_s* mod = modules_search(autoarg, instance, lenI, name, lenN);
+__ef_private void icmd_module_hide(void* autoarg, size_t argc, char* argv[], size_t* argl){
+	if( argc != 2 ){
+		dbg_warning("wrong args %lu", argc);
+		return;
+	}
+
+	module_s* mod = modules_search(autoarg, argv[0], argl[0], argv[1], argl[0]);
 	if( mod ){
 		mod->att.hide = 1;
 	}
 	else{
-		dbg_warning("no module %.*s::%.*s", (int)lenI, instance, (int)lenN, name);
+		dbg_warning("no module %.*s::%.*s", (int)argl[0], argv[0], (int)argl[1], argv[1]);
 	}
 }
 
-__ef_private void icmd_module_show(void* autoarg, char* instance, size_t lenI, char* name, size_t lenN){
-	module_s* mod = modules_search(autoarg, instance, lenI, name, lenN);
+__ef_private void icmd_module_show(void* autoarg, size_t argc, char* argv[], size_t* argl){
+	if( argc != 2 ){
+		dbg_warning("wrong args %lu", argc);
+		return;
+	}
+
+	module_s* mod = modules_search(autoarg, argv[0], argl[0], argv[1], argl[0]);
 	if( mod ){
 		mod->att.hide = 0;
-	}else{
-		dbg_warning("no module %.*s::%.*s", (int)lenI, instance, (int)lenN, name);
+	}
+	else{
+		dbg_warning("no module %.*s::%.*s", (int)argl[0], argv[0], (int)argl[1], argv[1]);
 	}
 }
 
-__ef_private void icmd_module_toggle(void* autoarg, char* instance, size_t lenI, char* name, size_t lenN){
-	module_s* mod = modules_search(autoarg, instance, lenI, name, lenN);
+__ef_private void icmd_module_toggle(void* autoarg, size_t argc, char* argv[], size_t* argl){
+	if( argc != 2 ){
+		dbg_warning("wrong args %lu", argc);
+		return;
+	}
+
+	module_s* mod = modules_search(autoarg, argv[0], argl[0], argv[1], argl[0]);
 	if( mod ){
 		mod->att.hide = !mod->att.hide;
 	}
 	else{
-		dbg_warning("no module %.*s::%.*s", (int)lenI, instance, (int)lenN, name);
+		dbg_warning("no module %.*s::%.*s", (int)argl[0], argv[0], (int)argl[1], argv[1]);
 	}
 }
 
-__ef_private void icmd_modules_refresh(void* autoarg, __ef_unused char* a0, __ef_unused size_t len0, __ef_unused char* a1, __ef_unused size_t len1){
+__ef_private void icmd_modules_refresh(void* autoarg, __ef_unused size_t argc, __ef_unused char* argv[], __ef_unused size_t* argl){
 	modules_refresh_output(autoarg);
 }
 
@@ -265,7 +276,7 @@ void modules_load(modules_s* mods, char* config){
 	mods->rmod = NULL;
 	mods->generic = ef_mem_many(char, PATH_MAX);
 	*((char*)mods->generic)=0;
-	for( size_t i = 0; i < MODULES_HASH_MAX; ++i ){
+	for( size_t i = 0; i < HMODS_MAX_HASH_VALUE; ++i ){
 		mods->hmod[i] = NULL;
 	}
 
@@ -384,9 +395,9 @@ char* modules_format_get(module_s* mod, size_t id, char* type){
 }
 
 void modules_dispatch(modules_s* mods, event_s* ev){
-	size_t h = hash(ev->instance, strlen(ev->instance));
+	size_t h = hash_mods(ev->instance, strlen(ev->instance));
 	dbg_info("hash %lu name %s", h, ev->name);
-	if( h > MODULES_HASH_MAX ) return;
+	if( h > HMODS_MAX_HASH_VALUE ) return;
 	for( module_s* it = mods->hmod[h]; it; it = it->hnext ){
 		dbg_info("dispatch mod %s", it->att.name);
 		if( it->att.onevent[0] && !strcmp(it->att.name, ev->name)){

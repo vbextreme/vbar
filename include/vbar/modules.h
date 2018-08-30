@@ -10,12 +10,11 @@
 #include <vbar/spawn.h>
 #include <sys/sysinfo.h>
 
+#include <hash_mods.h>
+
 /*** modules.c ***/
 #ifndef MODULES_MAX
 	#define MODULES_MAX 32
-#endif
-#ifndef MODULES_HASH_MAX
-	#pragma error "no hash size"
 #endif
 
 typedef struct module module_s;
@@ -39,7 +38,7 @@ typedef struct modules{
 	size_t used;
 	module_s* mod[MODULES_MAX];
 	size_t count;
-	module_s* hmod[MODULES_HASH_MAX + 1];
+	module_s* hmod[HMODS_MAX_HASH_VALUE + 1];
 	attribute_s def;
 }modules_s;
 

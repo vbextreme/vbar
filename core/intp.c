@@ -1,6 +1,7 @@
 #include <vbar.h>
 #include "intp.h"
 
+#define ARGS_MAX 4
 #define HASH_CMD 256
 
 typedef struct intpcmd{
@@ -30,19 +31,15 @@ void intp_register_command(char* name, intpcall_f call, void* autoarg){
 typedef struct blkel{
 	char* name;
 	size_t lenName;
-	char* arg0;
-	size_t lenArg0;
-	char* arg1;
-	size_t lenArg1;
+	char* arg[ARGS_MAX];
+	size_t lenArg[ARGS_MAX];
+	size_t count;
 }blkel_s;
 
 __ef_private char* intp_parse(blkel_s* blk, char* line){
 #ifdef EF_DEBUG_ENABLE
 	char* stline = line;
 #endif
-	blk->lenName = 0;
-	blk->lenArg0 = 0;
-	blk->lenArg1 = 0;
 
 	while( *line && (*line == '{' || *line == ' ' || *line == '\t') ) ++line;
 	
@@ -57,28 +54,20 @@ __ef_private char* intp_parse(blkel_s* blk, char* line){
 
 	if( *line == '(' ){
 		++line;
-		while( *line && (*line == ' ' || *line == '\t') ) ++line;
-		blk->arg0 = line;
-		while( *line && *line != ')' && *line != ',') ++line;
-		if( !*line ){
-			dbg_warning("no close call");
-			dbg_warning("%s",stline);
-			return NULL;
-		}
-		blk->lenArg0 = line - blk->arg0;
-
-		if( *line == ',' ){
-			++line;
+		
+		for( blk->count = 0; blk->count < ARGS_MAX; ++blk->count ){
 			while( *line && (*line == ' ' || *line == '\t') ) ++line;
-			blk->arg1 = line;
-			while( *line && *line != ')') ++line;
-				if( !*line ){
+			blk->arg[blk->count] = line;
+			while( *line && *line != ')' && *line != ',') ++line;
+			if( !*line ){
 				dbg_warning("no close call");
 				dbg_warning("%s",stline);
 				return NULL;
 			}
-			blk->lenArg1 = line - blk->arg1;
+			blk->lenArg[blk->count] = line - blk->arg[blk->count];
+			if( *line == ')' ) break;
 		}
+		++blk->count;
 
 		if( *line != ')' ){
 			dbg_warning("no close call");
@@ -93,8 +82,7 @@ __ef_private char* intp_parse(blkel_s* blk, char* line){
 		dbg_warning("%s",stline);
 		return NULL;
 	}
-
-	dbg_info("parse: %.*s %.*s %.*s", (int)blk->lenName, blk->name, (int)blk->lenArg0, blk->arg0, (int)blk->lenArg1, blk->arg1);
+	
 	return line;
 }
 
@@ -107,8 +95,6 @@ __ef_private intpcmd_s* intp_find(char* name, size_t len){
 
 char* intp_interpretate(char* line){
 	blkel_s blk;
-	blk.arg1 = NULL;
-	blk.arg0 = NULL;
 
 	if( !(line = intp_parse(&blk, line)) ){
 		return NULL;
@@ -120,7 +106,7 @@ char* intp_interpretate(char* line){
 		return NULL;
 	}
 
-	cmd->call(cmd->autoarg, blk.arg0, blk.lenArg0, blk.arg1, blk.lenArg1);
+	cmd->call(cmd->autoarg, blk.count, blk.arg, blk.lenArg);
 	return line+1;
 }
 
