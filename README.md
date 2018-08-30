@@ -4,21 +4,21 @@ another status bar for i3</br>
 Released under GPL v3
 
 ## News
-* ** 0.14 alpha ** fix some bug, optimize intp, add intp module.iconsel command</br>
-* ** 0.13 alpha ** add gperf, automatize build, complete optimization search event</br>
-* ** 0.12 alpha ** fix some bug, add critic temperature, begin optimization module event and dinamic load</br>
-* ** 0.11 alpha ** add option to change main config file, continue develope interpretate events </br>
-* ** 0.10 alpha ** add temperature module, modularize build</br>
-* ** 0.9  alpha ** add cpufreq module</br>
-* ** 0.8  alpha ** separate wireless from network, introduce module hide and force short format</br>
-* ** 0.7  alpha ** fix some bug, add event and notify event</br>
-* ** 0.6  alpha ** fix some bug, add network module</br>
-* ** 0.5  alpha ** fix some bug, add power module</br>
-* ** 0.4  alpha ** fix format, abstract ipc</br>
-* ** 0.3  alpha ** fix bug, add static module</br>
-* ** 0.2  alpha ** fix bug, add datetime module</br>
-* ** 0.1  alpha ** fix bug, complete core</br>
-* ** 0.0  alpha ** begin
+* **0.14 alpha** fix some bug, optimize intp, add intp module.iconsel command</br>
+* **0.13 alpha** add gperf, automatize build, complete optimization search event</br>
+* **0.12 alpha** fix some bug, add critic temperature, begin optimization module event and dinamic load</br>
+* **0.11 alpha** add option to change main config file, continue develope interpretate events </br>
+* **0.10 alpha** add temperature module, modularize build</br>
+* **0.9  alpha** add cpufreq module</br>
+* **0.8  alpha** separate wireless from network, introduce module hide and force short format</br>
+* **0.7  alpha** fix some bug, add event and notify event</br>
+* **0.6  alpha** fix some bug, add network module</br>
+* **0.5  alpha** fix some bug, add power module</br>
+* **0.4  alpha** fix format, abstract ipc</br>
+* **0.3  alpha** fix bug, add static module</br>
+* **0.2  alpha** fix bug, add datetime module</br>
+* **0.1  alpha** fix bug, complete core</br>
+* **0.0  alpha** begin
 
 ## TODO
 - [ ] core
