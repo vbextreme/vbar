@@ -14,7 +14,8 @@ if( get_option('optimize') > 0 )
   add_global_arguments('-march=native', language: 'c')
 endif
 
-#cc = meson.get_compiler('c')
+cc = meson.get_compiler('c')
+
 #m_dep = cc.find_library('m', required : true)
 deps = [  ] 
 
@@ -44,6 +45,8 @@ opt_wm = get_option('wm')
 if opt_wm == '' 
   if (find_program('i3', required: false, native: true)).found()
 	opt_wm = 'i3wm'
+  elif (find_program('dwm', required: false, native: true)).found()
+	opt_wm = 'dwm'
   else
 	error('no wm available')
   endif
@@ -51,6 +54,10 @@ endif
 
 if opt_wm == 'i3wm'
   src += [ 'ipc/i3pc.c' ]
+elif opt_wm == 'dwm'
+  src += [ 'ipc/idpc.c' ]
+  tmpdep = cc.find_library('X11', required : true)
+  deps += [ tmpdep ]  
 endif
 
 ##################

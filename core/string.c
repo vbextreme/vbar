@@ -62,3 +62,11 @@ char* str_ncpy(char* dst, size_t lend, char* src){
 	*dst = 0;
 	return src;
 }
+
+char* str_encpy(char* dst, size_t lend, char* src){
+	iassert(lend > 1);
+	--lend;
+	while( (*dst++=*src++) && lend-->0 );
+	*dst = 0;
+	return dst;
+}
