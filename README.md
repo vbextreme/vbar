@@ -1,9 +1,10 @@
-# vbar 0.17 alpha
-another status bar for i3</br>
+# vbar 0.18 alpha
+another status bar for i3/dwm</br>
 </br>
 Released under GPL v3
 
 ## News
+* **0.18 alpha** fix some bug, test dwm</br>
 * **0.17 alpha** add dwm ipc, need test</br>
 * **0.16 alpha** add many intp command, add new themes</br>
 * **0.15 alpha** many fix bug, add many intp command, change themes</br>
@@ -38,7 +39,7 @@ Released under GPL v3
 		- [X] custom directory for config file
 - [X] ipc
 	- [X] i3
-	- [ ] dwm
+	- [X] dwm
 	- [ ] spectrwm
 - [ ] module
 	- [X] cpu
