@@ -1,0 +1,9 @@
+name = logout
+text.full = "logout"
+text.short = "logout"
+hide = 1
+separator = 0
+icon = "🚪"
+
+event = "i3-msg exit"
+

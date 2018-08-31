@@ -1,0 +1,17 @@
+#$@ current icon
+#$0 received data
+#$1 unit data/s
+#$2 transmit data
+#$3 unit data/s
+
+text.full = "⇩$0 $1 ⇧$2 $3"
+text.short = "$0$1 $2$3"
+
+# unit use 1000 or 1024
+unit = 1000
+
+# select device to display
+device = wlp3s0
+
+refresh = 1000
+

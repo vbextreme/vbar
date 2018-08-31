@@ -1,0 +1,16 @@
+#$@ current icon
+#$0 temperature
+#$1 critic
+
+text.full = "temp $0/$1"
+text.short = "temp $0"
+text.short.enable = 1
+
+refresh = 5000
+
+blink.on = 80000
+
+unit = 1000
+
+event = "${module.text.short.toggle(temperature,generic)}${modules.refresh()}" 
+

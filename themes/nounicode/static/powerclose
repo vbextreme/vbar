@@ -1,0 +1,8 @@
+name = powerclose
+text.full = "X"
+text.short = "X"
+hide = 1
+icon = "✖"
+
+event = "${module.hide(static,powerclose)}${module.hide(static,logout)}${module.hide(static,reboot)}${module.hide(static,power)}${module.show(static,poweropen)}${modules.refresh()}"
+
