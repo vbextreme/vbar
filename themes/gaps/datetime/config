@@ -1,0 +1,15 @@
+#icon = "⌚"
+
+#$@ icon
+#$0 year
+#$1 month
+#$2 day
+#$3 hour
+#$4 min
+#$5 sec
+
+text.full = "$@ $2/$1/$0 $3:$4:$5"
+text.short = "$2/$1/$0 $3:$4"
+
+refresh = 1000
+

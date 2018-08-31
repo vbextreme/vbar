@@ -1,0 +1,9 @@
+name = power
+text.full = "$@"
+text.short = "$@"
+hide = 1
+separator = 0 
+icon = "⏻"
+
+event = "poweroff"
+

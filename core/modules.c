@@ -319,6 +319,21 @@ __ef_private void icmd_modules_text_short_toggle(void* autoarg, size_t argc, cha
 	}
 }
 
+__ef_private void icmd_modules_separator_block_width(void* autoarg, size_t argc, char* argv[], size_t* argl){
+	if( argc != 3 ){
+		dbg_warning("wrong args %lu", argc);
+		return;
+	}
+
+	module_s* mod = modules_search(autoarg, argv[0], argl[0], argv[1], argl[1]);
+	if( mod ){
+		mod->att.separator_block_width = strtoul(argv[2], NULL, 10);
+	}
+	else{
+		dbg_warning("no module %.*s::%.*s", (int)argl[0], argv[0], (int)argl[1], argv[1]);
+	}
+}
+
 __ef_private void cbk_module_load(void* arg, __ef_unused char* name, __ef_unused size_t lenName, char* value, size_t lenValue){
 	modules_s* mods = arg;
 	char nn[ATTRIBUTE_TEXT_MAX];
@@ -335,6 +350,7 @@ void modules_load(modules_s* mods, char* config){
 	intp_register_command("module.separator", icmd_modules_separator, mods);
 	intp_register_command("module.separator.toggle", icmd_modules_separator_toggle, mods);
 	intp_register_command("module.text.short.toggle", icmd_modules_text_short_toggle, mods);
+	intp_register_command("module.separator.width", icmd_modules_separator_block_width, mods);
 	intp_register_command("modules.refresh", icmd_modules_refresh, mods);
 
 	mods->used = 0;
