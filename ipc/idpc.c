@@ -58,9 +58,12 @@ void ipc_write_element(attribute_s* el, bool_t next){
 		}
 	}
 	else{
-		ttw = str_encpy(ttw, DWM_MAX_TITLE - (ttw - title), el->longformat);
+		//TODO fix n
+		strcpy(ttw, el->longformat);
+		ttw+=strlen(el->longformat);
+		//ttw = str_encpy(ttw, DWM_MAX_TITLE - (ttw - title), el->longformat);
 	}	
-	
+
 	if( el->separator && next ){
 		*ttw++ = '|';
 		*ttw = 0;
