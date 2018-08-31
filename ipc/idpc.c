@@ -18,7 +18,9 @@ __ef_private char title[DWM_MAX_TITLE];
 __ef_private char* ttw;
 
 __ef_private void ipc_write(char* name){
+	dbg_info("setroot:'%s'",name);
 	XStoreName(dpy, root, name);
+	XFlush(dpy);
 }
 
 int ipc_onstdin(__ef_unused event_s* ev){
