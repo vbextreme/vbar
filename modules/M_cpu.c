@@ -45,7 +45,7 @@ __ef_private void cpu_time(procCpu_s* cpu) {
 		}
 
 		for(k = 0; k < CPU_TIME_COUNT; ++k){
-			char* en;
+			char* en = NULL;
 			parse = str_skip_h(parse);
 			cpu->tick[cpu->current][i][k] = strtol(parse, &en, 10);
 			parse = en;
@@ -56,9 +56,8 @@ __ef_private void cpu_time(procCpu_s* cpu) {
 }
 
 __ef_private uint64_t cpu_time_tick(uint64_t* st){
-	int i;
 	uint64_t full = 0;
-	for( i = 0; i < CPU_TIME_COUNT; ++i ){
+	for(int i = 0; i < CPU_TIME_COUNT; ++i ){
 		full += *st++;
 	}
 	return full;
