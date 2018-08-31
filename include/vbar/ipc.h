@@ -76,9 +76,11 @@ typedef struct event{
 int ipc_register_callback(int fd, ipcCallBack_f cbk, void* arg);
 int ipc_register_inotify(char* fname, int flags, ipcCallBack_f cbk, void* arg);
 void ipc_init(bool_t clickevents);
+void ipc_custom_init(bool_t clickevents);
 void ipc_write_element(attribute_s* el, bool_t next);
 void ipc_event_reset(event_s* ev);
 int ipc_wait(event_s* ev, long timeend);
+int ipc_onstdin(event_s* ev);
 void ipc_begin_elements();
 void ipc_end_elements();
 
