@@ -1,9 +1,10 @@
-# vbar 0.15 alpha
+# vbar 0.16 alpha
 another status bar for i3</br>
 </br>
 Released under GPL v3
 
 ## News
+* **0.16 alpha** add many intp command, add new themes</br>
 * **0.15 alpha** many fix bug, add many intp command, change themes</br>
 * **0.14 alpha** fix some bug, optimize intp, add intp module.iconsel command</br>
 * **0.13 alpha** add gperf, automatize build, complete optimization search event</br>
@@ -49,6 +50,7 @@ Released under GPL v3
 	- [X] cpufreq
 	- [ ] extern ipc event
 	- [ ] ip
+	- [ ] meteo
 	- [ ] audio
 	- [ ] email
 	- [ ] kconnect
