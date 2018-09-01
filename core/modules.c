@@ -434,7 +434,7 @@ void modules_dispatch(modules_s* mods, event_s* ev){
 	if( h > HMODS_MAX_HASH_VALUE ) return;
 	for( module_s* it = mods->hmod[h]; it; it = it->hnext ){
 		dbg_info("dispatch mod %s", it->att.name);
-		if( it->att.onevent[0] && !strcmp(it->att.name, ev->name)){
+		if( !it->att.hide && it->att.onevent[0] && !strcmp(it->att.name, ev->name)){
 			char cmd[2048];
 			module_reform(it, cmd, 2048, it->att.onevent);
 			if(*cmd) spawn_shell(cmd);
