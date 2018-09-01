@@ -9,6 +9,10 @@ border = 0x0
 separator = 1
 separator_block_width = 10
 
+#load ipc module
+#module.path = ~/.config/vbar/ipc/config
+module.load = ipc
+
 #load static module, config for power button
 module.path = ~/.config/vbar/static/poweropen
 module.load = static
