@@ -24,6 +24,6 @@ text.full = "mem $7/$0 GiB"
 text.short = "mem $7 GiB"
 text.short.enable = 1
 
-event = "${module.text.short.toggle(memory,generic)}${modules.refresh()}" 
+event = "${toggle(memory,generic,text.short.enable)}${refresh()}" 
  
 

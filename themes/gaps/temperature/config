@@ -12,5 +12,5 @@ blink.on = 80000
 
 unit = 1000
 
-event = "${module.text.short.toggle(temperature,generic)}${modules.refresh()}" 
+event = "${set(temperature,generic,text.short.enable)}${refresh()}" 
 

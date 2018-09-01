@@ -1,8 +1,8 @@
 #$@ current icon
 #$0 essid
 
-text.full = "essid $0"
-text.short = "essid $0"
+text.full = "$0"
+text.short = "$0"
 
 # select device to display
 device = wlp3s0

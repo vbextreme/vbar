@@ -7,7 +7,7 @@ border = 0x0033AA
 #min_width = 300
 #align = center
 separator = 0
-separator_block_width = 10
+separator_block_width = 7
 
 #load static module, config for power button
 module.path = ~/.config/vbar/static/poweropen

@@ -18,4 +18,4 @@ refresh = 1000
 text.full = "$@ $0%"
 text.short = "$@ $0%"
 
-event = "${module.toggle(cpufreq,generic)}${modules.refresh()}"
+event = "${toggle(cpufreq,generic,hide)}${refresh()}"

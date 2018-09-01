@@ -236,8 +236,8 @@ __ef_private void icmd_module_attribute_set(modules_s* mods, __ef_unused module_
 	if( mod ){
 		char name[ATTRIBUTE_TEXT_MAX];
 		char val[ATTRIBUTE_TEXT_MAX];
-		str_nncpy_src(name, ATTRIBUTE_TEXT_MAX, argv[2], argl[2]);
-		str_nncpy_src(val, ATTRIBUTE_TEXT_MAX, argv[3], argl[3]);
+		str_nncpy_src(name, ATTRIBUTE_TEXT_MAX, argv[2], argl[2] - 1);
+		str_nncpy_src(val, ATTRIBUTE_TEXT_MAX, argv[3], argl[3] - 1);
 
 		ipc_set_attribute_byname(&mod->att, name, val);
 	}
@@ -256,7 +256,7 @@ __ef_private void icmd_module_attribute_reg(modules_s* mods, __ef_unused module_
 	if( mod ){
 		char name[ATTRIBUTE_TEXT_MAX];
 		size_t reg = strtoul(argv[3],  NULL, 10);
-		str_nncpy_src(name, ATTRIBUTE_TEXT_MAX, argv[2], argl[2]);
+		str_nncpy_src(name, ATTRIBUTE_TEXT_MAX, argv[2], argl[2] - 1);
 
 		ipc_set_attribute_byreg(&mod->att, name, reg);
 	}
@@ -275,7 +275,7 @@ __ef_private void icmd_module_attribute_store(modules_s* mods, __ef_unused modul
 	if( mod ){
 		char name[ATTRIBUTE_TEXT_MAX];
 		size_t reg = strtoul(argv[3],  NULL, 10);
-		str_nncpy_src(name, ATTRIBUTE_TEXT_MAX, argv[2], argl[2]);
+		str_nncpy_src(name, ATTRIBUTE_TEXT_MAX, argv[2], argl[2] - 1);
 
 		ipc_reg_store_attribute_byname(&mod->att, name, reg);
 	}
