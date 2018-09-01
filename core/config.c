@@ -181,6 +181,7 @@ __ef_private void config_assign(config_s* cf, char* name, size_t lenName, char* 
 		case CNF_CBK:
 			((cnfg_f)ce->ptr)(ce->cbkarg, name, lenName, value, lenValue);
 			enparse += lenValue;
+			errno = 0;
 		break;
 
 		default:
@@ -270,6 +271,7 @@ void config_load(config_s* cf, char* fconf){
 		//dbg_info("%.*s[%lu] = %.*s", (int)lenName, name, index, (int)lenValue, value);
 		config_assign(cf,name, lenName, value, lenValue, index);
 	}
-	dbg_info("end parse");
+	//dbg_info("end parse");
+	fclose(fd);
 }
 

@@ -63,7 +63,7 @@ endif
 ##################
 # select modules #
 ##################
-modules = [ 'cpu', 'cpufreq', 'memory', 'datetime', 'static', 'power', 'network', 'wireless', 'temperature']
+modules = [ 'cpu', 'cpufreq', 'memory', 'datetime', 'static', 'power', 'network', 'wireless', 'temperature', 'ipc' ]
 
 v_mod = ''
 p_mod = ''

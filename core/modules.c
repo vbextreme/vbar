@@ -182,6 +182,7 @@ __ef_private void module_load(modules_s* mods, char* name, char* path){
 			iassert(mods->used < MODULES_MAX);
 			++mods->used;
 			module_s* mod = ef_mem_new(module_s);
+			mod->parent = mods;
 			mod->next = mods->rmod;
 			mods->rmod = mod;
 			mod->att = mods->def;

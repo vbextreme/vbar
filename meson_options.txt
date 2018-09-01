@@ -13,4 +13,5 @@ option('Mpower', type:'integer', value: '1', description: 'enable module')
 option('Mnetwork', type:'integer', value: '1', description: 'enable module')
 option('Mwireless', type:'integer', value: '1', description: 'enable module')
 option('Mtemperature', type:'integer', value: '1', description: 'enable module')
+option('Mipc', type:'integer', value: '1', description: 'enable ipc')
 

@@ -22,7 +22,10 @@ typedef struct module module_s;
 typedef int (*modself_f)(module_s*);
 typedef int (*modselfds_f)(module_s*,int,char*);
 
+typedef struct modules modules_s;
+
 typedef struct module{
+	modules_s* parent;
 	struct module* next;
 	struct module* hnext;
 	attribute_s att;
