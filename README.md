@@ -52,7 +52,7 @@ Released under GPL v3
 	- [X] power
 	- [X] temperature
 	- [X] cpufreq
-	- [ ] extern ipc event
+	- [X] extern ipc event
 	- [ ] ip
 	- [ ] meteo
 	- [ ] audio
