@@ -59,7 +59,23 @@ Released under GPL v3
 	- [ ] email
 	- [ ] kconnect
 - [ ] documentation
-
+	- [X] main
+	- [X] build
+	- [X] configure
+	- [ ] module
+		- [ ] cpu
+		- [ ] cpufreq
+		- [ ] memory
+		- [ ] datetime
+		- [ ] static
+		- [ ] power
+		- [ ] network
+		- [ ] wireless
+		- [ ] temperature
+		- [ ] ipc
+	- [ ] make module
+	- [ ] troubleshoot
+	- [ ] sidebar
 ## How To
 
 ### Build and Install
