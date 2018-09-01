@@ -1,9 +1,10 @@
-# vbar 0.19 alpha
+# vbar 0.20 alpha
 another status bar for i3/dwm</br>
 </br>
 Released under GPL v3
 
 ## News
+* **0.20 alpha** fix some bug, add module ipc</br>
 * **0.19 alpha** fix some bug, pover intp</br>
 * **0.18 alpha** fix some bug, test dwm</br>
 * **0.17 alpha** add dwm ipc, need test</br>
