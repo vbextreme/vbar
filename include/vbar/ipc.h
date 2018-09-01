@@ -84,5 +84,11 @@ int ipc_onstdin(event_s* ev);
 void ipc_begin_elements();
 void ipc_end_elements();
 
+void ipc_reg_store(size_t nr, char* val, size_t lenV);
+char* ipc_reg_load(size_t nr);
+void ipc_set_attribute_byname(attribute_s* att, char* name, char* value);
+void ipc_set_attribute_byreg(attribute_s* att, char* name, size_t reg);
+void ipc_reg_store_attribute_byname(attribute_s* att, char* name, size_t reg);
+void ipc_toggle_attribute_byname(attribute_s* att, char* name);
 
 #endif

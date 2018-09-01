@@ -3,5 +3,5 @@ text.full = "$@"
 text.short = "$@"
 icon = "⏻"
 
-event = "${module.hide(static,poweropen)}${module.show(static,logout)}${module.show(static,reboot)}${module.show(static,power)}${module.show(static,powerclose)}${modules.refresh()}"
+event = "${set(static,poweropen,hide,1)}${set(static,logout,hide,0)}${set(static,reboot,hide,0)}${set(static,power,hide,0)}${set(static,powerclose,hide,0)}${refresh()}"
 

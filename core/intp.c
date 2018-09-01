@@ -100,7 +100,7 @@ __ef_private intpcmd_s* intp_find(char* name, size_t len){
 	return find->call ? find : NULL;
 }
 
-char* intp_interpretate(char* line){
+char* intp_interpretate(char* line, module_s* th){
 	blkel_s blk;
 
 	if( !(line = intp_parse(&blk, line)) ){
@@ -119,7 +119,7 @@ char* intp_interpretate(char* line){
 	}
 
 	dbg_info("%.*s(%lu)", (int)blk.lenName, blk.name, blk.count);
-	cmd->call(cmd->autoarg, blk.count, blk.arg, blk.lenArg);
+	cmd->call(cmd->autoarg, th, blk.count, blk.arg, blk.lenArg);
 	return line+1;
 }
 

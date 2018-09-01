@@ -18,5 +18,5 @@ blink.on = 10
 
 refresh = 5000
 
-event = "${module.text.short.toggle(power,generic)}${modules.refresh()}" 
+event = "${toggle(power,generic,text.short.enable)}${refresh()}" 
 

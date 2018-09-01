@@ -101,7 +101,7 @@ __ef_private void module_reform(module_s* mod, char* dst, size_t len, char* src)
 			}break;	
 			
 			case '{':
-				src = intp_interpretate(src);
+				src = intp_interpretate(src, mod);
 				if( NULL == src ){
 					*dst = 0;   
 					return;
@@ -209,129 +209,84 @@ __ef_private module_s* modules_search(modules_s* mods, char* instance, size_t le
 	return NULL;
 }
 
-__ef_private void icmd_module_hide(void* autoarg, size_t argc, char* argv[], size_t* argl){
-	if( argc != 2 ){
-		dbg_warning("wrong args %lu", argc);
-		return;
-	}
-
-	module_s* mod = modules_search(autoarg, argv[0], argl[0], argv[1], argl[1]);
-	if( mod ){
-		mod->att.hide = 1;
-	}
-	else{
-		dbg_warning("no module %.*s::%.*s", (int)argl[0], argv[0], (int)argl[1], argv[1]);
-	}
-}
-
-__ef_private void icmd_module_show(void* autoarg, size_t argc, char* argv[], size_t* argl){
-	if( argc != 2 ){
-		dbg_warning("wrong args %lu", argc);
-		return;
-	}
-
-	module_s* mod = modules_search(autoarg, argv[0], argl[0], argv[1], argl[1]);
-	if( mod ){
-		mod->att.hide = 0;
-	}
-	else{
-		dbg_warning("no module %.*s::%.*s", (int)argl[0], argv[0], (int)argl[1], argv[1]);
-	}
-}
-
-__ef_private void icmd_module_toggle(void* autoarg, size_t argc, char* argv[], size_t* argl){
-	if( argc != 2 ){
-		dbg_warning("wrong args %lu", argc);
-		return;
-	}
-
-	module_s* mod = modules_search(autoarg, argv[0], argl[0], argv[1], argl[0]);
-	if( mod ){
-		mod->att.hide = !mod->att.hide;
-	}
-	else{
-		dbg_warning("no module %.*s::%.*s", (int)argl[0], argv[0], (int)argl[1], argv[1]);
-	}
-}
-
-__ef_private void icmd_modules_refresh(void* autoarg, __ef_unused size_t argc, __ef_unused char* argv[], __ef_unused size_t* argl){
-	modules_refresh_output(autoarg);
-}
-
-__ef_private void icmd_modules_iconsel(void* autoarg, size_t argc, char* argv[], size_t* argl){
+__ef_private void icmd_module_toggle(modules_s* mods, __ef_unused module_s* cl, size_t argc, char* argv[], size_t* argl){
 	if( argc != 3 ){
 		dbg_warning("wrong args %lu", argc);
 		return;
 	}
 
-	module_s* mod = modules_search(autoarg, argv[0], argl[0], argv[1], argl[1]);
+	module_s* mod = modules_search(mods, argv[0], argl[0], argv[1], argl[1]);
 	if( mod ){
-		modules_icons_select(mod, strtoul(argv[2], NULL, 10));
+		char name[ATTRIBUTE_TEXT_MAX];
+		str_nncpy_src(name, ATTRIBUTE_TEXT_MAX, argv[2], argl[2]-1);
+		ipc_toggle_attribute_byname(&mod->att, name);
 	}
 	else{
 		dbg_warning("no module %.*s::%.*s", (int)argl[0], argv[0], (int)argl[1], argv[1]);
 	}
 }
 
-__ef_private void icmd_modules_separator(void* autoarg, size_t argc, char* argv[], size_t* argl){
-	if( argc != 3 ){
+__ef_private void icmd_module_attribute_set(modules_s* mods, __ef_unused module_s* cl, size_t argc, char* argv[], size_t* argl){
+	if( argc != 4 ){
 		dbg_warning("wrong args %lu", argc);
 		return;
 	}
-
-	module_s* mod = modules_search(autoarg, argv[0], argl[0], argv[1], argl[1]);
+	
+	module_s* mod = modules_search(mods, argv[0], argl[0], argv[1], argl[1]);
 	if( mod ){
-		mod->att.separator = strtoul(argv[2], NULL, 10);
+		char name[ATTRIBUTE_TEXT_MAX];
+		char val[ATTRIBUTE_TEXT_MAX];
+		str_nncpy_src(name, ATTRIBUTE_TEXT_MAX, argv[2], argl[2]);
+		str_nncpy_src(val, ATTRIBUTE_TEXT_MAX, argv[3], argl[3]);
+
+		ipc_set_attribute_byname(&mod->att, name, val);
 	}
 	else{
 		dbg_warning("no module %.*s::%.*s", (int)argl[0], argv[0], (int)argl[1], argv[1]);
 	}
 }
 
-__ef_private void icmd_modules_separator_toggle(void* autoarg, size_t argc, char* argv[], size_t* argl){
-	if( argc != 2 ){
+__ef_private void icmd_module_attribute_reg(modules_s* mods, __ef_unused module_s* cl, size_t argc, char* argv[], size_t* argl){
+	if( argc != 4 ){
 		dbg_warning("wrong args %lu", argc);
 		return;
 	}
-
-	module_s* mod = modules_search(autoarg, argv[0], argl[0], argv[1], argl[1]);
+	
+	module_s* mod = modules_search(mods, argv[0], argl[0], argv[1], argl[1]);
 	if( mod ){
-		mod->att.separator = !mod->att.separator;
+		char name[ATTRIBUTE_TEXT_MAX];
+		size_t reg = strtoul(argv[3],  NULL, 10);
+		str_nncpy_src(name, ATTRIBUTE_TEXT_MAX, argv[2], argl[2]);
+
+		ipc_set_attribute_byreg(&mod->att, name, reg);
 	}
 	else{
 		dbg_warning("no module %.*s::%.*s", (int)argl[0], argv[0], (int)argl[1], argv[1]);
 	}
 }
 
-__ef_private void icmd_modules_text_short_toggle(void* autoarg, size_t argc, char* argv[], size_t* argl){
-	if( argc != 2 ){
+__ef_private void icmd_module_attribute_store(modules_s* mods, __ef_unused module_s* cl, size_t argc, char* argv[], size_t* argl){
+	if( argc != 4 ){
 		dbg_warning("wrong args %lu", argc);
 		return;
 	}
-
-	module_s* mod = modules_search(autoarg, argv[0], argl[0], argv[1], argl[1]);
+	
+	module_s* mod = modules_search(mods, argv[0], argl[0], argv[1], argl[1]);
 	if( mod ){
-		mod->att.useshort = !mod->att.useshort;
-		modules_reformatting(mod);
+		char name[ATTRIBUTE_TEXT_MAX];
+		size_t reg = strtoul(argv[3],  NULL, 10);
+		str_nncpy_src(name, ATTRIBUTE_TEXT_MAX, argv[2], argl[2]);
+
+		ipc_reg_store_attribute_byname(&mod->att, name, reg);
 	}
 	else{
 		dbg_warning("no module %.*s::%.*s", (int)argl[0], argv[0], (int)argl[1], argv[1]);
 	}
 }
 
-__ef_private void icmd_modules_separator_block_width(void* autoarg, size_t argc, char* argv[], size_t* argl){
-	if( argc != 3 ){
-		dbg_warning("wrong args %lu", argc);
-		return;
-	}
-
-	module_s* mod = modules_search(autoarg, argv[0], argl[0], argv[1], argl[1]);
-	if( mod ){
-		mod->att.separator_block_width = strtoul(argv[2], NULL, 10);
-	}
-	else{
-		dbg_warning("no module %.*s::%.*s", (int)argl[0], argv[0], (int)argl[1], argv[1]);
-	}
+__ef_private void icmd_modules_refresh(modules_s* mods, module_s* mod, __ef_unused size_t argc, __ef_unused char* argv[], __ef_unused size_t* argl){
+	modules_reformatting(mod);	
+	modules_refresh_output(mods);
 }
 
 __ef_private void cbk_module_load(void* arg, __ef_unused char* name, __ef_unused size_t lenName, char* value, size_t lenValue){
@@ -343,15 +298,11 @@ __ef_private void cbk_module_load(void* arg, __ef_unused char* name, __ef_unused
 }
 
 void modules_load(modules_s* mods, char* config){
-	intp_register_command("module.hide", icmd_module_hide, mods);
-	intp_register_command("module.show", icmd_module_show, mods);
-	intp_register_command("module.toggle", icmd_module_toggle, mods);
-	intp_register_command("module.iconsel", icmd_modules_iconsel, mods);
-	intp_register_command("module.separator", icmd_modules_separator, mods);
-	intp_register_command("module.separator.toggle", icmd_modules_separator_toggle, mods);
-	intp_register_command("module.text.short.toggle", icmd_modules_text_short_toggle, mods);
-	intp_register_command("module.separator.width", icmd_modules_separator_block_width, mods);
-	intp_register_command("modules.refresh", icmd_modules_refresh, mods);
+	intp_register_command("toggle", icmd_module_toggle, mods);
+	intp_register_command("set", icmd_module_attribute_set, mods);
+	intp_register_command("reg", icmd_module_attribute_reg, mods);
+	intp_register_command("store", icmd_module_attribute_store, mods);
+	intp_register_command("refresh", icmd_modules_refresh, mods);
 
 	mods->used = 0;
 	mods->rmod = NULL;

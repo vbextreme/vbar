@@ -1,11 +1,7 @@
 %%
-module.hide
-module.show
-module.toggle
-module.iconsel
-module.separator
-module.separator.toggle
-module.text.short.toggle
-module.separator.width
-modules.refresh
+toggle
+set
+reg
+store
+refresh
 %%
