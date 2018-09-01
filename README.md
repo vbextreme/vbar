@@ -77,6 +77,7 @@ Released under GPL v3
 	- [ ] troubleshoot
 	- [ ] sidebar
 ## How To
+ see [wiki page](https://github.com/vbextreme/vbar/wiki/Home)
 
 ### Build and Install
  see [wiki page](https://github.com/vbextreme/vbar/wiki/Build)
