@@ -1,9 +1,19 @@
-# vbar 0.20 alpha
+# vbar 0.21 alpha
 another status bar for i3/dwm</br>
 </br>
 Released under GPL v3
 
+## How To
+ see [wiki page](https://github.com/vbextreme/vbar/wiki/Home)
+
+### Build and Install
+ see [wiki page](https://github.com/vbextreme/vbar/wiki/Build)
+
+### Configuration
+ see [wiki page](https://github.com/vbextreme/vbar/wiki/Configure)
+
 ## News
+* **0.21 alpha** fix many bug, add script for test</br>
 * **0.20 alpha** fix some bug, add module ipc</br>
 * **0.19 alpha** fix some bug, pover intp</br>
 * **0.18 alpha** fix some bug, test dwm</br>
@@ -26,43 +36,41 @@ Released under GPL v3
 * **0.1  alpha** fix bug, complete core</br>
 * **0.0  alpha** begin
 
-## TODO
-- [ ] core
-	- [X] string
-	- [X] memory
-	- [X] delay
-	- [X] config
-	- [X] modules
-		- [X] dinamic
-	- [ ] spawn
-		- [ ] add enviroment and argument
-	- [X] vbar
-		- [X] call event
-		- [X] custom directory for config file
-- [X] ipc
-	- [X] i3
-	- [X] dwm
-	- [ ] spectrwm
-- [ ] module
-	- [X] cpu
-	- [X] memory
-	- [X] date
-	- [X] static
-	- [X] net
-	- [X] power
-	- [X] temperature
-	- [X] cpufreq
-	- [X] extern ipc event
-	- [ ] ip
-	- [ ] meteo
-	- [ ] audio
-	- [ ] email
-	- [ ] kconnect
-- [ ] documentation
-	- [X] main
-	- [X] build
-	- [X] configure
-	- [X] module
+## Release Schedule
+- [ ]v1.0
+	- [ ] core
+		- [X] string
+		- [ ] memory
+			- [ ] raii
+		- [X] delay
+		- [X] config
+		- [X] modules
+			- [X] dinamic
+		- [ ] spawn
+			- [ ] add enviroment and argument
+		- [X] vbar
+			- [X] call event
+			- [X] custom directory for config file
+		- [ ] file
+	- [X] ipc
+		- [X] i3
+		- [X] dwm
+	- [ ] modules
+		- [X] cpu
+		- [X] memory
+		- [X] date
+		- [X] static
+		- [X] net
+		- [X] power
+		- [X] temperature
+		- [X] cpufreq
+		- [X] extern ipc event
+	- [ ] documentation
+		- [X] main
+		- [X] build
+		- [X] configure
+		- [ ] wm
+		- [X] module
 		- [X] cpu
 		- [X] cpufreq
 		- [ ] memory
@@ -73,16 +81,60 @@ Released under GPL v3
 		- [ ] wireless
 		- [ ] temperature
 		- [ ] ipc
-	- [ ] make module
-	- [ ] troubleshoot
-	- [ ] sidebar
-## How To
- see [wiki page](https://github.com/vbextreme/vbar/wiki/Home)
-
-### Build and Install
- see [wiki page](https://github.com/vbextreme/vbar/wiki/Build)
-
-### Configuration
- see [wiki page](https://github.com/vbextreme/vbar/wiki/Configure)
-
+		- [ ] make module
+		- [ ] troubleshoot
+		- [ ] sidebar
+	- [ ] beta
+		- [ ] valgrind
+		- [ ] scan-build
+		- [ ] splint
+- [ ]v2.0
+	- [ ] ipc
+		- [ ] dwm color
+		- [ ] spectrwm
+	- [ ] modules
+		- [ ] ip
+		- [ ] meteo
+		- [ ] audio
+		- [ ] email
+	- [ ] documentation
+		- [ ] ip
+		- [ ] meteo
+		- [ ] audio
+		- [ ] email
+	- [ ] beta
+		- [ ] valgrind
+		- [ ] scan-build
+		- [ ] splint
+- [ ]v3.0
+	- [ ] modules
+		- [ ] kconnect
+	- [ ] documentation
+		- [ ] kconnect
+	- [ ] beta
+		- [ ] valgrind
+		- [ ] scan-build
+		- [ ] splint
+- [ ]v4.0
+	- [ ] ipc
+		- [ ] custom bar
+	- [ ] tools
+		- [ ] fork i3bar
+		- [ ] fork i3-input
+		- [ ] form i3-nagbar
+	- [ ] documentation
+		- [ ] custom bar
+	- [ ] beta
+		- [ ] valgrind
+		- [ ] scan-build
+		- [ ] splint
+- [ ]v4.0
+	- [ ] custom bar
+		- [ ] integrated menu
+	- [ ] documentation
+		- [ ] custom bar
+	- [ ] beta
+		- [ ] valgrind
+		- [ ] scan-build
+		- [ ] splint
 
