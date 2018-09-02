@@ -173,9 +173,9 @@ __ef_private void config_assign(config_s* cf, char* name, size_t lenName, char* 
 
 		case CNF_S:
 			if( ce->isvector )
-				enparse = str_nncpy_src(((char**)ce->ptr)[index], ce->maxlen, value, lenValue - 1);
+				enparse = str_nncpy_src(((char**)ce->ptr)[index], ce->maxlen, value, lenValue);
 			else
-				enparse = str_nncpy_src(ce->ptr, ce->maxlen, value, lenValue - 1);
+				enparse = str_nncpy_src(ce->ptr, ce->maxlen, value, lenValue);
 		break;
 		
 		case CNF_CBK:

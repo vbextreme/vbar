@@ -50,7 +50,9 @@ char* str_copy_to_ch(char* dst, size_t len, char* src, char ch){
 char* str_nncpy_src(char* dst, size_t lend, char* src, size_t lens){
 	iassert(lend > 1);
 	--lend;
-	while( (*dst++=*src++) && lend-->0 && lens-->0 );
+	while( lens-->0 && lend-->0 && *src){
+		*dst++=*src++;
+	}
 	*dst = 0;
 	return src;
 }
@@ -58,15 +60,9 @@ char* str_nncpy_src(char* dst, size_t lend, char* src, size_t lens){
 char* str_ncpy(char* dst, size_t lend, char* src){
 	iassert(lend > 1);
 	--lend;
-	while( (*dst++=*src++) && lend-->0 );
-	*dst = 0;
-	return src;
-}
-
-char* str_encpy(char* dst, size_t lend, char* src){
-	iassert(lend > 1);
-	--lend;
-	while( (*dst++=*src++) && lend-->0 );
+	while( lend-->0 && *src ){
+		*dst++=*src++;
+	}
 	*dst = 0;
 	return dst;
 }

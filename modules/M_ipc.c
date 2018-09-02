@@ -10,6 +10,7 @@ typedef struct uxsocket{
 	module_s* this;
 }uxsocket_s;
 
+/*
 __ef_private void ux_close(uxsocket_s* ux){
 	if( ux->fd == -1 ){
 		dbg_warning("try to close closed socket");
@@ -17,6 +18,7 @@ __ef_private void ux_close(uxsocket_s* ux){
 	}
 	close(ux->fd);
 }
+*/
 
 __ef_private int ux_open(uxsocket_s* ux, char* name){
 
@@ -95,12 +97,12 @@ __ef_private char* ipc_event_parse(event_s* ev, char* parse){
 	if( eValue == NULL ) return NULL;
 
 	if( !str_len_cmp(parse, eName - parse, "instance", strlen("instance")) ){
-		str_nncpy_src(ev->instance, ATTRIBUTE_TEXT_MAX, value, (eValue - value) -1);
+		str_nncpy_src(ev->instance, ATTRIBUTE_TEXT_MAX, value, (eValue - value));
 		return eValue + 1;
 	}
 
 	if( !str_len_cmp(parse, eName - parse, "name", strlen("name")) ){
-		str_nncpy_src(ev->name, ATTRIBUTE_TEXT_MAX, value, (eValue - value) -1);
+		str_nncpy_src(ev->name, ATTRIBUTE_TEXT_MAX, value, (eValue - value));
 		return eValue + 1;
 	}
 	

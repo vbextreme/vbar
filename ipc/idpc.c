@@ -52,15 +52,16 @@ void ipc_write_element(attribute_s* el, bool_t next){
 		if( DWM_MAX_TITLE - (ttw - title) < (int)len ){
 			len = DWM_MAX_TITLE - (ttw-title);
 		}
-		while( len-->0 ){
+		char* cp = el->longformat;
+		while( len-->0 && *cp ){
 			*ttw++ = ' ';
+			++cp;
+			while( *cp & 0x80 ) ++cp;
 		}
+		*ttw = 0;
 	}
 	else{
-		//TODO fix n
-		strcpy(ttw, el->longformat);
-		ttw+=strlen(el->longformat);
-		//ttw = str_encpy(ttw, DWM_MAX_TITLE - (ttw - title), el->longformat);
+		ttw = str_ncpy(ttw, DWM_MAX_TITLE - (ttw - title), el->longformat);
 	}	
 
 	if( el->separator && next ){

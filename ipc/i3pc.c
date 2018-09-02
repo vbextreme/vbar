@@ -107,7 +107,7 @@ __ef_private void i3bar_event_parser(event_s* ev, char* name, size_t lenName, ch
 		if( 0 == str_len_cmp(elname[i], strlen(elname[i]), name, lenName) ){
 			if( eltype[i] == 0 ){
 				dbg_info("copy %s is string = %.*s", elname[i], (int)lenValue, value);
-				str_nncpy_src(elptr[i], ATTRIBUTE_TEXT_MAX, value, lenValue - 1);
+				str_nncpy_src(elptr[i], ATTRIBUTE_TEXT_MAX, value, lenValue);
 			}
 			else if( eltype[i] == 1){
 				dbg_info("copy %s is long '%.*s'", elname[i], (int)lenValue, value);
