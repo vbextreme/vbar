@@ -86,8 +86,8 @@ Released under GPL v3
 		- [ ] troubleshoot
 		- [ ] sidebar
 	- [ ] beta
-		- [ ] valgrind
-		- [ ] scan-build
+		- [X] valgrind
+		- [X] scan-build
 		- [ ] splint
 		- [ ] tester
 - [ ] v2.0
@@ -115,9 +115,9 @@ Released under GPL v3
 	- [ ] documentation
 		- [ ] kconnect
 	- [ ] beta
-		- [X] valgrind
-		- [X] scan-build
-		- [-] splint
+		- [ ] valgrind
+		- [ ] scan-build
+		- [ ] splint
 		- [ ] tester
 - [ ] v4.0
 	- [ ] ipc
