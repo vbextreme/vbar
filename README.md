@@ -115,9 +115,9 @@ Released under GPL v3
 	- [ ] documentation
 		- [ ] kconnect
 	- [ ] beta
-		- [ ] valgrind
-		- [ ] scan-build
-		- [ ] splint
+		- [X] valgrind
+		- [X] scan-build
+		- [-] splint
 		- [ ] tester
 - [ ] v4.0
 	- [ ] ipc
