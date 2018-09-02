@@ -37,7 +37,7 @@ Released under GPL v3
 * **0.0  alpha** begin
 
 ## Release Schedule
-- [ ]v1.0
+- [ ] v1.0
 	- [ ] core
 		- [X] string
 		- [ ] memory
@@ -88,7 +88,7 @@ Released under GPL v3
 		- [ ] valgrind
 		- [ ] scan-build
 		- [ ] splint
-- [ ]v2.0
+- [ ] v2.0
 	- [ ] ipc
 		- [ ] dwm color
 		- [ ] spectrwm
@@ -106,7 +106,7 @@ Released under GPL v3
 		- [ ] valgrind
 		- [ ] scan-build
 		- [ ] splint
-- [ ]v3.0
+- [ ] v3.0
 	- [ ] modules
 		- [ ] kconnect
 	- [ ] documentation
@@ -115,7 +115,7 @@ Released under GPL v3
 		- [ ] valgrind
 		- [ ] scan-build
 		- [ ] splint
-- [ ]v4.0
+- [ ] v4.0
 	- [ ] ipc
 		- [ ] custom bar
 	- [ ] tools
@@ -128,7 +128,7 @@ Released under GPL v3
 		- [ ] valgrind
 		- [ ] scan-build
 		- [ ] splint
-- [ ]v4.0
+- [ ] v5.0
 	- [ ] custom bar
 		- [ ] integrated menu
 	- [ ] documentation
