@@ -1,0 +1,5 @@
+#!/bin/bash
+ninja -C build clean
+ninja -C build scan-build
+
+
