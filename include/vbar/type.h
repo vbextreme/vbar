@@ -19,7 +19,15 @@
 	#define _N_ 0
 #endif
 
-#define EMPTY_MACRO do{}while(0)
+#ifndef EF_SPLINT
+	#define EMPTY_MACRO do{}while(0)
+#else
+	#define EMPTY_MACRO
+#endif
+
+#define __ef_can_null /*@null@*/
+#define __ef_can_unused /*@external@*/
+
 #define ROUND_UP(N,S) ((((N)+(S)-1)/(S))*(S))
 
 #define __VA_COUNT__(...) __VA_COUNT_IMPL__(__VA_ARGS__, 7,6,5,4,3,2,1)

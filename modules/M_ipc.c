@@ -167,7 +167,7 @@ int ipc_mod_load(module_s* mod, char* path){
 		return -1;
 	}
 	
-	ipc_register_callback(ux->fd, cbk_event, ux);	
+	(void)ipc_register_callback(ux->fd, cbk_event, ux);	
 	
 	return 0;
 }

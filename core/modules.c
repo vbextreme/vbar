@@ -17,7 +17,7 @@ int file_exists(char* fname){
 	return 1;
 }
 
-module_s* modules_pop(modules_s* mods) {
+__ef_can_null module_s* modules_pop(modules_s* mods) {
 	if( mods->mod[1]->att.tick > (long)time_ms() ){
 		return NULL;
 	}
@@ -216,7 +216,7 @@ __ef_private void module_load(modules_s* mods, char* name, char* path){
 	}
 }
 
-__ef_private module_s* modules_search(modules_s* mods, char* instance, size_t lenI, char* name, size_t lenN){
+__ef_private __ef_can_null module_s* modules_search(modules_s* mods, char* instance, size_t lenI, char* name, size_t lenN){
 	size_t h = hash_mods(instance, lenI);
 	if( h > HMODS_MAX_HASH_VALUE ) return NULL;
 	for(module_s* it = mods->hmod[h]; it; it = it->hnext){

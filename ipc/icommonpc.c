@@ -19,7 +19,7 @@ typedef struct evCB{
 	void* arg;
 }evCB_s;
 
-struct ipcModuleEvents{
+__ef_private struct ipcModuleEvents{
 	evCB_s cb[IPC_CALLBACK_MAX];
 	inCB_s notify[IPC_CALLBACK_MAX];
 	size_t evcount;
@@ -165,7 +165,7 @@ void ipc_reg_store(size_t nr, char* val, size_t lenV){
 	dbg_info("store %%%lu, %s", nr, ipcreg[nr]);
 }
 
-char* ipc_reg_load(size_t nr){
+__ef_can_null char* ipc_reg_load(size_t nr){
 	if( nr >= IPC_MAX_REGISTER ){
 		dbg_warning("not have register %lu", nr);
 		return NULL;

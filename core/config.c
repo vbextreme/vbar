@@ -27,7 +27,7 @@
 #define HASH_F(H,CH) ((CH) + 31 * (H))
 #define HASH_N(H,SZ) ((H) % (SZ))
 
-err_t ef_path_home(char* path){
+__ef_can_unused err_t ef_path_home(char* path){
         char *hd;
         if( (hd = secure_getenv("HOME")) == NULL ){
                 struct passwd* spwd = getpwuid(getuid());
@@ -57,14 +57,14 @@ __ef_private int path_resolve(char* path, char* res){
 	return 0;
 }
 
-size_t kr_hash(char*s, size_t size){
+__ef_can_unused size_t kr_hash(char*s, size_t size){
 	size_t hash;
 	for( hash = 0; *s; ++s)
 		hash = *s + 31 * hash;
 	return hash % size;
 }
 
-size_t kr_nhash(char*s, size_t len, size_t size){
+__ef_can_unused size_t kr_nhash(char*s, size_t len, size_t size){
 	size_t hash = 0;
 	for( size_t i = 0; i < len; ++i)
 		hash = s[i] + 31 * hash;

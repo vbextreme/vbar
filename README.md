@@ -70,11 +70,11 @@ Released under GPL v3
 		- [X] main
 		- [X] build
 		- [X] configure
-		- [ ] wm
+		- [X] wm
 		- [X] module
 		- [X] cpu
 		- [X] cpufreq
-		- [ ] memory
+		- [X] memory
 		- [ ] datetime
 		- [ ] static
 		- [ ] power

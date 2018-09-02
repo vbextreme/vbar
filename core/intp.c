@@ -36,7 +36,7 @@ typedef struct blkel{
 	size_t count;
 }blkel_s;
 
-__ef_private char* intp_parse(blkel_s* blk, char* line){
+__ef_private __ef_can_null char* intp_parse(blkel_s* blk, char* line){
 #ifdef EF_DEBUG_ENABLE
 	char* stline = line;
 #endif
@@ -90,7 +90,7 @@ __ef_private char* intp_parse(blkel_s* blk, char* line){
 	return line;
 }
 
-__ef_private intpcmd_s* intp_find(char* name, size_t len){
+__ef_private __ef_can_null intpcmd_s* intp_find(char* name, size_t len){
 	size_t hash = hash_intp( name, len );
 	dbg_info("%.*s hash %lu/%d", (int)len, name, hash,HINTP_MAX_HASH_VALUE);
 	if( hash > HINTP_MAX_HASH_VALUE ){
@@ -100,7 +100,7 @@ __ef_private intpcmd_s* intp_find(char* name, size_t len){
 	return find->call ? find : NULL;
 }
 
-char* intp_interpretate(char* line, module_s* th){
+__ef_can_null char* intp_interpretate(char* line, module_s* th){
 	blkel_s blk;
 
 	if( !(line = intp_parse(&blk, line)) ){

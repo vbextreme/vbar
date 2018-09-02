@@ -4,7 +4,7 @@
 #include <sys/time.h>
 
 /*** get time in milliseconds from starting os ***/
-uint64_t time_ms(void)
+__ef_can_unused uint64_t time_ms(void)
 {
 	struct timeval t;
     struct timezone tzp;
@@ -13,7 +13,7 @@ uint64_t time_ms(void)
 }
 
 /*** get time in microseconds from starting os ***/
-uint64_t time_us(void)
+__ef_can_unused uint64_t time_us(void)
 {
 	struct timeval t;
     struct timezone tzp;

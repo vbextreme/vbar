@@ -13,7 +13,7 @@ char* str_skip_h(char* str) {
 	return str;
 }
 
-char* str_copy_to_str_ifsize(char* dst, size_t len, char* src, char* find){
+__ef_can_null char* str_copy_to_str_ifsize(char* dst, size_t len, char* src, char* find){
 	char* to = strpbrk(src, find);
 	if( to == NULL ){
 		return NULL;
@@ -30,7 +30,7 @@ char* str_copy_to_str_ifsize(char* dst, size_t len, char* src, char* find){
 	return src + max;
 }
 
-char* str_copy_to_ch(char* dst, size_t len, char* src, char ch){
+__ef_can_null char* str_copy_to_ch(char* dst, size_t len, char* src, char ch){
 	char* to = strchr(src, ch);
 	if( to == NULL ){
 		return NULL;

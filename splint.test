@@ -1,6 +1,14 @@
 #!/bin/bash
-CMD='splint +posixlib -skipposixheaders -D__signed__=signed -Iinclude -Ibuild'
-$CMD ./core/vbar.c \
+ninja -C build clean
+ninja -C build
+splint \
+	+posixlib \
+	-skipposixheaders \
+	-D__signed__=signed \
+	-DEF_SPLINT=1 \
+	-Iinclude \
+	-Ibuild \
+	./core/vbar.c \
 	./core/config.c \
 	./core/delay.c \
 	./core/string.c \
@@ -20,5 +28,6 @@ $CMD ./core/vbar.c \
 	./modules/M_network.c \
 	./modules/M_wireless.c \
 	./modules/M_temperature.c \
-	./modules/M_ipc.c
+	./modules/M_ipc.c 
+#	> ./splint.output
 
