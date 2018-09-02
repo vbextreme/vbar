@@ -52,10 +52,11 @@ Released under GPL v3
 			- [X] call event
 			- [X] custom directory for config file
 		- [ ] file
+			- [ ] raii
 	- [X] ipc
 		- [X] i3
 		- [X] dwm
-	- [ ] modules
+	- [X] modules
 		- [X] cpu
 		- [X] memory
 		- [X] date
