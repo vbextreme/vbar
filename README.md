@@ -89,6 +89,7 @@ Released under GPL v3
 		- [ ] valgrind
 		- [ ] scan-build
 		- [ ] splint
+		- [ ] tester
 - [ ] v2.0
 	- [ ] ipc
 		- [ ] dwm color
@@ -107,6 +108,7 @@ Released under GPL v3
 		- [ ] valgrind
 		- [ ] scan-build
 		- [ ] splint
+		- [ ] tester
 - [ ] v3.0
 	- [ ] modules
 		- [ ] kconnect
@@ -116,19 +118,21 @@ Released under GPL v3
 		- [ ] valgrind
 		- [ ] scan-build
 		- [ ] splint
+		- [ ] tester
 - [ ] v4.0
 	- [ ] ipc
 		- [ ] custom bar
 	- [ ] tools
 		- [ ] fork i3bar
 		- [ ] fork i3-input
-		- [ ] form i3-nagbar
+		- [ ] fork i3-nagbar
 	- [ ] documentation
 		- [ ] custom bar
 	- [ ] beta
 		- [ ] valgrind
 		- [ ] scan-build
 		- [ ] splint
+		- [ ] tester
 - [ ] v5.0
 	- [ ] custom bar
 		- [ ] integrated menu
@@ -138,4 +142,4 @@ Released under GPL v3
 		- [ ] valgrind
 		- [ ] scan-build
 		- [ ] splint
-
+		- [ ] tester
