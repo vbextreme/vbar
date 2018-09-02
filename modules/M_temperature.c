@@ -7,7 +7,6 @@
 	#define SYS_CLASS_THERMAL_CRITIC "/sys/class/hwmon/hwmon0/temp1_crit"
 #endif
 
-
 typedef struct temperature{
 	size_t temp;
 	size_t crit;
@@ -47,6 +46,12 @@ __ef_private int temp_mod_free(module_s* mod){
 }
 
 int temperature_mod_load(module_s* mod, char* path){
+	if( !file_exists(SYS_CLASS_THERMAL) ||
+		!file_exists(SYS_CLASS_THERMAL_CRITIC)
+	){
+		return -1;
+	}
+
 	temperature_s* tm = ef_mem_new(temperature_s);
 	tm->unit = 1000;
 	tm->blinkon = 80000;
@@ -74,7 +79,8 @@ int temperature_mod_load(module_s* mod, char* path){
 	config_add(&conf, "blink.on", CNF_LU, &tm->blinkon, 0, 0, NULL);
 	config_load(&conf, path);
 	config_destroy(&conf);
-	
+
+	if( tm->unit < 1 ) tm->unit = 1;	
 	temp_mod_refresh(mod);
 
 	return 0;

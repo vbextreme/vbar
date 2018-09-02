@@ -4,7 +4,7 @@
 #$2 transmit data
 #$3 unit data/s
 
-text.full = "⇩$0 $1 ⇧$2 $3"
+text.full = "v$0 $1 ^$2 $3"
 text.short = "$0$1 $2$3"
 
 # unit use 1000 or 1024

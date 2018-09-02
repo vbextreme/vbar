@@ -166,6 +166,11 @@ int power_mod_load(module_s* mod, char* path){
 	UNSAFE_BEGIN("-Wformat-truncation");
 		snprintf(pw->powersupply, PATH_MAX, "/sys/class/power_supply/%s/uevent", fname);
 	UNSAFE_END;
+	
+	if( !file_exists(pw->powersupply) ){
+		free(pw);
+		return -1;
+	}
 
 	power_mod_refresh(mod);
 	return 0;

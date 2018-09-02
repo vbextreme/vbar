@@ -136,6 +136,15 @@ __ef_private int cpufreq_mod_free(module_s* mod){
 }
 
 int cpufreq_mod_load(module_s* mod, char* path){
+	if( !file_exists(SYS_DEVICES_SYSTEM_CPUFREQ_MINFQ) ||
+		!file_exists(SYS_DEVICES_SYSTEM_CPUFREQ_MAXFQ) ||
+		!file_exists(SYS_DEVICES_SYSTEM_CPUFREQ_CURFQ) ||
+		!file_exists(SYS_DEVICES_SYSTEM_CPUFREQ_GOV_AV) ||
+		!file_exists(SYS_DEVICES_SYSTEM_CPUFREQ_GOV)
+	){
+		return -1;
+	}
+
 	cpufreq_s* cf = ef_mem_new(cpufreq_s);
 	cf->minfq = 0;
 	cf->maxfq = 0;
@@ -171,7 +180,8 @@ int cpufreq_mod_load(module_s* mod, char* path){
 	config_add(&conf, "unit", CNF_LU, &cf->unit, 0, 0, NULL);
 	config_load(&conf, path);
 	config_destroy(&conf);
-
+	
+	if( cf->unit < 1 ) cf->unit = 1;
 	cpufreq_mod_refresh(mod);
 
 	return 0;

@@ -10,7 +10,7 @@ typedef struct uxsocket{
 	module_s* this;
 }uxsocket_s;
 
-/*
+
 __ef_private void ux_close(uxsocket_s* ux){
 	if( ux->fd == -1 ){
 		dbg_warning("try to close closed socket");
@@ -18,7 +18,6 @@ __ef_private void ux_close(uxsocket_s* ux){
 	}
 	close(ux->fd);
 }
-*/
 
 __ef_private int ux_open(uxsocket_s* ux, char* name){
 
@@ -85,7 +84,9 @@ __ef_private int ipc_mod_env(__ef_unused module_s* mod, __ef_unused int id, char
 }
 
 __ef_private int ipc_mod_free(module_s* mod){
-	free(mod->data);
+	uxsocket_s* ux = mod->data;
+	ux_close(ux);
+	free(ux);
 	return 0;
 }
 

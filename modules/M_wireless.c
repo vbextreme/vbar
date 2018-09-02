@@ -62,7 +62,10 @@ __ef_private int wireless_mod_env(module_s* mod, int id, char* dest){
 }
 
 __ef_private int wireless_mod_free(module_s* mod){
-	free(mod->data);
+	wireless_s* wi = mod->data;
+	close(wi->socket);
+	wi->socket = -1;
+	free(wi);
 	return 0;
 }
 

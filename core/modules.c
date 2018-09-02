@@ -7,6 +7,16 @@
 #define PHQ_LEFT(I) ((I)*2)
 #define PHQ_RIGHT(I) ((I)*2+1)
 
+int file_exists(char* fname){
+	FILE* fd = fopen(fname,"r");
+	if( fd == NULL ){
+		dbg_warning("file %s not exists", fname);
+		return 0;
+	}
+	fclose(fd);
+	return 1;
+}
+
 module_s* modules_pop(modules_s* mods) {
 	if( mods->mod[1]->att.tick > (long)time_ms() ){
 		return NULL;
@@ -180,21 +190,28 @@ __ef_private void module_load(modules_s* mods, char* name, char* path){
 	for(size_t i = 0; modsconf[i].name; ++i){
 		if( 0 == strcmp(name, modsconf[i].name) ){
 			iassert(mods->used < MODULES_MAX);
-			++mods->used;
 			module_s* mod = ef_mem_new(module_s);
 			mod->parent = mods;
 			mod->next = mods->rmod;
 			mods->rmod = mod;
 			mod->att = mods->def;
 			mod->att.onevent[0] = 0;
+			int ok;
 			if( *path ){
-				modsconf[i].modload(mod, path);
+				ok = modsconf[i].modload(mod, path);
 			}
 			else{
-				modsconf[i].modload(mod, modsconf[i].conf);
+				ok = modsconf[i].modload(mod, modsconf[i].conf);
 			}
-			if( mod->att.reftime > 0) modules_insert(mods, mod);
-			modules_insert_inhash(mods, mod);
+			if( !ok ){
+				if( mod->att.reftime > 0) modules_insert(mods, mod);
+				modules_insert_inhash(mods, mod);
+				++mods->used;
+			}
+			else{
+				free(mod);
+				dbg_warning("module %s fail initialization",modsconf[i].name);
+			}
 		}
 	}
 }

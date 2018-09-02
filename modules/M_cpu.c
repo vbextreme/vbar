@@ -102,6 +102,10 @@ __ef_private int cpu_mod_free(module_s* mod){
 }
 
 int cpu_mod_load(module_s* mod, char* path){
+	if( !file_exists(PROC_STAT) ){
+		return -1;
+	}
+
 	procCpu_s* cpu = ef_mem_new(procCpu_s);
 	cpu->ncores = cpu_count();
 	cpu->toblink = 99.0;

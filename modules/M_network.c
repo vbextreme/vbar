@@ -1,4 +1,5 @@
 #include <vbar.h>
+#include <math.h>
 
 #ifndef NET_DEVICES_NAME_MAX
 	#define NET_DEVICES_NAME_MAX 128
@@ -102,6 +103,9 @@ __ef_private size_t net_receive(nets_s* net){
 __ef_private size_t net_scale(double* po, double val, double unit){
 	size_t s = 0;
 	*po = 1;
+	if( (unsigned)unit <= 1 ) return 1;
+	if( val == INFINITY ) return 1;
+	
 	while( val > unit ){
 		val /= unit;
 		++s;
@@ -172,6 +176,10 @@ __ef_private int net_mod_free(module_s* mod){
 }
 
 int network_mod_load(module_s* mod, char* path){
+	if( !file_exists(PROC_NET_DEV) ){
+		return -1;
+	}
+
 	nets_s* net = ef_mem_new(nets_s);
 	net->ref[0] = 0;
 	net->ref[1] = 0;
@@ -208,6 +216,8 @@ int network_mod_load(module_s* mod, char* path){
 	config_load(&conf, path);
 	config_destroy(&conf);
 	
+	if( net->unit < 1 ) net->unit = 1;
+
 	net_mod_refresh(mod);
 	net_mod_refresh(mod);
 

@@ -45,6 +45,8 @@ typedef struct modules{
 	attribute_s def;
 }modules_s;
 
+int file_exists(char* fname);
+
 module_s* modules_pop(modules_s* mods);
 void modules_insert(modules_s* mods, module_s* mod);
 void modules_refresh_tick(modules_s* mods, long ellapsems);
