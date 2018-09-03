@@ -182,8 +182,6 @@ __ef_private void module_load(modules_s* mods, char* name, char* path){
 			iassert(mods->used < MODULES_MAX);
 			module_s* mod = ef_mem_new(module_s);
 			mod->parent = mods;
-			mod->next = mods->rmod;
-			mods->rmod = mod;
 			mod->att = mods->def;
 			mod->att.onevent[0] = 0;
 			int ok;
@@ -197,6 +195,8 @@ __ef_private void module_load(modules_s* mods, char* name, char* path){
 				if( mod->att.reftime > 0) modules_insert(mods, mod);
 				modules_insert_inhash(mods, mod);
 				++mods->used;
+				mod->next = mods->rmod;
+				mods->rmod = mod;
 			}
 			else{
 				free(mod);
