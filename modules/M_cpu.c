@@ -22,7 +22,7 @@ __ef_private int cpu_count(void){
 
 __ef_private void cpu_time(procCpu_s* cpu) {
 	char in[1024];
-	FILE* fps = fopen(PROC_STAT, "r");
+	__ef_file_autoclose file_t* fps = fopen(PROC_STAT, "r");
 	if( fps == NULL ) {
 		dbg_error("%s not available", PROC_STAT);
 		dbg_errno();
@@ -52,7 +52,6 @@ __ef_private void cpu_time(procCpu_s* cpu) {
 		}
 	}
 	
-	fclose(fps);
 }
 
 __ef_private uint64_t cpu_time_tick(uint64_t* st){

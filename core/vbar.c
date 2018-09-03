@@ -18,7 +18,7 @@ int main(__ef_unused int argc, __ef_unused char** argv)
 	}
 
 #ifdef EF_DEBUG_ENABLE 
-	FILE* ferr;
+	__ef_file_autoclose file_t * ferr;
 	if( args[1].hasset ){
 		ferr = fopen(args[1].autoset, "w+");
 		if( ferr ){

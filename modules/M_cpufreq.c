@@ -37,7 +37,7 @@ typedef struct cpufreq{
 }cpufreq_s;
 
 __ef_private void cpufreq_read_gov(cpufreq_s* cf){
-	FILE* fd = fopen( SYS_DEVICES_SYSTEM_CPUFREQ_GOV_AV, "r");
+	__ef_file_autoclose file_t* fd = fopen( SYS_DEVICES_SYSTEM_CPUFREQ_GOV_AV, "r");
 	if( fd == NULL ){
 		dbg_error("fopen");
 		dbg_errno();
@@ -61,11 +61,10 @@ __ef_private void cpufreq_read_gov(cpufreq_s* cf){
 			++parse;
 		}
 	}
-	fclose(fd);
 }
 
 __ef_private void cpufreq_select_gov(cpufreq_s* cf){
-	FILE* fd = fopen( SYS_DEVICES_SYSTEM_CPUFREQ_GOV, "r");
+	__ef_file_autoclose file_t* fd = fopen( SYS_DEVICES_SYSTEM_CPUFREQ_GOV, "r");
 	if( fd == NULL ){
 		dbg_error("fopen");
 		dbg_errno();
@@ -79,7 +78,6 @@ __ef_private void cpufreq_select_gov(cpufreq_s* cf){
 	if( inp[len-1] == '\n' ){
 	   inp[len-1] = 0;
 	}	   
-	fclose(fd);
 
 	for(cf->curgovernor = 0; cf->curgovernor < cf->countgovernor && strcmp(cf->governor[cf->curgovernor], inp); ++cf->curgovernor);
 }

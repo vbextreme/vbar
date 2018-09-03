@@ -1,5 +1,6 @@
 #include <vbar/config.h>
 #include <vbar/string.h>
+#include <vbar/file.h>
 #include <pwd.h>
 #include <sys/types.h>
 
@@ -26,36 +27,6 @@
 
 #define HASH_F(H,CH) ((CH) + 31 * (H))
 #define HASH_N(H,SZ) ((H) % (SZ))
-
-__ef_can_unused err_t ef_path_home(char* path){
-        char *hd;
-        if( (hd = secure_getenv("HOME")) == NULL ){
-                struct passwd* spwd = getpwuid(getuid());
-                catch_null( spwd ){
-                        dbg_error("no home available");
-                        dbg_errno();
-                        *path = 0;
-                        return errno;
-                }
-                strcpy(path, spwd->pw_dir);
-        }
-        else{
-                strcpy(path, hd);
-        }
-        return 0;
-}
-
-__ef_private int path_resolve(char* path, char* res){
-	if( *path == '~' ){
-		if( ef_path_home(res) ){
-			return -1;
-		}
-		strcpy(&res[strlen(res)], &path[1]);
-		return 0;
-	}
-	strcpy(res, path);
-	return 0;
-}
 
 __ef_can_unused size_t kr_hash(char*s, size_t size){
 	size_t hash;
@@ -203,7 +174,7 @@ void config_load(config_s* cf, char* fconf){
 	}
 	dbg_info("real path %s", rp);
 
-	FILE* fd = fopen(rp, "r");
+	__ef_file_autoclose file_t* fd = fopen(rp, "r");
 	if( fd == NULL ){
 		dbg_warning("no config file %s", rp);
 		dbg_errno();
@@ -272,6 +243,5 @@ void config_load(config_s* cf, char* fconf){
 		config_assign(cf,name, lenName, value, lenValue, index);
 	}
 	//dbg_info("end parse");
-	fclose(fd);
 }
 

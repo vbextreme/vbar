@@ -31,7 +31,7 @@ typedef struct nets{
 __ef_private void net_device(nets_s* net){
 	net->ref[net->current] = 1;
 
-	FILE* fn = fopen(PROC_NET_DEV, "r");
+	__ef_file_autoclose file_t* fn = fopen(PROC_NET_DEV, "r");
 	if( NULL == fn ) {
 		dbg_warning("no %s", PROC_NET_DEV);
 		dbg_errno();
@@ -42,13 +42,11 @@ __ef_private void net_device(nets_s* net){
 	if( NULL == fgets(in, 1024, fn) ){
 		dbg_warning("no skip1");
 		dbg_errno();
-		fclose(fn);
 		return;
 	}
 	if( NULL == fgets(in, 1024, fn) ){
 		dbg_warning("no skip2");
 		dbg_errno();
-		fclose(fn);
 		return;
 	}
 	
@@ -74,8 +72,6 @@ __ef_private void net_device(nets_s* net){
 		}
 		net->ref[net->current] = 1;
 	}
-
-	fclose(fn);
 }
 
 __ef_private size_t net_transmit(nets_s* net){

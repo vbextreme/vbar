@@ -1,4 +1,4 @@
-# vbar 0.21 alpha
+# vbar 0.22 alpha
 another status bar for i3/dwm</br>
 </br>
 Released under GPL v3
@@ -13,6 +13,7 @@ Released under GPL v3
  see [wiki page](https://github.com/vbextreme/vbar/wiki/Configure)
 
 ## News
+* **0.22 alpha** fix some bug, separate file op</br>
 * **0.21 alpha** fix many bug, add script for test</br>
 * **0.20 alpha** fix some bug, add module ipc</br>
 * **0.19 alpha** fix some bug, pover intp</br>
@@ -38,21 +39,17 @@ Released under GPL v3
 
 ## Release Schedule
 - [ ] v1.0
-	- [ ] core
+	- [X] core
 		- [X] string
-		- [ ] memory
-			- [ ] raii
+		- [X] memory
 		- [X] delay
 		- [X] config
 		- [X] modules
-			- [X] dinamic
-		- [ ] spawn
-			- [ ] add enviroment and argument
+		- [X] spawn
 		- [X] vbar
 			- [X] call event
 			- [X] custom directory for config file
-		- [ ] file
-			- [ ] raii
+		- [X] file
 	- [X] ipc
 		- [X] i3
 		- [X] dwm

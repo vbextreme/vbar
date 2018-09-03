@@ -55,7 +55,7 @@ __ef_private void mem_read(mem_s* mem){
 		&mem->SUnreclaim
 	};
 
-	FILE* fm = fopen(PROC_MEM, "r");
+	__ef_file_autoclose file_t * fm = fopen(PROC_MEM, "r");
 	if( fm == NULL ) {
 		dbg_error("%s not available", PROC_MEM);
 		dbg_errno();
@@ -70,8 +70,6 @@ __ef_private void mem_read(mem_s* mem){
 			}
 		}
 	}
-
-	fclose(fm);
 }
 
 __ef_private int mem_mod_refresh(module_s* mod){

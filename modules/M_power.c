@@ -31,7 +31,7 @@ __ef_private void power_stat(powerstat_s* pw){
 		{ NULL, NULL }
 	};
 
-	FILE* fn = fopen(pw->powersupply, "r");
+	__ef_file_autoclose file_t* fn = fopen(pw->powersupply, "r");
 	if( NULL == fn ) {
 		strcpy(pw->status, POWER_STAT_ERROR);
 		dbg_warning("error on file %s", pw->powersupply);
@@ -57,8 +57,6 @@ __ef_private void power_stat(powerstat_s* pw){
 			}
 		}
 	}
-
-	fclose(fn);
 }
 
 __ef_private int power_mod_refresh(module_s* mod){

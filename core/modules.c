@@ -7,16 +7,6 @@
 #define PHQ_LEFT(I) ((I)*2)
 #define PHQ_RIGHT(I) ((I)*2+1)
 
-int file_exists(char* fname){
-	FILE* fd = fopen(fname,"r");
-	if( fd == NULL ){
-		dbg_warning("file %s not exists", fname);
-		return 0;
-	}
-	fclose(fd);
-	return 1;
-}
-
 __ef_can_null module_s* modules_pop(modules_s* mods) {
 	if( mods->mod[1]->att.tick > (long)time_ms() ){
 		return NULL;
@@ -471,7 +461,7 @@ void module_set_urgent(module_s* mod, int enable){
 }
 
 size_t os_read_lu(char* fname){
-	FILE* fd = fopen(fname, "r");
+	__ef_file_autoclose file_t* fd = fopen(fname, "r");
 	if( fd == NULL ){
 		dbg_error("fopen %s", fname);
 		dbg_errno();
@@ -481,7 +471,6 @@ size_t os_read_lu(char* fname){
 	char inp[64];
 	inp[0] = 0;
 	fgets(inp, 64, fd);
-	fclose(fd);
 
 	return strtoul(inp, NULL, 10);
 }

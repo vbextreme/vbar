@@ -4,6 +4,7 @@ ninja -C build
 splint \
 	+posixlib \
 	-skipposixheaders \
+	-boolops \
 	-D__signed__=signed \
 	-DEF_SPLINT=1 \
 	-Iinclude \

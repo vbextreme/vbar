@@ -8,6 +8,7 @@
 #include <vbar/config.h>
 #include <vbar/ipc.h>
 #include <vbar/spawn.h>
+#include <vbar/file.h>
 #include <sys/sysinfo.h>
 
 #include <hash_mods.h>
