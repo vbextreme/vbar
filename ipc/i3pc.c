@@ -192,7 +192,12 @@ void ipc_end_elements(){
 
 void ipc_write_element(attribute_s* el, bool_t next){
 	json_begin_block();
-	json_write_str("full_text", el->longformat, TRUE );
+	if( el->longformat[0] == 0 ){
+		json_write_str("full_text", " ", TRUE );
+	}
+	else{
+		json_write_str("full_text", el->longformat, TRUE );
+	}
 	json_write_str("short_text", el->shortformat, TRUE);
 	json_write_i3color("color", el->color, TRUE);
 	json_write_i3color("background", el->background, TRUE);
