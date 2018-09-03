@@ -1,5 +1,5 @@
 install:
-    - apt install build-essential meson gperf
+    - sudo apt install build-essential meson gperf
 language: C
 os: linux
 compiler: gcc
