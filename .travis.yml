@@ -1,0 +1,9 @@
+install: gcc meson gperf
+language: C
+os: linux
+compiler: gcc
+script:
+    - meson build
+    - cd build
+    - meson configure -Dwm=i3wm
+    - ninja
