@@ -14,7 +14,7 @@ before_install:
     - sudo apt-get install -y gperf
  
 install:
-  - wget $(curl -s https://api.github.com/repos/ninja-build/ninja/releases/latest | grep browser_download_url | cut -d '"' -f 4 | grep ninja-linux.zip)
+  - wget 'https://github.com/ninja-build/ninja/releases/download/v1.8.2/ninja-linux.zip'
   - unzip -q ninja-linux.zip -d build
   - export PATH="$PWD/build:$PATH"
   - pip install meson
