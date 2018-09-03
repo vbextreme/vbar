@@ -48,6 +48,7 @@ if opt_wm == ''
   elif (find_program('dwm', required: false, native: true)).found()
 	opt_wm = 'dwm'
   else
+	opt_wm = 'i3wm'
 	warning('no wm available, configure with -Dwm=')
   endif
 endif
