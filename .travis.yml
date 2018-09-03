@@ -8,7 +8,6 @@ python: 3.6
 matrix:
   include:
     - env: CC=gcc
-    - env: CC=clang
 
 before_install: 
     - sudo apt-get install -y build-essential 
