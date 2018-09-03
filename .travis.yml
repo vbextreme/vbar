@@ -1,4 +1,7 @@
-install: build-essential meson gperf
+before_install: 
+    - sudo apt-get install -y build-essential 
+    - sudo apt-get install -y meson 
+    - sudo apt-get install -y gperf
 language: C
 os: linux
 compiler: gcc
