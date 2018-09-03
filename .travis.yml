@@ -1,3 +1,4 @@
+install: build-essential meson gperf
 language: C
 os: linux
 compiler: gcc
