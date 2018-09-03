@@ -72,7 +72,7 @@ Released under GPL v3
 		- [X] cpu
 		- [X] cpufreq
 		- [X] memory
-		- [ ] datetime
+		- [X] datetime
 		- [ ] static
 		- [ ] power
 		- [ ] network
