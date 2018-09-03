@@ -48,7 +48,7 @@ if opt_wm == ''
   elif (find_program('dwm', required: false, native: true)).found()
 	opt_wm = 'dwm'
   else
-	error('no wm available')
+	warning('no wm available, configure with -Dwm=')
   endif
 endif
 
