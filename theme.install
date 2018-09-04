@@ -4,4 +4,5 @@
 rm -rf ~/.config/vbar 2> /dev/null
 mkdir ~/.config/vbar 2> /dev/null
 cp -r ./themes/$1/* ~/.config/vbar/
+command -v i3-msg 2>&1 /dev/null || exit 0
 i3-msg restart

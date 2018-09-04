@@ -18,6 +18,7 @@ splint \
 	./core/spawn.c \
 	./core/optex.c \
 	./core/intp.c \
+	./core/file.c \
 	./ipc/icommonpc.c \
 	./ipc/i3pc.c \
 	./modules/M_cpu.c \

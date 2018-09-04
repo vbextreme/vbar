@@ -1,4 +1,4 @@
-# vbar 0.23 alpha
+# vbar 0.24 alpha
 ```
 ┌─┬─┬───────────────────────────────────────────────────────┬───────┬─────┬───────────┬───┐
 │1│2│                                                       │💻 0.1%│🌡45°│🔋 80% 3:10│ ⏻ │
@@ -43,6 +43,7 @@ Released under GPL v3</br>
  see [wiki page](https://github.com/vbextreme/vbar/wiki/Configure)
 
 ## News
+* **0.24 alpha** dinamic file thermal</br>
 * **0.23 alpha** fix bug theme and remove module</br>
 * **0.22 alpha** fix some bug, separate file op</br>
 * **0.21 alpha** fix many bug, add script for test</br>
@@ -104,7 +105,7 @@ Released under GPL v3</br>
 		- [X] cpufreq
 		- [X] memory
 		- [X] datetime
-		- [ ] static
+		- [X] static
 		- [ ] power
 		- [ ] network
 		- [ ] wireless

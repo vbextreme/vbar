@@ -12,6 +12,8 @@ typedef struct temperature{
 	size_t crit;
 	size_t blinkon;
 	size_t unit;
+	char sthermal[PATH_MAX];
+	char scritic[PATH_MAX];
 }temperature_s;
 
 __ef_private int temp_mod_refresh(module_s* mod){
@@ -46,15 +48,12 @@ __ef_private int temp_mod_free(module_s* mod){
 }
 
 int temperature_mod_load(module_s* mod, char* path){
-	if( !file_exists(SYS_CLASS_THERMAL) ||
-		!file_exists(SYS_CLASS_THERMAL_CRITIC)
-	){
-		return -1;
-	}
-
+	
 	temperature_s* tm = ef_mem_new(temperature_s);
 	tm->unit = 1000;
 	tm->blinkon = 80000;
+	strcpy(tm->sthermal, SYS_CLASS_THERMAL);
+	strcpy(tm->scritic, SYS_CLASS_THERMAL_CRITIC);
 
 	mod->data = tm;
 	mod->refresh = temp_mod_refresh;
@@ -77,8 +76,15 @@ int temperature_mod_load(module_s* mod, char* path){
 	modules_default_config(mod, &conf);
 	config_add(&conf, "unit", CNF_LU, &tm->unit, 0, 0, NULL);
 	config_add(&conf, "blink.on", CNF_LU, &tm->blinkon, 0, 0, NULL);
+	config_add(&conf, "thermal", CNF_S, tm->sthermal, PATH_MAX, 0, NULL);
+	config_add(&conf, "critic", CNF_S, tm->scritic, PATH_MAX, 0, NULL);
 	config_load(&conf, path);
 	config_destroy(&conf);
+	
+	if( !file_exists(tm->sthermal) || !file_exists(tm->scritic) ){
+		free(tm);
+		return -1;
+	}
 
 	if( tm->unit < 1 ) tm->unit = 1;	
 	temp_mod_refresh(mod);
