@@ -75,7 +75,7 @@ __ef_private void module_reform(module_s* mod, char* dst, size_t len, char* src)
 	--len;
 	while( *src ){
 		while( *src && *src != '$' && len-->0 ) *dst++ = *src++;
-		if( 0 == src ){
+		if( 0 == *src ){
 			break;
 		}
 		++src;
