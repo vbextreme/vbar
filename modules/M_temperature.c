@@ -3,8 +3,8 @@
 #ifndef SYS_CLASS_THERMAL
 	#define SYS_CLASS_THERMAL "/sys/class/thermal/thermal_zone0/temp"
 #endif
-#ifndef SYS_CLASS_THERMAL_CRITIC
-	#define SYS_CLASS_THERMAL_CRITIC "/sys/class/hwmon/hwmon0/temp1_crit"
+#ifndef SYS_CLASS_HWMON_CRITIC
+	#define SYS_CLASS_HWMON_CRITIC "/sys/class/hwmon/hwmon0/temp1_crit"
 #endif
 
 typedef struct temperature{
@@ -12,14 +12,14 @@ typedef struct temperature{
 	size_t crit;
 	size_t blinkon;
 	size_t unit;
-	char sthermal[PATH_MAX];
-	char scritic[PATH_MAX];
+	char pthermal[PATH_MAX];
+	char pcritic[PATH_MAX];
 }temperature_s;
 
 __ef_private int temp_mod_refresh(module_s* mod){
 	temperature_s* tm = mod->data;
-	tm->temp = os_read_lu(SYS_CLASS_THERMAL);
-	tm->crit = os_read_lu(SYS_CLASS_THERMAL_CRITIC);
+	tm->temp = os_read_lu(tm->pthermal);
+	tm->crit = os_read_lu(tm->pcritic);
 	module_set_urgent(mod, tm->temp >= tm->blinkon);
 	return 0;
 }
@@ -52,8 +52,6 @@ int temperature_mod_load(module_s* mod, char* path){
 	temperature_s* tm = ef_mem_new(temperature_s);
 	tm->unit = 1000;
 	tm->blinkon = 80000;
-	strcpy(tm->sthermal, SYS_CLASS_THERMAL);
-	strcpy(tm->scritic, SYS_CLASS_THERMAL_CRITIC);
 
 	mod->data = tm;
 	mod->refresh = temp_mod_refresh;
@@ -70,18 +68,40 @@ int temperature_mod_load(module_s* mod, char* path){
 	modules_format_init(mod, 2);
 	modules_format_set(mod, 0, "6.2");
 	modules_format_set(mod, 1, "6.2");
+	
+	int sensor = 0;
+	int temp = 1;
+	int sensor_critic = 0;
+	int temp_critic = 1;
 
 	config_s conf;
 	config_init(&conf, 256);
 	modules_default_config(mod, &conf);
 	config_add(&conf, "unit", CNF_LU, &tm->unit, 0, 0, NULL);
 	config_add(&conf, "blink.on", CNF_LU, &tm->blinkon, 0, 0, NULL);
-	config_add(&conf, "thermal", CNF_S, tm->sthermal, PATH_MAX, 0, NULL);
-	config_add(&conf, "critic", CNF_S, tm->scritic, PATH_MAX, 0, NULL);
+	config_add(&conf, "sensor", CNF_D, &sensor, 0, 0, NULL);
+	config_add(&conf, "sensor.temp", CNF_D, &sensor, 0, 0, NULL);
+	config_add(&conf, "sensor.critic", CNF_D, &sensor_critic, 0, 0, NULL);
+	config_add(&conf, "sensor.critic.temp", CNF_D, &temp_critic, 0, 0, NULL);
 	config_load(&conf, path);
 	config_destroy(&conf);
 	
-	if( !file_exists(tm->sthermal) || !file_exists(tm->scritic) ){
+	if( sensor < 0 ){
+		sprintf(tm->pthermal, "/sys/class/thermal/thermal_zone%d/temp", temp);
+	}
+	else{
+		sprintf(tm->pthermal, "/sys/class/hwmon/hwmon%d/temp%d_input", sensor, temp);
+	}
+	if( sensor_critic < 0 ){
+		sprintf(tm->pcritic, "/sys/class/thermal/thermal_zone%d/temp", temp_critic);
+	}
+	else{
+		sprintf(tm->pcritic, "/sys/class/hwmon/hwmon%d/temp%d_crit", sensor_critic, temp_critic);
+	}
+	dbg_info("temp %s", tm->pthermal);
+	dbg_info("crit %s", tm->pcritic);
+
+	if( !file_exists(tm->pthermal) || !file_exists(tm->pcritic) ){
 		free(tm);
 		return -1;
 	}
