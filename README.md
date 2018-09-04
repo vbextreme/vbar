@@ -106,7 +106,7 @@ Released under GPL v3</br>
 		- [X] memory
 		- [X] datetime
 		- [X] static
-		- [ ] power
+		- [X] power
 		- [ ] network
 		- [ ] wireless
 		- [ ] temperature
