@@ -1,4 +1,4 @@
-color = 0x3333CC
+color = 0x0000CC
 name = power
 text.full = "poweroff ]"
 text.short = "poweroff ]"
