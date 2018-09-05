@@ -1,3 +1,4 @@
+color = 0x3333CC
 name = reboot
 text.full = "reboot"
 text.short = "reboot"

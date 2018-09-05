@@ -1,4 +1,4 @@
-color = 0xFF0080
+color = 0x00FFFF
 #$@ current icon
 #$0 received data
 #$1 unit data/s

@@ -1,4 +1,4 @@
-color = 0x0000CC
+color = 0xFFFF00
 blink = 1
 blink.time = 450
 blink.on = 1048576

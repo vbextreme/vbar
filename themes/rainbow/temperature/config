@@ -1,4 +1,4 @@
-color = 0xFF0000
+color = 0xFF00FF
 #$@ current icon
 #$0 temperature
 #$1 critic

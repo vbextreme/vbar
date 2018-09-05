@@ -1,6 +1,7 @@
+color = 0x3333CC
 name = powerclose
-text.full = "X"
-text.short = "X"
+text.full = "[ X ]"
+text.short = "[ X ]"
 hide = 1
 icon = "✖"
 

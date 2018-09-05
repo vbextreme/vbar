@@ -107,8 +107,8 @@ Released under GPL v3</br>
 		- [X] datetime
 		- [X] static
 		- [X] power
-		- [ ] network
-		- [ ] wireless
+		- [X] network
+		- [X] wireless
 		- [ ] temperature
 		- [ ] ipc
 		- [ ] make module
@@ -120,19 +120,28 @@ Released under GPL v3</br>
 		- [ ] splint
 		- [ ] tester
 - [ ] v2.0
+	- [ ] core
+		- [ ] more type blink
 	- [ ] ipc
 		- [ ] dwm color
 		- [ ] spectrwm
+		- [ ] lemonbar
 	- [ ] modules
 		- [ ] ip
 		- [ ] meteo
 		- [ ] audio
 		- [ ] email
+		- [ ] bluetooth
 	- [ ] documentation
 		- [ ] ip
 		- [ ] meteo
 		- [ ] audio
 		- [ ] email
+		- [ ] bluetooth
+		- [ ] lemonbar
+		- [ ] dwm color
+		- [ ] spectrwm
+		- [ ] blink mode
 	- [ ] beta
 		- [ ] valgrind
 		- [ ] scan-build
