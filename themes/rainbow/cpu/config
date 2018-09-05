@@ -1,0 +1,17 @@
+color = 0xFFFF00
+blink = 1
+blink.time = 450
+blink.on = 90
+refresh = 1000
+
+#formatting output
+#$@ icon 
+#$0 all core
+#$1 core 1
+#$2 core 2
+#$n etc etc
+
+text.full = "[ $0% ]"
+text.short = "[ $0% ]"
+
+event = "${toggle(cpufreq,generic,hide)}${refresh()}"

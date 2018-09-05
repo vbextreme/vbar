@@ -1,0 +1,12 @@
+color = 0xFF00FF
+#$@ current icon
+#$0 essid
+
+text.full = "[ $0 ]"
+text.short = " $0 "
+
+# select device to display
+device = wlp3s0
+
+refresh = 5000
+

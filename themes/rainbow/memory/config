@@ -1,0 +1,25 @@
+color = 0x0000CC
+blink = 1
+blink.time = 450
+blink.on = 1048576
+refresh = 5000
+unit = 1048576
+
+#formatting output
+#$@ icon 
+#$0 total
+#$1 free
+#$2 shared
+#$3 buffers+cached
+#$4 available
+#$5 total swap
+#$6 free swap
+#$7 used
+
+text.full = "[ $7/$0 GiB ]"
+text.short = "[ $7 GiB ]"
+text.short.enable = 1
+
+event = "${toggle(memory,generic,text.short.enable)}${refresh()}" 
+ 
+
