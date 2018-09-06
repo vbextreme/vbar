@@ -1,4 +1,5 @@
-color = 0xAAAA11
+#color = 0xAAAA11
+color = 0xFF9508
 blink = 1
 blink.time = 450
 blink.on = 90
