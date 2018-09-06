@@ -109,7 +109,7 @@ Released under GPL v3</br>
 		- [X] power
 		- [X] network
 		- [X] wireless
-		- [ ] temperature
+		- [X] temperature
 		- [ ] ipc
 		- [ ] make module
 		- [ ] troubleshoot
