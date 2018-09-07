@@ -1,4 +1,4 @@
-# vbar 0.24 alpha
+# vbar 1.0
 ```
 ┌─┬─┬───────────────────────────────────────────────────────┬───────┬─────┬───────────┬───┐
 │1│2│                                                       │💻 0.1%│🌡45°│🔋 80% 3:10│ ⏻ │
@@ -43,34 +43,35 @@ Released under GPL v3</br>
  see [wiki page](https://github.com/vbextreme/vbar/wiki/Configure)
 
 ## News
-* **0.24 alpha** dinamic file thermal</br>
-* **0.23 alpha** fix bug theme and remove module</br>
-* **0.22 alpha** fix some bug, separate file op</br>
-* **0.21 alpha** fix many bug, add script for test</br>
-* **0.20 alpha** fix some bug, add module ipc</br>
-* **0.19 alpha** fix some bug, pover intp</br>
-* **0.18 alpha** fix some bug, test dwm</br>
-* **0.17 alpha** add dwm ipc, need test</br>
-* **0.16 alpha** add many intp command, add new themes</br>
-* **0.15 alpha** many fix bug, add many intp command, change themes</br>
-* **0.14 alpha** fix some bug, optimize intp, add intp module.iconsel command</br>
-* **0.13 alpha** add gperf, automatize build, complete optimization search event</br>
-* **0.12 alpha** fix some bug, add critic temperature, begin optimization module event and dinamic load</br>
-* **0.11 alpha** add option to change main config file, continue develope interpretate events </br>
-* **0.10 alpha** add temperature module, modularize build</br>
-* **0.9  alpha** add cpufreq module</br>
-* **0.8  alpha** separate wireless from network, introduce module hide and force short format</br>
-* **0.7  alpha** fix some bug, add event and notify event</br>
-* **0.6  alpha** fix some bug, add network module</br>
-* **0.5  alpha** fix some bug, add power module</br>
-* **0.4  alpha** fix format, abstract ipc</br>
-* **0.3  alpha** fix bug, add static module</br>
-* **0.2  alpha** fix bug, add datetime module</br>
-* **0.1  alpha** fix bug, complete core</br>
-* **0.0  alpha** begin
+* **1.0**  first stable release </br>
+* **0.24** dinamic file thermal</br>
+* **0.23** fix bug theme and remove module</br>
+* **0.22** fix some bug, separate file op</br>
+* **0.21** fix many bug, add script for test</br>
+* **0.20** fix some bug, add module ipc</br>
+* **0.19** fix some bug, pover intp</br>
+* **0.18** fix some bug, test dwm</br>
+* **0.17** add dwm ipc, need test</br>
+* **0.16** add many intp command, add new themes</br>
+* **0.15** many fix bug, add many intp command, change themes</br>
+* **0.14** fix some bug, optimize intp, add intp module.iconsel command</br>
+* **0.13** add gperf, automatize build, complete optimization search event</br>
+* **0.12** fix some bug, add critic temperature, begin optimization module event and dinamic load</br>
+* **0.11** add option to change main config file, continue develope interpretate events </br>
+* **0.10** add temperature module, modularize build</br>
+* **0.9**  add cpufreq module</br>
+* **0.8**  separate wireless from network, introduce module hide and force short format</br>
+* **0.7**  fix some bug, add event and notify event</br>
+* **0.6**  fix some bug, add network module</br>
+* **0.5**  fix some bug, add power module</br>
+* **0.4**  fix format, abstract ipc</br>
+* **0.3**  fix bug, add static module</br>
+* **0.2**  fix bug, add datetime module</br>
+* **0.1**  fix bug, complete core</br>
+* **0.0**  begin
 
 ## Release Schedule
-- [ ] v1.0
+- [X] v1.0
 	- [X] core
 		- [X] string
 		- [X] memory
@@ -95,7 +96,7 @@ Released under GPL v3</br>
 		- [X] temperature
 		- [X] cpufreq
 		- [X] extern ipc event
-	- [ ] documentation
+	- [X] documentation
 		- [X] main
 		- [X] build
 		- [X] configure
@@ -110,15 +111,13 @@ Released under GPL v3</br>
 		- [X] network
 		- [X] wireless
 		- [X] temperature
-		- [ ] ipc
-		- [ ] make module
-		- [ ] troubleshoot
-		- [ ] sidebar
-	- [ ] beta
+		- [X] ipc
+		- [X] troubleshoot
+		- [X] sidebar
+	- [X] beta
 		- [X] valgrind
 		- [X] scan-build
-		- [ ] splint
-		- [ ] tester
+		- [X] tester
 - [ ] v2.0
 	- [ ] core
 		- [ ] more type blink
@@ -142,6 +141,7 @@ Released under GPL v3</br>
 		- [ ] dwm color
 		- [ ] spectrwm
 		- [ ] blink mode
+		- [ ] make module
 	- [ ] beta
 		- [ ] valgrind
 		- [ ] scan-build
