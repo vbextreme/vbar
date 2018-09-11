@@ -3,7 +3,7 @@
 #include <sys/socket.h>
 #include <linux/wireless.h>
 
-//TODO onevent display scan network with callback 
+#define RETRY 2
 
 #ifndef NET_DEVICES_NAME_MAX
 	#define NET_DEVICES_NAME_MAX 128
@@ -16,13 +16,13 @@ typedef struct wireless{
 	char essid[IW_ESSID_MAX_SIZE];
 }wireless_s;
 
-__ef_private void wireless_ssid_refresh(wireless_s* wi){
+__ef_private int wireless_ssid_refresh(wireless_s* wi){
 	if( wi->socket == -1 ){
 		dbg_info("init socket");	
 		if( (wi->socket = socket(AF_INET, SOCK_DGRAM, 0)) == -1 ){
 			dbg_error("socket");
 			dbg_errno();
-			return;
+			return -1;
 		}
 		memset(&wi->rqsk, 0, sizeof(struct iwreq));
 		strcpy(wi->rqsk.ifr_name, wi->selected);
@@ -32,17 +32,19 @@ __ef_private void wireless_ssid_refresh(wireless_s* wi){
 	
 	wi->essid[0] = 0;
     if( ioctl(wi->socket, SIOCGIWESSID, &wi->rqsk) == -1 ){
+		int er = errno;
         dbg_warning("ioctl");
 		dbg_errno();
 		close(wi->socket);
 		wi->socket = -1;
-		wireless_ssid_refresh(wi);
+		return er == 19 ? -2 : -1;
     }
 	wi->essid[wi->rqsk.u.essid.length] = 0;
+	return 0;
 }
 
 __ef_private int wireless_mod_refresh(module_s* mod){
-	wireless_ssid_refresh(mod->data);
+	for( size_t i = 0; i < RETRY && wireless_ssid_refresh(mod->data); ++i );
 	return 0;
 }
 
@@ -97,7 +99,11 @@ int wireless_mod_load(module_s* mod, char* path){
 	config_load(&conf, path);
 	config_destroy(&conf);
 	
-	wireless_mod_refresh(mod);
+	if( wireless_ssid_refresh(wi) == -2 ){
+		free(wi);
+		return -1;
+	}
+
 
 	return 0;
 }
