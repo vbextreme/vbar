@@ -43,7 +43,7 @@ Released under GPL v3</br>
  see [wiki page](https://github.com/vbextreme/vbar/wiki/Configure)
 
 ## News
-* **1.1**  fix some bug</br>
+* **1.1**  fix some bug, add crash protect</br>
 * **1.0**  first stable release </br>
 * **0.24** dinamic file thermal</br>
 * **0.23** fix bug theme and remove module</br>
@@ -120,8 +120,8 @@ Released under GPL v3</br>
 		- [X] scan-build
 		- [X] tester
 - [ ] v2.0
-	- [ ] core
-		- [ ] crash report
+	- [X] core
+		- [X] crash protect
 	- [ ] ipc
 		- [ ] more type blink
 		- [ ] dwm color

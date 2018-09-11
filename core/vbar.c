@@ -61,8 +61,7 @@ int main(__ef_unused int argc, __ef_unused char** argv)
 		modules_reformatting(it);
 	}
 	modules_refresh_output(&mods);
-int* TESTCRASH = (int*)0xdeadbeef;
-*TESTCRASH = 1;
+
 	while(1){
 		event_s ev;
 		int ret = ipc_wait(&ev, modules_next_tick(&mods));
