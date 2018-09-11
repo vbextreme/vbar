@@ -19,6 +19,10 @@ splint \
 	./core/optex.c \
 	./core/intp.c \
 	./core/file.c \
+	./core/heap.c \
+	./core/protect.c \
+	./core/safe.c \
+	./core/signal.c \
 	./ipc/icommonpc.c \
 	./ipc/i3pc.c \
 	./modules/M_cpu.c \
