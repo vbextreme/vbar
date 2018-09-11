@@ -13,6 +13,7 @@ if( get_option('optimize') > 0 )
   add_global_arguments('-O2', language: 'c')
   add_global_arguments('-march=native', language: 'c')
 endif
+add_global_arguments('-DEF_MEM_PKEY_DISABLE=1', language: 'c')
 
 cc = meson.get_compiler('c')
 
@@ -34,6 +35,7 @@ gperf_custom_software = find_program('gperf.custom', required: true)
 ########
 
 src = [ 'core/vbar.c', 'core/config.c', 'core/delay.c', 'core/string.c', 'core/memory.c', 'core/modules.c', 'core/spawn.c', 'core/optex.c', 'core/intp.c', 'core/file.c' ]
+src += [ 'core/heap.c', 'core/protect.c', 'core/safe.c', 'core/signal.c' ]
 
 ##############
 # select ipc #
