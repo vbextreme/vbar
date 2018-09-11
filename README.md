@@ -121,8 +121,9 @@ Released under GPL v3</br>
 		- [X] tester
 - [ ] v2.0
 	- [ ] core
-		- [ ] more type blink
+		- [ ] crash report
 	- [ ] ipc
+		- [ ] more type blink
 		- [ ] dwm color
 		- [ ] spectrwm
 		- [ ] lemonbar
