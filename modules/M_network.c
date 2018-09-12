@@ -100,8 +100,11 @@ __ef_private size_t net_scale(double* po, double val, double unit){
 	size_t s = 0;
 	*po = 1;
 	if( (unsigned)unit <= 1 ) return 1;
-	if( val == INFINITY ) return 1;
 	
+	UNSAFE_BEGIN("-Wfloat-equal");
+		if( val == INFINITY ) return 1;
+	UNSAFE_END;
+
 	while( val > unit ){
 		val /= unit;
 		++s;

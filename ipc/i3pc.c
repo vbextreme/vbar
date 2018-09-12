@@ -191,7 +191,7 @@ void ipc_end_elements(){
 }
 
 void ipc_write_element(attribute_s* el, bool_t next){
-//	ipc_set_blink_mode(el);
+	ipc_set_blink_mode(el);
 
 	json_begin_block();
 	if( el->longformat[0] == 0 ){

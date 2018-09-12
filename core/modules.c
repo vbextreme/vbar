@@ -46,7 +46,6 @@ void modules_insert(modules_s* mods, module_s* mod){
 	if( mod->att.blinkstatus ){
 		mod->att.tick = mod->att.blinktime;
 		mod->att.blinktoggle = (mod->att.blinktoggle + 1) & 1;
-		ipc_set_blink_mode(&mod->att);
 	}
 	else{
 		mod->att.tick = mod->att.reftime;
@@ -462,7 +461,7 @@ void module_set_urgent(module_s* mod, int enable){
 		if( !enable ) mod->att.blinktoggle = 0;
 	}
 	else{
-		mod->att.urgent = enable;
+		mod->att.blinktoggle = enable;
 	}
 
 }
