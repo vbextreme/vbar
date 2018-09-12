@@ -1,4 +1,4 @@
-# vbar 1.1
+# vbar 1.2
 ```
 ┌─┬─┬───────────────────────────────────────────────────────┬───────┬─────┬───────────┬───┐
 │1│2│                                                       │💻 0.1%│🌡45°│🔋 80% 3:10│ ⏻ │
@@ -43,6 +43,7 @@ Released under GPL v3</br>
  see [wiki page](https://github.com/vbextreme/vbar/wiki/Configure)
 
 ## News
+* **1.2**  new blink method</br>
 * **1.1**  fix some bug, add crash protect</br>
 * **1.0**  first stable release </br>
 * **0.24** dinamic file thermal</br>
@@ -123,7 +124,7 @@ Released under GPL v3</br>
 	- [X] core
 		- [X] crash protect
 	- [ ] ipc
-		- [ ] more type blink
+		- [X] more type blink
 		- [ ] dwm color
 		- [ ] spectrwm
 		- [ ] lemonbar
@@ -142,7 +143,7 @@ Released under GPL v3</br>
 		- [ ] lemonbar
 		- [ ] dwm color
 		- [ ] spectrwm
-		- [ ] blink mode
+		- [X] blink mode
 		- [ ] make module
 	- [ ] beta
 		- [ ] valgrind
