@@ -316,3 +316,42 @@ void ipc_toggle_attribute_byname(attribute_s* att, char* name){
 	}
 }
 
+void ipc_store_blink_mode(attribute_s* att){
+	switch( att->blink ){
+		default: case BLINK_URGENT: case BLINK_DISABLE: break;
+
+		case BLINK_BACKGROUND:
+			att->blinkold = att->background;
+		break;
+
+		case BLINK_FOREGROUND:
+			att->blinkold = att->color;
+		break;
+	}
+}
+
+void ipc_set_blink_mode(attribute_s* att){
+	switch( att->blink ){
+		default: case BLINK_DISABLE: break;
+
+		case BLINK_URGENT:
+			att->urgent = att->blinktoggle;
+		break;
+		case BLINK_BACKGROUND:
+			if( att->blinktoggle ){
+				att->background = att->blinkcolor;
+			}
+			else{
+				att->background = att->blinkold;
+			}
+		break;
+		case BLINK_FOREGROUND:
+			if( att->blinktoggle ){
+				att->color = att->blinkcolor;
+			}
+			else{
+				att->color = att->blinkold;
+			}
+		break;
+	}
+}

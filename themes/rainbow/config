@@ -8,6 +8,7 @@ border = -1
 #align = center
 separator = 0
 separator_block_width = 10
+blink = 3
 
 #load ipc module
 #module.path = ~/.config/vbar/ipc/config

@@ -47,7 +47,7 @@ void ipc_end_elements(){
 }
 
 void ipc_write_element(attribute_s* el, bool_t next){
-	if( el->blinkstatus && el->urgent ){
+	if( el->blinkstatus && el->blinktoggle ){
 		size_t len = strlen(el->longformat);
 		if( DWM_MAX_TITLE - (ttw - title) < (int)len ){
 			len = DWM_MAX_TITLE - (ttw-title);

@@ -16,6 +16,7 @@
 typedef void(*ipcCallBack_f)(void*);
 
 typedef enum {ALIGN_CENTER, ALIGN_RIGHT, ALIGN_LEFT} align_e;
+typedef enum {BLINK_DISABLE, BLINK_URGENT, BLINK_BACKGROUND, BLINK_FOREGROUND} blink_e;
 
 typedef struct attribute{
 	char longformat[ATTRIBUTE_TEXT_MAX];
@@ -40,9 +41,12 @@ typedef struct attribute{
 	int markup;
 
 	long blinktime;
-	int blink;
+	blink_e blink;
 	int blinkstatus;
-	
+	int blinkcolor;
+	int blinktoggle;
+	int blinkold;
+
 	long reftime;
 	long tick;
 	
@@ -90,5 +94,8 @@ void ipc_set_attribute_byname(attribute_s* att, char* name, char* value);
 void ipc_set_attribute_byreg(attribute_s* att, char* name, size_t reg);
 void ipc_reg_store_attribute_byname(attribute_s* att, char* name, size_t reg);
 void ipc_toggle_attribute_byname(attribute_s* att, char* name);
+void ipc_set_blink_mode(attribute_s* att);
+void ipc_store_blink_mode(attribute_s* att);
+
 
 #endif

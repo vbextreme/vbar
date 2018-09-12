@@ -43,10 +43,10 @@ __ef_can_null module_s* modules_pop(modules_s* mods) {
 }
 
 void modules_insert(modules_s* mods, module_s* mod){
-
 	if( mod->att.blinkstatus ){
 		mod->att.tick = mod->att.blinktime;
-		mod->att.urgent = (mod->att.urgent + 1) & 1;
+		mod->att.blinktoggle = (mod->att.blinktoggle + 1) & 1;
+		ipc_set_blink_mode(&mod->att);
 	}
 	else{
 		mod->att.tick = mod->att.reftime;
@@ -192,6 +192,7 @@ __ef_private void module_load(modules_s* mods, char* name, char* path){
 				ok = modsconf[i].modload(mod, modsconf[i].conf);
 			}
 			if( !ok ){
+				ipc_store_blink_mode(&mod->att);
 				if( mod->att.reftime > 0) modules_insert(mods, mod);
 				modules_insert_inhash(mods, mod);
 				++mods->used;
@@ -339,6 +340,8 @@ void modules_load(modules_s* mods, char* config){
 	mods->def.blink = 1;
 	mods->def.blinkstatus = 0;
 	mods->def.blinktime = 400;
+	mods->def.blinkcolor = 0xFF0000;
+	mods->def.blinktoggle = 0;
 	mods->def.format = NULL;
 	mods->def.formatcount = 0;
 	mods->def.icons = NULL;
@@ -362,6 +365,9 @@ void modules_load(modules_s* mods, char* config){
 	config_add(&conf, "separator", CNF_U, &mods->def.separator, 0, 0, NULL);
 	config_add(&conf, "separator_block_width", CNF_U, &mods->def.separator_block_width, 0, 0, NULL);
 	config_add(&conf, "markup", CNF_U, &mods->def.markup, 0, 0, NULL);
+	config_add(&conf, "blink", CNF_D, &mods->def.blink, 0, 0, NULL);
+	config_add(&conf, "blink.time", CNF_LD, &mods->def.blinktime, 0, 0, NULL);
+	config_add(&conf, "blink.color", CNF_LD, &mods->def.blinkcolor, 0, 0, NULL);
 	config_load(&conf, config);
 	config_destroy(&conf);
 	
@@ -376,6 +382,7 @@ void modules_default_config(module_s* mod, config_s* conf){
 	config_add(conf, "name", CNF_S, mod->att.name, ATTRIBUTE_TEXT_MAX, 0, NULL);
 	config_add(conf, "blink", CNF_D, &mod->att.blink, 0, 0, NULL);
 	config_add(conf, "blink.time", CNF_LD, &mod->att.blinktime, 0, 0, NULL);
+	config_add(conf, "blink.color", CNF_D, &mod->att.blinkcolor, 0, 0, NULL);
 	config_add(conf, "text.full", CNF_S, &mod->att.longunformat, ATTRIBUTE_TEXT_MAX, 0, NULL);
 	config_add(conf, "text.short", CNF_S, &mod->att.shortunformat, ATTRIBUTE_TEXT_MAX, 0, NULL);
 	config_add(conf, "text.short.enable", CNF_D, &mod->att.useshort, 0, 0, NULL);
@@ -452,7 +459,7 @@ void modules_dispatch(modules_s* mods, event_s* ev){
 void module_set_urgent(module_s* mod, int enable){
 	if( mod->att.blink ){
 		mod->att.blinkstatus =  enable;
-		if( !enable ) mod->att.urgent = 0;
+		if( !enable ) mod->att.blinktoggle = 0;
 	}
 	else{
 		mod->att.urgent = enable;
