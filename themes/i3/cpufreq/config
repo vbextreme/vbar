@@ -3,15 +3,8 @@ refresh = 3000
  
 #icon = "💻"
 
-#formatting output
-#$@ icon 
-#$0 scaling min fq
-#$1 scaling max fq
-#$2 scaling current fq
-#$3 available governor
-#$4 governor
 
 hide = 1
-text.full = "$2ghz $4"
-text.short = "$2ghz $4"
+text.full = "$3ghz $4"
+text.short = "$3ghz $4"
 
