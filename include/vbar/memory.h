@@ -24,6 +24,7 @@ void* ef_malloc_or_die(size_t sz);
 #define ef_mem_many_or_die(TYPE) (TYPE*)ef_malloc_or_die(sizeof(TYPE)*(COUNT))
 void* ef_mem_matrix_new(size_t y, size_t sz);
 void ef_mem_matrix_free(void* b, size_t y); 
+#define ef_mem_clear(T,M) do{memset(M,0,sizeof(T));}while(0)
 
 /*** shared.c ***/
 void* ef_mem_shared_create(char* name, int privilege, size_t size);

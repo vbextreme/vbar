@@ -109,16 +109,17 @@ src += [ gperf_mod_src ]
 ############################
 
 opt_mcpuncores = get_option('m-cpu-ncores')
+if( opt_mcpuncores == 0 )
+  r = run_command('bash', '-c', 'cat /proc/cpuinfo | grep processor | wc -l')
+  l = r.stdout().strip()
+  opt_mcpuncores = l.to_int()
+endif
+
 if opt_mcpuncores > 0
   debugstr = '-DNCORES_MAX=@0@'
   debugstr = debugstr.format(opt_mcpuncores)
   add_global_arguments(debugstr, language: 'c')
-else
-  r = run_command('bash', '-c', 'cat /proc/cpuinfo | grep processor | wc -l')
-  l = r.stdout().strip()
-  ncpu = l.to_int()
-  mmm = 'autoset cpu to @0@'
-  message(mmm.format(ncpu))
+  message(debugstr)
 endif
 
 gperf_intp_src = custom_target('gperf hash_intp.h', 

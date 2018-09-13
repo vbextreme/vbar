@@ -1,17 +1,23 @@
 #include <vbar.h>
 
-#ifndef SYS_DEVICES_SYSTEM_CPUFREQ_CURFQ
-	#define SYS_DEVICES_SYSTEM_CPUFREQ_CURFQ "/sys/devices/system/cpu/cpu0/cpufreq/scaling_cur_freq"
-#endif
-#ifndef SYS_DEVICES_SYSTEM_CPUFREQ_MINFQ
-	#define SYS_DEVICES_SYSTEM_CPUFREQ_MINFQ "/sys/devices/system/cpu/cpu0/cpufreq/scaling_min_freq"
-#endif
-#ifndef SYS_DEVICES_SYSTEM_CPUFREQ_MAXFQ
-	#define SYS_DEVICES_SYSTEM_CPUFREQ_MAXFQ "/sys/devices/system/cpu/cpu0/cpufreq/scaling_max_freq"
+#ifndef NCORES_MAX
+	#define NCORES_MAX 64
 #endif
 
-#ifndef SYS_DEVICES_SYSTEM_CPUFREQ_GOV
-	#define SYS_DEVICES_SYSTEM_CPUFREQ_GOV "/sys/devices/system/cpu/cpu0/cpufreq/scaling_governor"
+#define SYS_DEVICES_SYSTEM_CPU "/sys/devices/system/cpu/cpu"
+#define CPUFREQ "/cpufreq"
+
+#ifndef CPUFREQ_CURFQ
+	#define CPUFREQ_CURFQ "/scaling_cur_freq"
+#endif
+#ifndef CPUFREQ_MINFQ
+	#define CPUFREQ_MINFQ "/scaling_min_freq"
+#endif
+#ifndef CPUFREQ_MAXFQ
+	#define CPUFREQ_MAXFQ "/scaling_max_freq"
+#endif
+#ifndef CPUFREQ_GOV
+	#define CPUFREQ_GOV "/scaling_governor"
 #endif
 
 #ifndef SYS_DEVICES_SYSTEM_CPUFREQ_GOV_AV
@@ -27,14 +33,20 @@
 #endif
 
 typedef struct cpufreq{
-	size_t minfq;
-	size_t maxfq;
-	size_t curfq;
+	size_t minfq[NCORES_MAX];
+	size_t maxfq[NCORES_MAX];
+	size_t curfq[NCORES_MAX];
 	char governor[GOVERNOR_MAX][GOVERNOR_NAME_MAX];
-	size_t curgovernor;
 	size_t countgovernor;
+	size_t curgovernor[NCORES_MAX];
 	size_t unit;
 }cpufreq_s;
+
+__ef_private char* cpufreq_filename(char* fname, size_t idcpu){
+	static char cf[PATH_MAX] = SYS_DEVICES_SYSTEM_CPU;
+	sprintf(&cf[strlen(SYS_DEVICES_SYSTEM_CPU)], "%lu" CPUFREQ "%s", idcpu, fname);
+	return cf;
+}
 
 __ef_private void cpufreq_read_gov(cpufreq_s* cf){
 	__ef_file_autoclose file_t* fd = fopen( SYS_DEVICES_SYSTEM_CPUFREQ_GOV_AV, "r");
@@ -63,10 +75,10 @@ __ef_private void cpufreq_read_gov(cpufreq_s* cf){
 	}
 }
 
-__ef_private void cpufreq_select_gov(cpufreq_s* cf){
-	__ef_file_autoclose file_t* fd = fopen( SYS_DEVICES_SYSTEM_CPUFREQ_GOV, "r");
+__ef_private void cpufreq_select_gov(cpufreq_s* cf, size_t idcore){
+	__ef_file_autoclose file_t* fd = fopen( cpufreq_filename(CPUFREQ_GOV, idcore), "r");
 	if( fd == NULL ){
-		dbg_error("fopen");
+		dbg_error("fopen %s", cpufreq_filename(CPUFREQ_GOV, idcore));
 		dbg_errno();
 		return;
 	}
@@ -79,50 +91,61 @@ __ef_private void cpufreq_select_gov(cpufreq_s* cf){
 	   inp[len-1] = 0;
 	}	   
 
-	for(cf->curgovernor = 0; cf->curgovernor < cf->countgovernor && strcmp(cf->governor[cf->curgovernor], inp); ++cf->curgovernor);
+	for(cf->curgovernor[idcore] = 0; cf->curgovernor[idcore] < cf->countgovernor && strcmp(cf->governor[cf->curgovernor[idcore]], inp); ++cf->curgovernor[idcore]);
 }
 
 __ef_private int cpufreq_mod_refresh(module_s* mod){
 	cpufreq_s* cf = mod->data;
-	cf->minfq = os_read_lu(SYS_DEVICES_SYSTEM_CPUFREQ_MINFQ);
-	cf->maxfq = os_read_lu(SYS_DEVICES_SYSTEM_CPUFREQ_MAXFQ);
-	cf->curfq = os_read_lu(SYS_DEVICES_SYSTEM_CPUFREQ_CURFQ);
 	cpufreq_read_gov(cf);
-	cpufreq_select_gov(cf);
+	for(size_t i = 0; i < NCORES_MAX; ++i){
+		cf->minfq[i] = os_read_lu(cpufreq_filename(CPUFREQ_MINFQ,i));
+		cf->maxfq[i] = os_read_lu(cpufreq_filename(CPUFREQ_MAXFQ,i));
+		cf->curfq[i] = os_read_lu(cpufreq_filename(CPUFREQ_CURFQ,i));
+		cpufreq_select_gov(cf,i);
+	}
 	return 0;
 }
 
 __ef_private int cpufreq_mod_env(module_s* mod, int id, char* dest){
 	cpufreq_s* cf = mod->data;
+	if( id == 0 ){ 
+		for( size_t i = 0; i < cf->countgovernor; ++i ){
+			sprintf(dest, modules_format_get(mod, id, "s"), cf->governor[i]);
+			dest += strlen(cf->governor[i]);
+			*dest++ = ' ';
+		}
+		--dest;
+		*dest = 0;
+		return 0;
+	}
+
+	size_t idcore = ((id-1) / 4);
+
+	if( idcore >= NCORES_MAX ){
+		dbg_error("index > ncores");
+		return -1;
+	}
+	
+	id = id % 4;
 	switch( id ){
-		case 0:
-			sprintf(dest, modules_format_get(mod, id, "lf"), (double)cf->minfq / (double)cf->unit);	
+		case 1:
+			sprintf(dest, modules_format_get(mod, id, "lf"), (double)cf->minfq[idcore] / (double)cf->unit);	
 		break;
 
-		case 1:
-			sprintf(dest, modules_format_get(mod, id, "lf"), (double)cf->maxfq / (double)cf->unit);	
-		break;
-		
 		case 2:
-			sprintf(dest, modules_format_get(mod, id, "lf"), (double)cf->curfq / (double)cf->unit);
+			sprintf(dest, modules_format_get(mod, id, "lf"), (double)cf->maxfq[idcore] / (double)cf->unit);	
 		break;
 		
 		case 3:
-			for( size_t i = 0; i < cf->countgovernor; ++i ){
-				sprintf(dest, modules_format_get(mod, id, "s"), cf->governor[i]);
-				dest += strlen(cf->governor[i]);
-				*dest++ = ' ';
-			}
-			--dest;
-			*dest = 0;
+			sprintf(dest, modules_format_get(mod, id, "lf"), (double)cf->curfq[idcore] / (double)cf->unit);
 		break;
 		
-		case 4:
-			sprintf(dest, modules_format_get(mod, id, "s"), cf->governor[cf->curgovernor]);	
+		case 0:
+			sprintf(dest, modules_format_get(mod, id, "s"), cf->governor[cf->curgovernor[idcore]]);	
 		break;
 
 		default:
-			dbg_error("index to large");
+			dbg_error("index to large %d", id);
 		return -1;
 	}
 	return 0;
@@ -134,22 +157,17 @@ __ef_private int cpufreq_mod_free(module_s* mod){
 }
 
 int cpufreq_mod_load(module_s* mod, char* path){
-	if( !file_exists(SYS_DEVICES_SYSTEM_CPUFREQ_MINFQ) ||
-		!file_exists(SYS_DEVICES_SYSTEM_CPUFREQ_MAXFQ) ||
-		!file_exists(SYS_DEVICES_SYSTEM_CPUFREQ_CURFQ) ||
+	if( !file_exists(cpufreq_filename(CPUFREQ_MINFQ,0)) ||
+		!file_exists(cpufreq_filename(CPUFREQ_MAXFQ,0)) ||
+		!file_exists(cpufreq_filename(CPUFREQ_CURFQ,0)) ||
 		!file_exists(SYS_DEVICES_SYSTEM_CPUFREQ_GOV_AV) ||
-		!file_exists(SYS_DEVICES_SYSTEM_CPUFREQ_GOV)
+		!file_exists(cpufreq_filename(CPUFREQ_GOV,0))
 	){
 		return -1;
 	}
 
 	cpufreq_s* cf = ef_mem_new(cpufreq_s);
-	cf->minfq = 0;
-	cf->maxfq = 0;
-	cf->countgovernor = 0;
-	cf->curfq = 0;
-	cf->curgovernor = 0;
-	cf->governor[0][0] = 0;
+	ef_mem_clear(cpufreq_s, cf);	
 	cf->unit = 1000000;
 
 	mod->data = cf;
@@ -164,12 +182,14 @@ int cpufreq_mod_load(module_s* mod, char* path){
 	strcpy(mod->att.instance, "cpufreq");
 	modules_icons_init(mod, 1);
 	modules_icons_set(mod, 0, "💻");
-	modules_format_init(mod, 5);
-	for( size_t i = 0; i < 3; ++i){
-		modules_format_set(mod, i, "4.2");
-	}
-	for( size_t i = 3; i < 5; ++i){
+	modules_format_init(mod, NCORES_MAX * 4 + 1);
+	modules_format_set(mod, 0, "");
+
+	for( size_t i = 1; i < NCORES_MAX * 4; i+=4){
 		modules_format_set(mod, i, "");
+		modules_format_set(mod, i, "4.2");
+		modules_format_set(mod, i, "4.2");
+		modules_format_set(mod, i, "4.2");
 	}
 
 	config_s conf;
