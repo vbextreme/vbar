@@ -1,0 +1,13 @@
+color = 0xFF0000
+#$@ current icon
+#$0 ip
+
+text.full = "[ $0 ]"
+text.short = " $0 "
+
+# select device to display
+device = wlp3s0
+hide = 1
+
+refresh = 5000
+

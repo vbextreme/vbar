@@ -16,3 +16,5 @@ device = wlp3s0
 
 refresh = 1000
 
+event = "${toggle(ip,generic,hide)}${refresh()}"
+

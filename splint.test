@@ -34,6 +34,7 @@ splint \
 	./modules/M_network.c \
 	./modules/M_wireless.c \
 	./modules/M_temperature.c \
-	./modules/M_ipc.c 
+	./modules/M_ipc.c \
+	./modules/M_ip.c	
 #	> ./splint.output
 

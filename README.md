@@ -1,4 +1,4 @@
-# vbar 1.3
+# vbar 1.4
 ```
 ┌─┬─┬───────────────────────────────────────────────────────┬───────┬─────┬───────────┬───┐
 │1│2│                                                       │💻 0.1%│🌡45°│🔋 80% 3:10│ ⏻ │
@@ -43,6 +43,7 @@ Released under GPL v3</br>
  see [wiki page](https://github.com/vbextreme/vbar/wiki/Configure)
 
 ## News
+* **1.4**  optimize text and cpufreq, begin ip module</br>
 * **1.3**  extend cpufreq</br>
 * **1.2**  new blink method</br>
 * **1.1**  fix some bug, add crash protect</br>
@@ -131,6 +132,8 @@ Released under GPL v3</br>
 		- [ ] lemonbar
 	- [ ] modules
 		- [ ] ip
+			- [X] local ipv4/6
+			- [ ] remote
 		- [ ] meteo
 		- [ ] audio
 		- [ ] email
