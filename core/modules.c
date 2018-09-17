@@ -135,7 +135,7 @@ void modules_reformatting(module_s* mod){
 	else{
 		module_reform(mod, mod->att.longformat, ATTRIBUTE_TEXT_MAX, mod->att.longunformat);
 	}
-	module_reform(mod, mod->att.shortformat, ATTRIBUTE_TEXT_MAX, mod->att.shortunformat);
+	/*module_reform(mod, mod->att.shortformat, ATTRIBUTE_TEXT_MAX, mod->att.shortunformat);*/
 }
 
 void modules_refresh_output(modules_s* mods){

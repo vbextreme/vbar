@@ -33,12 +33,8 @@
 #endif
 
 typedef struct cpufreq{
-	size_t minfq[NCORES_MAX];
-	size_t maxfq[NCORES_MAX];
-	size_t curfq[NCORES_MAX];
 	char governor[GOVERNOR_MAX][GOVERNOR_NAME_MAX];
 	size_t countgovernor;
-	size_t curgovernor[NCORES_MAX];
 	size_t unit;
 }cpufreq_s;
 
@@ -75,12 +71,12 @@ __ef_private void cpufreq_read_gov(cpufreq_s* cf){
 	}
 }
 
-__ef_private void cpufreq_select_gov(cpufreq_s* cf, size_t idcore){
+__ef_private size_t cpufreq_select_gov(cpufreq_s* cf, size_t idcore){
 	__ef_file_autoclose file_t* fd = fopen( cpufreq_filename(CPUFREQ_GOV, idcore), "r");
 	if( fd == NULL ){
 		dbg_error("fopen %s", cpufreq_filename(CPUFREQ_GOV, idcore));
 		dbg_errno();
-		return;
+		return 0;
 	}
 
 	char inp[80];
@@ -90,19 +86,13 @@ __ef_private void cpufreq_select_gov(cpufreq_s* cf, size_t idcore){
 	if( inp[len-1] == '\n' ){
 	   inp[len-1] = 0;
 	}	   
-
-	for(cf->curgovernor[idcore] = 0; cf->curgovernor[idcore] < cf->countgovernor && strcmp(cf->governor[cf->curgovernor[idcore]], inp); ++cf->curgovernor[idcore]);
+	
+	size_t cg = 0;
+	for(; cg < cf->countgovernor && strcmp(cf->governor[cg], inp); ++cg);
+	return cg;
 }
 
-__ef_private int cpufreq_mod_refresh(module_s* mod){
-	cpufreq_s* cf = mod->data;
-	cpufreq_read_gov(cf);
-	for(size_t i = 0; i < NCORES_MAX; ++i){
-		cf->minfq[i] = os_read_lu(cpufreq_filename(CPUFREQ_MINFQ,i));
-		cf->maxfq[i] = os_read_lu(cpufreq_filename(CPUFREQ_MAXFQ,i));
-		cf->curfq[i] = os_read_lu(cpufreq_filename(CPUFREQ_CURFQ,i));
-		cpufreq_select_gov(cf,i);
-	}
+__ef_private int cpufreq_mod_refresh(__ef_unused module_s* mod){
 	return 0;
 }
 
@@ -129,19 +119,19 @@ __ef_private int cpufreq_mod_env(module_s* mod, int id, char* dest){
 	id = id % 4;
 	switch( id ){
 		case 1:
-			sprintf(dest, modules_format_get(mod, id, "lf"), (double)cf->minfq[idcore] / (double)cf->unit);	
+			sprintf(dest, modules_format_get(mod, id, "lf"), (double)os_read_lu(cpufreq_filename(CPUFREQ_MINFQ,idcore)) / (double)cf->unit);	
 		break;
 
 		case 2:
-			sprintf(dest, modules_format_get(mod, id, "lf"), (double)cf->maxfq[idcore] / (double)cf->unit);	
+			sprintf(dest, modules_format_get(mod, id, "lf"), (double)os_read_lu(cpufreq_filename(CPUFREQ_MAXFQ,idcore)) / (double)cf->unit);	
 		break;
 		
 		case 3:
-			sprintf(dest, modules_format_get(mod, id, "lf"), (double)cf->curfq[idcore] / (double)cf->unit);
+			sprintf(dest, modules_format_get(mod, id, "lf"), (double)os_read_lu(cpufreq_filename(CPUFREQ_CURFQ,idcore)) / (double)cf->unit);
 		break;
 		
 		case 0:
-			sprintf(dest, modules_format_get(mod, id, "s"), cf->governor[cf->curgovernor[idcore]]);	
+			sprintf(dest, modules_format_get(mod, id, "s"), cf->governor[cpufreq_select_gov(cf, idcore)]);
 		break;
 
 		default:
@@ -200,7 +190,7 @@ int cpufreq_mod_load(module_s* mod, char* path){
 	config_destroy(&conf);
 	
 	if( cf->unit < 1 ) cf->unit = 1;
-	cpufreq_mod_refresh(mod);
+	cpufreq_read_gov(cf);
 
 	return 0;
 }

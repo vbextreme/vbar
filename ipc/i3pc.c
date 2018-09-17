@@ -200,7 +200,7 @@ void ipc_write_element(attribute_s* el, bool_t next){
 	else{
 		json_write_str("full_text", el->longformat, TRUE );
 	}
-	json_write_str("short_text", el->shortformat, TRUE);
+	/*json_write_str("short_text", el->shortformat, TRUE);*/
 	json_write_i3color("color", el->color, TRUE);
 	json_write_i3color("background", el->background, TRUE);
 	json_write_i3color("border", el->border, TRUE);
