@@ -26,7 +26,7 @@ cc = meson.get_compiler('c')
 
 #m_dep = cc.find_library('m', required : true)
 deps = [  ] 
-
+need_web = false
 
 #########################
 # software dependencies #
@@ -128,6 +128,16 @@ gperf_intp_src = custom_target('gperf hash_intp.h',
   command: [gperf_custom_software, 'hash_intp', 'HINTP_', '@INPUT@', '@OUTPUT@']
 )
 src += [ gperf_intp_src ]
+
+if get_option('Mip') > 0
+  need_web = true
+endif
+
+if need_web
+  curl_dep = cc.find_library('curl', required : true)
+  deps += [ curl_dep ]
+  src += [ 'core/web.c' ]
+endif
 
 #########
 # debug #

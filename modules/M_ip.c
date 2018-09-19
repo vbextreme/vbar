@@ -1,4 +1,5 @@
 #include <vbar.h>
+#include <vbar/web.h>
 #include <sys/types.h>
 #include <sys/ioctl.h>
 #include <sys/socket.h>
@@ -8,6 +9,7 @@
 
 #define IP_MAX 32
 #define IP_DEVICE_NAME_MAX 128
+#define IPE_URL "https://ipinfo.io"
 
 typedef struct ip{
 	char selected[IFNAMSIZ];
@@ -31,6 +33,37 @@ __ef_private void ipv6_name(char* out, char* dev){
 	strcpy(out, inet_ntop(AF_INET6,&((struct sockaddr_in6 *)&ifr.ifr_addr)->sin6_addr, out, 32));
 }
 
+__ef_private void ipe_name(char* out, char* url){
+	__ef_web_autofree web_s www;
+	if( web_init(&www) ) return;
+	web_ssl(&www, 3);
+	web_url(&www, url);
+	web_download_body(&www);
+	if( web_perform(&www) ) return;
+	
+	char* parse = strstr(www.body.data, "ip");
+	if( !parse ){
+		dbg_error("not find ip");
+		return;
+	}
+	parse = strchr(parse, '"');
+	if( !parse ){
+		dbg_error("not find end name");
+		return;
+	}
+	++parse;
+
+	parse = strchr(parse, '"');
+	if( !parse ){
+		dbg_error("not find start property");
+		return;
+	}
+	++parse;
+
+	str_copy_to_ch(out, 32, parse, '"');
+	
+}
+
 __ef_private int ip_mod_refresh(__ef_unused module_s* mod){
 	return 0;
 }
@@ -48,7 +81,7 @@ __ef_private int ip_mod_env(module_s* mod, int id, char* dest){
 		break;
 
 		case 2:
-			/*TODO remote ip*/
+			ipe_name(dest, IPE_URL);
 		break;
 
 		default:
