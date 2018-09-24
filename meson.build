@@ -73,7 +73,7 @@ endif
 ##################
 # select modules #
 ##################
-modules = [ 'cpu', 'cpufreq', 'memory', 'datetime', 'static', 'power', 'network', 'wireless', 'temperature', 'ipc', 'ip' ]
+modules = [ 'cpu', 'cpufreq', 'memory', 'datetime', 'static', 'power', 'network', 'wireless', 'temperature', 'ipc', 'ip', 'weather' ]
 
 v_mod = ''
 p_mod = ''
@@ -129,7 +129,7 @@ gperf_intp_src = custom_target('gperf hash_intp.h',
 )
 src += [ gperf_intp_src ]
 
-if get_option('Mip') > 0
+if get_option('Mip') > 0 or get_option('Mweather') > 0
   need_web = true
 endif
 

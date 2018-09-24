@@ -1,9 +1,11 @@
 #include <vbar/memory.h>
 #include <sys/mman.h>
 
+#ifdef EF_MEM_PKEY_DISABLE
 pkey_t ef_mem_pkey_new(unsigned int mode){
 	return pkey_alloc(0 ,mode);
 }
+#endif
 
 err_t ef_mem_protect(pkey_t* key, void* addr, size_t size, unsigned int mode){
 	int prot = PROT_READ | PROT_WRITE;

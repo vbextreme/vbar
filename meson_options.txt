@@ -15,4 +15,5 @@ option('Mwireless', type:'integer', value: '1', description: 'enable module')
 option('Mtemperature', type:'integer', value: '1', description: 'enable module')
 option('Mipc', type:'integer', value: '1', description: 'enable ipc module')
 option('Mip', type:'integer', value: '1', description: 'enable ip module')
+option('Mweather', type:'integer', value: '1', description: 'enable weather module')
 
