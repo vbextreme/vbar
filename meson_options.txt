@@ -1,4 +1,4 @@
-option('debug', type: 'integer', value: '0', description: 'set debug level, 0 disable 4 full')
+option('vbar-debug', type: 'integer', value: '0', description: 'set debug level, 0 disable 4 full')
 option('dolor', type: 'integer', value: '0', description: 'color debug, 0 disable 1 active')
 option('assert', type: 'integer', value: '1', description: 'enable assertion')
 option('optimize', type: 'integer', value: '1', description: 'enable optimization')
