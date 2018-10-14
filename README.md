@@ -1,4 +1,4 @@
-# vbar 1.5
+# vbar 1.6
 ```
 ┌─┬─┬───────────────────────────────────────────────────────┬───────┬─────┬───────────┬───┐
 │1│2│                                                       │💻 0.1%│🌡45°│🔋 80% 3:10│ ⏻ │
@@ -43,6 +43,7 @@ Released under GPL v3</br>
  see [wiki page](https://github.com/vbextreme/vbar/wiki/Configure)
 
 ## News
+* **1.6**  add weather module, fix meson, add backtrace</br>
 * **1.5**  introduce web on core, add extern ip</br>
 * **1.4**  optimize text and cpufreq, begin ip module</br>
 * **1.3**  extend cpufreq</br>
@@ -128,21 +129,20 @@ Released under GPL v3</br>
 		- [X] crash protect
 	- [ ] ipc
 		- [X] more type blink
+		- [ ] scroll mode
 		- [ ] dwm color
 		- [ ] spectrwm
 		- [ ] lemonbar
 	- [ ] modules
 		- [X] ip
-		- [ ] meteo
+		- [X] meteo
 		- [ ] audio
 		- [ ] email
-		- [ ] bluetooth
 	- [ ] documentation
-		- [ ] ip
-		- [ ] meteo
+		- [X] ip
+		- [X] meteo
 		- [ ] audio
 		- [ ] email
-		- [ ] bluetooth
 		- [ ] lemonbar
 		- [ ] dwm color
 		- [ ] spectrwm
@@ -155,15 +155,27 @@ Released under GPL v3</br>
 		- [ ] tester
 - [ ] v3.0
 	- [ ] modules
-		- [ ] kconnect
+		- [ ] bluetooth
+		- [ ] bs
 	- [ ] documentation
-		- [ ] kconnect
+		- [ ] bluetooth
+		- [ ] bs
 	- [ ] beta
 		- [ ] valgrind
 		- [ ] scan-build
 		- [ ] splint
 		- [ ] tester
 - [ ] v4.0
+	- [ ] modules
+		- [ ] kde connect
+	- [ ] documentation
+		- [ ] kde connect
+	- [ ] beta
+		- [ ] valgrind
+		- [ ] scan-build
+		- [ ] splint
+		- [ ] tester
+- [ ] v5.0
 	- [ ] ipc
 		- [ ] custom bar
 	- [ ] tools
@@ -177,7 +189,7 @@ Released under GPL v3</br>
 		- [ ] scan-build
 		- [ ] splint
 		- [ ] tester
-- [ ] v5.0
+- [ ] v6.0
 	- [ ] custom bar
 		- [ ] integrated menu
 	- [ ] documentation
