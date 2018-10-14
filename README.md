@@ -1,4 +1,4 @@
-# vbar 1.6
+# vbar 1.7
 ```
 ┌─┬─┬───────────────────────────────────────────────────────┬───────┬─────┬───────────┬───┐
 │1│2│                                                       │💻 0.1%│🌡45°│🔋 80% 3:10│ ⏻ │
@@ -43,6 +43,7 @@ Released under GPL v3</br>
  see [wiki page](https://github.com/vbextreme/vbar/wiki/Configure)
 
 ## News
+* **1.7**  mprotect for old glibc</br>
 * **1.6**  add weather module, fix meson, add backtrace</br>
 * **1.5**  introduce web on core, add extern ip</br>
 * **1.4**  optimize text and cpufreq, begin ip module</br>
