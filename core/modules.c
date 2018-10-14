@@ -167,10 +167,7 @@ __ef_private void modules_insert_inhash(modules_s* mods, module_s* mod){
 
 __ef_private void module_load(modules_s* mods, char* name, char* path){
 	AUTO_PROTO_MODULE
-//TODO 
-//TODO
-//TODO
-*(int*)(0xdeadbeef) = 5;	
+
 	__ef_private struct selective {
 		char* name;
 		int(*modload)(module_s*, char*);
