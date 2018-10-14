@@ -143,7 +143,7 @@ endif
 # debug #
 #########
 
-opt_debug = get_option('lebug')
+opt_debug = get_option('ebug')
 if opt_debug > 0
   message('debug enabled')
   debugstr = '-DEF_DEBUG_ENABLE=@0@'
@@ -151,7 +151,7 @@ if opt_debug > 0
   add_global_arguments(debugstr, language: 'c')
 endif
 
-opt_debug_color = get_option('dolor')
+opt_debug_color = get_option('olor')
 if opt_debug_color > 0
   message('color debug enabled')
   debugstr = '-DEF_DEBUG_COLOR=@0@'
