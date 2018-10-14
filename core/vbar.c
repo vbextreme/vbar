@@ -10,24 +10,6 @@ __ef_private argdef_s args[] = {
 	{ 0, 0  , NULL    , 0         , NULL, NULL }
 };
 
-typedef enum { APS_LOAD, APS_OUT, APS_REF } appstatus_e;
-__ef_private appstatus_e app_status;
-
-__ef_private void main_crash(__ef_unused void* arg){
-	dbg_error("application stop working");
-	switch( app_status ){
-		case APS_LOAD:
-			dbg_error("fatal error on load modules");
-		break;
-		case APS_OUT:
-			dbg_error("fatal error on set enviroment");
-		break;
-		case APS_REF:
-			dbg_error("fatal error on refresh module");
-		break;
-	}
-}
-
 int main(__ef_unused int argc, __ef_unused char** argv)
 {
 	int ret = opt_parse(args, argv, argc);
@@ -50,13 +32,11 @@ int main(__ef_unused int argc, __ef_unused char** argv)
 	spawn_init();
 	ipc_init(TRUE);
 
-	ef_os_segfault_report(main_crash);
+	ef_os_segfault_report(NULL);
 
-	app_status = APS_LOAD;
 	modules_s mods;
 	modules_load(&mods, args[0].autoset);
 	
-	app_status = APS_OUT;
 	for(module_s* it = mods.rmod; it; it = it->next){
 		modules_reformatting(it);
 	}
@@ -79,9 +59,7 @@ int main(__ef_unused int argc, __ef_unused char** argv)
 			module_s* mod;
 			while( (mod = modules_pop(&mods)) ){
 				if( !mod->att.hide ){
-					app_status = APS_REF;
 				   	mod->refresh(mod);
-					app_status = APS_OUT;
 					modules_reformatting(mod);
 				}
 				modules_insert(&mods, mod);
