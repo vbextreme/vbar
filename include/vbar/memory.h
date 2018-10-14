@@ -10,8 +10,13 @@
 typedef int pkey_t;
 
 #define EF_MEM_PROTECT_DISABLED 0
-#define EF_MEM_PROTECT_WRITE PKEY_DISABLE_WRITE
-#define EF_MEM_PROTECT_RW PKEY_DISABLE_ACCESS
+#ifdef EF_MEM_UNDECLARE_PKEY
+	#define EF_MEM_PROTECT_WRITE 1
+	#define EF_MEM_PROTECT_RW 2
+#else
+	#define EF_MEM_PROTECT_WRITE PKEY_DISABLE_WRITE
+	#define EF_MEM_PROTECT_RW PKEY_DISABLE_ACCESS
+#endif
 
 /*** memory.c ***/
 #define ef_mem_new(TYPE) (TYPE*)malloc(sizeof(TYPE))

@@ -37,6 +37,15 @@ sed = find_program('sed', required: true)
 gperf_software = find_program('gperf', required: true)
 gperf_custom_software = find_program('gperf.custom', required: true)
 
+rldd = run_command('bash', '-c', 'ldd --version | grep libc | cut -f4 -d\ ')
+glibc_version = rldd.stdout().strip()
+if( glibc_version.version_compare('>=2.27') )
+  message('glibc >= 2.27')
+else
+  message('glibc < 2.27' )
+  add_global_arguments('-DEF_MEM_UNDECLARE_PKEY=1', language: 'c')
+endif
+
 ########
 # core #
 ########
