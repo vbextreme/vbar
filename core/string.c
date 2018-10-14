@@ -13,6 +13,11 @@ char* str_skip_h(char* str) {
 	return str;
 }
 
+char* str_skip_hn(char*str){
+	while( *str && (*str == ' ' || *str == '\t' || *str == '\n') ) ++str;
+	return str;
+}
+
 __ef_can_null char* str_copy_to_str_ifsize(char* dst, size_t len, char* src, char* find){
 	char* to = strpbrk(src, find);
 	if( to == NULL ){
@@ -66,3 +71,29 @@ char* str_ncpy(char* dst, size_t lend, char* src){
 	*dst = 0;
 	return dst;
 }
+
+char* str_find_num(char* str){
+	while( *str && (*str < '0' || *str > '9') ) ++str;
+	return str;
+}
+
+
+int substr_end(substr_s* out, char* when){
+	out->end = strpbrk(out->begin, when);
+	return !out->end ? -1 : 0;
+}
+
+int substr_end_ch(substr_s* out, char when){
+	out->end = strchr(out->begin, when);
+	return !out->end ? -1 : 0;
+}
+
+int substr_cmp_str(substr_s* a, char* b){
+	return str_len_cmp(a->begin, substr_len(a), b, strlen(b));
+}
+
+int substr_cmp(substr_s* a, substr_s* b){
+	return str_len_cmp(a->begin, substr_len(a), b->begin, substr_len(b));
+}
+
+

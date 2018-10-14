@@ -36,6 +36,9 @@ module.load = static
 #module.path = ~/.config/vbar/datetime/config
 module.load = datetime
 
+#module.path = ~/.config/vbar/weather/config
+#module.load = weather
+
 #module.path = ~/.config/vbar/ip/config
 module.load = ip
 

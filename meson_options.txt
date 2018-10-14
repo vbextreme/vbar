@@ -1,4 +1,4 @@
-option('debug', type: 'integer', value: '0', description: 'set debug level, 0 disable 4 full')
+option('lebug', type: 'integer', value: '0', description: 'set debug level, 0 disable 4 full')
 option('dolor', type: 'integer', value: '0', description: 'color debug, 0 disable 1 active')
 option('assert', type: 'integer', value: '1', description: 'enable assertion')
 option('optimize', type: 'integer', value: '1', description: 'enable optimization')
@@ -15,5 +15,5 @@ option('Mwireless', type:'integer', value: '1', description: 'enable module')
 option('Mtemperature', type:'integer', value: '1', description: 'enable module')
 option('Mipc', type:'integer', value: '1', description: 'enable ipc module')
 option('Mip', type:'integer', value: '1', description: 'enable ip module')
-option('Mweather', type:'integer', value: '0', description: 'enable weather module')
+option('Mweather', type:'integer', value: '1', description: 'enable weather module')
 
