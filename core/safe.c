@@ -1,10 +1,17 @@
 #include <vbar/os.h>
 #include <vbar/memory.h>
 #include <vbar/file.h>
+#ifndef _GNU_SOURCE
+#define _GNU_SOURCE
+#endif
+#ifndef __USE_GNU
+#define __USE_GNU
+#endif
 #include <sys/types.h>
 #include <fcntl.h> 
 #include <ucontext.h>
 #include <execinfo.h>
+#include <signal.h>
 
 bool_t ef_os_valid_addr_read(void* addr){
 	__ef_fd_autoclose int fd;
@@ -44,6 +51,14 @@ typedef struct prvsafectx{
 	pkey_t key;
 }prvsafectx_t;
 
+typedef struct _sig_ucontext {
+ unsigned long     uc_flags;
+ struct ucontext   *uc_link;
+ stack_t           uc_stack;
+ struct sigcontext uc_mcontext;
+ sigset_t          uc_sigmask;
+} sig_ucontext_t;
+
 __ef_private volatile prvsafectx_t* safe;
 __ef_private sigaction_s oldsig;
 __ef_private volatile bool_t safecalled;
@@ -51,8 +66,17 @@ __ef_private void* bkt[64];
 __ef_private size_t btsize;
 __ef_private char** bts;
 
-__ef_private void sig_restore_context(__ef_unused int signum,__ef_unused siginfo_t *si, __ef_unused void *context){
+__ef_private void sig_restore_context(__ef_unused int signum,__ef_unused siginfo_t *si, void *context){
+	sig_ucontext_t* uc = context;
+	void* ca = NULL;
+#if defined(__i386__)
+	ca = (void *) uc->uc_mcontext.eip;
+#elif defined(__x86_64__)
+	ca = (void *) uc->uc_mcontext.rip;
+#endif
+
 	btsize = backtrace(bkt, 64);
+	if( ca ) bkt[1] = ca;
 	bts = backtrace_symbols(bkt, btsize);
 
 	catch_posix( setcontext((struct ucontext_t*)&safe->uc) ){

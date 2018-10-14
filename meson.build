@@ -157,6 +157,7 @@ if opt_debug_color > 0
   debugstr = '-DEF_DEBUG_COLOR=@0@'
   debugstr = debugstr.format(opt_debug_color)
   add_global_arguments(debugstr, language: 'c')
+  add_global_link_arguments('-rdynamic', language: 'c')
 endif
 
 if get_option('assert') > 0
