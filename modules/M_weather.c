@@ -257,14 +257,19 @@ __ef_private int weather_mod_env(module_s* mod, int id, char* dest){
 		return -1;
 	}
 
+	if( dd >= OW_DAY || hh >= OW_HOURS || !we->ow.info[dd][hh].isset ){
+		dbg_warning("dd %u hh %u isn't set",dd,hh);
+		return -1;
+	}
+
 	if( id < 3 ){
-		sprintf(dest, modules_format_get(mod, id, "lf"), we->ow.info[we->ow.curdd][we->ow.curhh].data[id] - 273.15);
+		sprintf(dest, modules_format_get(mod, id, "lf"), we->ow.info[dd][hh].data[id] - 273.15);
 	}
 	else if( id < 10 ){
-		sprintf(dest, modules_format_get(mod, id, "lf"), we->ow.info[we->ow.curdd][we->ow.curhh].data[id]);
+		sprintf(dest, modules_format_get(mod, id, "lf"), we->ow.info[dd][hh].data[id]);
 	}
 	else if ( id < 14 ){
-		strcpy(dest, we->ow.info[we->ow.curdd][we->ow.curhh].text[id-10]);
+		strcpy(dest, we->ow.info[dd][hh].text[id-10]);
 	}
 	else{
 		dbg_error("invalid id");
