@@ -43,7 +43,7 @@ Released under GPL v3</br>
  see [wiki page](https://github.com/vbextreme/vbar/wiki/Configure)
 
 ## News
-* **1.8**  fix some bug, add config string in multiline</br>
+* **1.8**  fix some bug, add config string in multiline, initial support for scrolling</br>
 * **1.7**  mprotect for old glibc, fix weather unset value</br>
 * **1.6**  add weather module, fix meson, add backtrace</br>
 * **1.5**  introduce web on core, add extern ip</br>
@@ -131,7 +131,7 @@ Released under GPL v3</br>
 		- [X] crash protect
 	- [ ] ipc
 		- [X] more type blink
-		- [ ] scroll mode
+		- [X] scroll mode
 		- [ ] dwm color
 		- [ ] spectrwm
 		- [ ] lemonbar
@@ -149,6 +149,8 @@ Released under GPL v3</br>
 		- [ ] dwm color
 		- [ ] spectrwm
 		- [X] blink mode
+		- [ ] scroll
+		- [ ] config
 		- [ ] make module
 	- [ ] beta
 		- [ ] valgrind
