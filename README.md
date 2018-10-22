@@ -1,4 +1,4 @@
-# vbar 1.71
+# vbar 1.8
 ```
 ┌─┬─┬───────────────────────────────────────────────────────┬───────┬─────┬───────────┬───┐
 │1│2│                                                       │💻 0.1%│🌡45°│🔋 80% 3:10│ ⏻ │
@@ -43,6 +43,7 @@ Released under GPL v3</br>
  see [wiki page](https://github.com/vbextreme/vbar/wiki/Configure)
 
 ## News
+* **1.8**  fix some bug, add config string in multiline</br>
 * **1.7**  mprotect for old glibc, fix weather unset value</br>
 * **1.6**  add weather module, fix meson, add backtrace</br>
 * **1.5**  introduce web on core, add extern ip</br>

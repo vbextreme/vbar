@@ -7,6 +7,29 @@
 #define PHQ_LEFT(I) ((I)*2)
 #define PHQ_RIGHT(I) ((I)*2+1)
 
+void module_time_set(module_s* mod){
+	if( mod->att.blinkstatus ){
+		mod->att.scrollch = NULL;
+		mod->att.tick = mod->att.blinktime;
+		mod->att.blinktoggle = (mod->att.blinktoggle + 1) & 1;
+		//dbg_info("blinkmode at %ld", mod->att.blinktime);
+	}
+	else if( mod->att.scrolltime > 0 ){
+		mod->att.tick = mod->att.scrolltime;
+		iassert(mod->att.scrollch);
+		++mod->att.scrollch;
+		if( !*mod->att.scrollch ) module_scroll_init(mod);
+		mod->att.doubletick -= mod->att.scrolltime;
+		//dbg_info("scrollmode at %ld doubletime %ld", mod->att.scrolltime, mod->att.doubletick);
+	}
+	else{
+		mod->att.tick = mod->att.reftime;
+		//dbg_info("refreshmode at %ld", mod->att.reftime);
+	}
+	
+	mod->att.tick += time_ms();
+}
+
 __ef_can_null module_s* modules_pop(modules_s* mods) {
 	if( mods->mod[1]->att.tick > (long)time_ms() ){
 		return NULL;
@@ -43,16 +66,6 @@ __ef_can_null module_s* modules_pop(modules_s* mods) {
 }
 
 void modules_insert(modules_s* mods, module_s* mod){
-	if( mod->att.blinkstatus ){
-		mod->att.tick = mod->att.blinktime;
-		mod->att.blinktoggle = (mod->att.blinktoggle + 1) & 1;
-	}
-	else{
-		mod->att.tick = mod->att.reftime;
-	}
-	
-	mod->att.tick += time_ms();
-
 	size_t child = ++mods->count;
 	iassert(mods->count < MODULES_MAX);
 
@@ -68,6 +81,10 @@ void modules_insert(modules_s* mods, module_s* mod){
 
 long modules_next_tick(modules_s* mods){
 	return mods->mod[1]->att.tick;
+}
+
+void module_scroll_init(module_s* mod){
+	mod->att.scrollch = mod->att.longformat;
 }
 
 __ef_private void module_reform(module_s* mod, char* dst, size_t len, char* src){
@@ -131,11 +148,11 @@ __ef_private void module_reform(module_s* mod, char* dst, size_t len, char* src)
 void modules_reformatting(module_s* mod){
 	if( mod->att.useshort ){
 		module_reform(mod, mod->att.longformat, ATTRIBUTE_TEXT_MAX, mod->att.shortunformat);
+		//dbg_info("short ref '%s' to '%s'", mod->att.shortunformat, mod->att.longformat);
 	}
 	else{
 		module_reform(mod, mod->att.longformat, ATTRIBUTE_TEXT_MAX, mod->att.longunformat);
 	}
-	/*module_reform(mod, mod->att.shortformat, ATTRIBUTE_TEXT_MAX, mod->att.shortunformat);*/
 }
 
 void modules_refresh_output(modules_s* mods){
@@ -192,7 +209,14 @@ __ef_private void module_load(modules_s* mods, char* name, char* path){
 			}
 			if( !ok ){
 				ipc_store_blink_mode(&mod->att);
-				if( mod->att.reftime > 0) modules_insert(mods, mod);
+				if( mod->att.reftime > 0){
+					if( mod->att.scrolltime > 0 ){
+						mod->att.doubletick = mod->att.reftime;
+						module_scroll_init(mod);
+					}
+					module_time_set(mod);
+					modules_insert(mods, mod);
+				}
 				modules_insert_inhash(mods, mod);
 				++mods->used;
 				mod->next = mods->rmod;
@@ -292,6 +316,17 @@ __ef_private void icmd_module_attribute_store(modules_s* mods, __ef_unused modul
 	}
 }
 
+__ef_private void icmd_module_reg_swap(__ef_unused modules_s* mods, __ef_unused module_s* cl, size_t argc, char* argv[], __ef_unused size_t* argl){
+	if( argc != 2 ){
+		dbg_warning("wrong args %lu", argc);
+		return;
+	}
+	
+	size_t reg1 = strtoul(argv[0],  NULL, 10);
+	size_t reg2 = strtoul(argv[1],  NULL, 10);
+	ipc_reg_swap(reg1, reg2);
+}
+
 __ef_private void icmd_modules_refresh(modules_s* mods, module_s* mod, __ef_unused size_t argc, __ef_unused char* argv[], __ef_unused size_t* argl){
 	modules_reformatting(mod);	
 	modules_refresh_output(mods);
@@ -311,6 +346,7 @@ void modules_load(modules_s* mods, char* config){
 	intp_register_command("reg", icmd_module_attribute_reg, mods);
 	intp_register_command("store", icmd_module_attribute_store, mods);
 	intp_register_command("refresh", icmd_modules_refresh, mods);
+	intp_register_command("swap", icmd_module_reg_swap, mods);
 
 	mods->used = 0;
 	mods->rmod = NULL;
@@ -341,6 +377,9 @@ void modules_load(modules_s* mods, char* config){
 	mods->def.blinktime = 400;
 	mods->def.blinkcolor = 0xFF0000;
 	mods->def.blinktoggle = 0;
+	mods->def.scrollch = NULL;
+	mods->def.scrollsize = 12;
+	mods->def.scrolltime = -1;
 	mods->def.format = NULL;
 	mods->def.formatcount = 0;
 	mods->def.icons = NULL;
@@ -349,6 +388,7 @@ void modules_load(modules_s* mods, char* config){
 	mods->def.onevent[0] = 0;
 	mods->def.reftime = 1000;
 	mods->def.tick = 0;
+	mods->def.doubletick = -1;
 	mods->def.hide = 0;
 	mods->def.useshort = 0;
 
@@ -367,6 +407,9 @@ void modules_load(modules_s* mods, char* config){
 	config_add(&conf, "blink", CNF_D, &mods->def.blink, 0, 0, NULL);
 	config_add(&conf, "blink.time", CNF_LD, &mods->def.blinktime, 0, 0, NULL);
 	config_add(&conf, "blink.color", CNF_LD, &mods->def.blinkcolor, 0, 0, NULL);
+	config_add(&conf, "scroll.time", CNF_D, &mods->def.scrolltime, 0, 0, NULL);
+	config_add(&conf, "scroll.size", CNF_LD, &mods->def.scrollsize, 0, 0, NULL);
+
 	config_load(&conf, config);
 	config_destroy(&conf);
 	
@@ -398,6 +441,9 @@ void modules_default_config(module_s* mod, config_s* conf){
 	config_add(conf, "format", CNF_S, mod->att.format, ATTRIBUTE_FORMAT_MAX, mod->att.formatcount, NULL);
 	config_add(conf, "event", CNF_S, mod->att.onevent, ATTRIBUTE_SPAWN_MAX, 0, NULL);
 	config_add(conf, "hide", CNF_D, &mod->att.hide, 0, 0, NULL);
+	config_add(conf, "scroll.time", CNF_LD, &mod->att.scrolltime, 0, 0, NULL);
+	config_add(conf, "scroll.size", CNF_D, &mod->att.scrollsize, 0, 0, NULL);
+
 }
 
 void modules_icons_init(module_s* mod, size_t count){

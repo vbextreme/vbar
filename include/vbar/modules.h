@@ -48,6 +48,7 @@ typedef struct modules{
 
 int file_exists(char* fname);
 
+void module_time_set(module_s* mod);
 module_s* modules_pop(modules_s* mods);
 void modules_insert(modules_s* mods, module_s* mod);
 void modules_refresh_tick(modules_s* mods, long ellapsems);
@@ -64,6 +65,8 @@ void module_set_urgent(module_s* mod, int enable);
 void modules_format_init(module_s* mod, size_t count);
 void modules_format_set(module_s* mod, size_t id, char* format);
 char* modules_format_get(module_s* mod, size_t id, char* type);
+void module_scroll_init(module_s* mod);
+
 size_t os_read_lu(char* fname);
 
 #endif

@@ -11,7 +11,7 @@
  * nome[n] = value
 */
 
-#define CONF_BUFF_LINE_SIZE 512
+#define CONF_BUFF_LINE_SIZE 1024
 #define CONF_NAME_MAX 128
 #define CONF_VALUE_MAX 128
 #define CONF_COMMENT '#'
@@ -40,6 +40,31 @@ __ef_can_unused size_t kr_nhash(char*s, size_t len, size_t size){
 	for( size_t i = 0; i < len; ++i)
 		hash = s[i] + 31 * hash;
 	return hash % size;
+}
+
+__ef_private char* confgets(char* dest, size_t size, file_t* file){
+	int ch;
+	char* ret = dest;
+	int quote = 0;
+
+	while( size > 0 && (ch = fgetc(file)) != EOF ){
+		if( ch == '\'' || ch == '"' ){
+			quote = !quote;
+		}
+		if( quote && ch == '\n' ){
+			ch = ' ';
+		}
+		*dest++ = ch;
+		if( ch == '\n' ){
+			break;
+		}
+	}
+	*dest = 0;
+	if( dest == ret ){
+		return NULL;
+	}
+
+	return ret;
 }
 
 void config_init(config_s* cf, size_t maxhash){
@@ -182,7 +207,8 @@ void config_load(config_s* cf, char* fconf){
 	}
 	
 	char line[CONF_BUFF_LINE_SIZE];
-	while( fgets(line, CONF_BUFF_LINE_SIZE, fd) ){
+	//while( fgets(line, CONF_BUFF_LINE_SIZE, fd) ){
+	while( confgets(line, CONF_BUFF_LINE_SIZE, fd) ){
 		/*dbg_info("parse %.*s", (int)strlen(line)-1, line);*/
 		char* parse = str_skip_h(line);
 		if( 0 == *parse || *parse == CONF_COMMENT || *parse == '\n' ) continue;

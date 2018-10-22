@@ -20,9 +20,10 @@ typedef enum {BLINK_DISABLE, BLINK_URGENT, BLINK_BACKGROUND, BLINK_FOREGROUND} b
 
 typedef struct attribute{
 	char longformat[ATTRIBUTE_TEXT_MAX];
-	char shortformat[ATTRIBUTE_TEXT_MAX];
+	char shortformat[ATTRIBUTE_TEXT_MAX]; //is unused can remove
 	char longunformat[ATTRIBUTE_TEXT_MAX];
 	char shortunformat[ATTRIBUTE_TEXT_MAX];
+	char scrollformat[ATTRIBUTE_TEXT_MAX];
 	int useshort;
 		
 	int color;
@@ -47,8 +48,13 @@ typedef struct attribute{
 	int blinktoggle;
 	int blinkold;
 
+	char* scrollch;
+	int scrollsize;
+	long scrolltime;
+
 	long reftime;
 	long tick;
+	long doubletick;
 	
 	char** icons;
 	size_t iconcount;
@@ -88,6 +94,7 @@ int ipc_onstdin(event_s* ev);
 void ipc_begin_elements();
 void ipc_end_elements();
 
+void ipc_reg_swap(size_t nra, size_t nrb);
 void ipc_reg_store(size_t nr, char* val, size_t lenV);
 char* ipc_reg_load(size_t nr);
 void ipc_set_attribute_byname(attribute_s* att, char* name, char* value);
@@ -96,6 +103,6 @@ void ipc_reg_store_attribute_byname(attribute_s* att, char* name, size_t reg);
 void ipc_toggle_attribute_byname(attribute_s* att, char* name);
 void ipc_set_blink_mode(attribute_s* att);
 void ipc_store_blink_mode(attribute_s* att);
-
+void ipc_set_scroll(attribute_s* att);
 
 #endif

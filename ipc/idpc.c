@@ -60,6 +60,9 @@ void ipc_write_element(attribute_s* el, bool_t next){
 		}
 		*ttw = 0;
 	}
+	else if( el->scrolltime > 0 ){
+		ttw = str_ncpy(ttw, DWM_MAX_TITLE - (ttw - title), el->scrollformat);
+	}
 	else{
 		ttw = str_ncpy(ttw, DWM_MAX_TITLE - (ttw - title), el->longformat);
 	}	

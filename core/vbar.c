@@ -39,6 +39,9 @@ int main(__ef_unused int argc, __ef_unused char** argv)
 	
 	for(module_s* it = mods.rmod; it; it = it->next){
 		modules_reformatting(it);
+		if( it->att.scrolltime > 0 ){
+			strcpy(it->att.scrollformat, it->att.longformat);
+		}
 	}
 	modules_refresh_output(&mods);
 
@@ -59,9 +62,20 @@ int main(__ef_unused int argc, __ef_unused char** argv)
 			module_s* mod;
 			while( (mod = modules_pop(&mods)) ){
 				if( !mod->att.hide ){
-				   	mod->refresh(mod);
-					modules_reformatting(mod);
+					if( mod->att.scrolltime < 0 ){
+						mod->refresh(mod);
+						modules_reformatting(mod);	
+					}
+					else{
+						ipc_set_scroll(&mod->att);
+						if( mod->att.doubletick <= 0 ){
+							mod->att.doubletick = mod->att.reftime;
+							mod->refresh(mod);
+							modules_reformatting(mod);
+						}
+					}
 				}
+				module_time_set(mod);
 				modules_insert(&mods, mod);
 			}
 			modules_refresh_output(&mods);

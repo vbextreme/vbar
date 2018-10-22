@@ -8,6 +8,8 @@
 
 //signstop sigcont
 
+#define SCROLL_BUFFER 256
+
 typedef struct inCB{
 	ipcCallBack_f cb;
 	void* arg;
@@ -163,6 +165,23 @@ void ipc_reg_store(size_t nr, char* val, size_t lenV){
 	}
 	str_nncpy_src(ipcreg[nr], ATTRIBUTE_TEXT_MAX, val, lenV);
 	dbg_info("store %%%lu, %s", nr, ipcreg[nr]);
+}
+
+void ipc_reg_swap(size_t nra, size_t nrb){
+	if( nra >= IPC_MAX_REGISTER || nrb > IPC_MAX_REGISTER ){
+		dbg_warning("not have register a %lu b %lu", nra, nrb);
+	}
+	/*restrict*/
+	if( nra == nrb ){
+		return;
+	}
+	
+	char tmp[ATTRIBUTE_TEXT_MAX];
+	strcpy(tmp, &ipcreg[nra][0]);
+	UNSAFE_BEGIN("-Wrestrict");
+		strcpy(ipcreg[nra], ipcreg[nrb]);
+	UNSAFE_END;
+	strcpy(ipcreg[nrb], tmp);
 }
 
 __ef_can_null char* ipc_reg_load(size_t nr){
@@ -354,4 +373,38 @@ void ipc_set_blink_mode(attribute_s* att){
 			}
 		break;
 	}
+}
+
+void ipc_set_scroll(attribute_s* att){
+	char* org = att->longformat;
+	char* str = att->scrollformat;
+	char* cur = att->scrollch;
+	int nch = att->scrollsize;
+
+	while( nch > 0 && (*str++ = *cur++) ){
+		--nch;
+	}
+	
+	if( nch > 0 ){
+		--str;
+		//dbg_info("rewind for %d", nch);
+		char* en = att->scrollch;
+		cur = org;
+		while( nch-->0 && cur < en && (*str++ = *cur++) );
+		//dbg_info("remain %d", nch);
+	}
+
+	//dbg_info("remain %d", nch);
+	
+	if( nch > 0 ){
+		--str;
+		while( nch > 0 ){
+			*str++ = ' ';
+			--nch;
+		}
+	}
+
+	*str = 0;
+
+	//dbg_info("ss %d org '%s' scr '%s'", att->useshort, org, att->scrollformat);
 }

@@ -234,7 +234,7 @@ __ef_private int weather_mod_env(module_s* mod, int id, char* dest){
 	*dest = 0;
 	if( id < 1000 ){
 		dd = we->ow.curdd;
-		hh = we->ow.curdd;
+		hh = we->ow.curhh;
 	}
 	else if( id > 99 && id < 714 ){
 		dd = we->ow.curdd;
@@ -275,6 +275,7 @@ __ef_private int weather_mod_env(module_s* mod, int id, char* dest){
 		dbg_error("invalid id");
 		return -1;
 	}
+	//dbg_info("ENV{%d} %s", id, dest);
 	return 0;
 }
 
