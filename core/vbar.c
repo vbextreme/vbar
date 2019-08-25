@@ -800,7 +800,7 @@ err_t vbar_script_load(vbar_s* vb, char const* sourcefile){
 	}
 
 	tcc_set_error_func(vb->tcc, NULL, my_tcc_error);
-    tcc_add_include_path(vb->tcc, "/home/vbextreme/Project/c/app/akbar/build"); //TODO only for vbarGadgetet_options(gs->tcc, "-Wall
+	//tcc_add_include_path(vb->tcc, "/home/vbextreme/Project/c/app/vbar/build"); 
 	if( tcc_compile_string(vb->tcc, vb->code) == -1 ){
 		dbg_error("script build");
 		return -1;

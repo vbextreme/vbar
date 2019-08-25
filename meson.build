@@ -1,8 +1,8 @@
 ###########
 # project #
 ###########
-project('akbar', 'c')
-projectName = 'akbar'
+project('vbar', 'c')
+projectName = 'vbar'
 
 cc = meson.get_compiler('c')
 
