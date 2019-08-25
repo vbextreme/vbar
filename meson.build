@@ -186,7 +186,7 @@ gadget_target = custom_target('vbarBuildScript',
   input: gadget_src,
   command: [ gadget_build, '@OUTPUT@', '@INPUT@' ]
 )
-#src += [ gadget_target ]
+src += [ gadget_target ]
 
 #########
 # debug #
@@ -216,6 +216,12 @@ if get_option('assert') > 0
   message('assertion enabled')
   add_global_arguments('-DASSERT_ENABLE=1', language: 'c')
 endif
+
+###########
+# install #
+###########
+
+meson.add_install_script('meson.extra.install')
 
 ###########
 # license #

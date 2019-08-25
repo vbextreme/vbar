@@ -1,0 +1,2 @@
+#!/bin/bash
+cp vbarScript.h /usr/include/vbarScript.h
