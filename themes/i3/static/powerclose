@@ -1,8 +1,0 @@
-name = powerclose
-text.full = "$@"
-text.short = "$@"
-hide = 1
-icon = "✖"
-
-event = "${set(static,powerclose,hide,1)}${set(static,logout,hide,1)}${set(static,reboot,hide,1)}${set(static,power,hide,1)}${set(static,poweropen,hide,0)}${refresh()}"
-

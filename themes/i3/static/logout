@@ -1,9 +1,0 @@
-name = logout
-text.full = "$@"
-text.short = "$@"
-hide = 1
-separator = 0
-icon = "🚪"
-
-event = "i3-msg exit"
-

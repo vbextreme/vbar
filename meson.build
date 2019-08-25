@@ -1,12 +1,36 @@
-project('vbar', 'c')
+###########
+# project #
+###########
+project('akbar', 'c')
+projectName = 'akbar'
+
+cc = meson.get_compiler('c')
+
+###########
+# include #
+###########
+
+includeDir = include_directories('include')
+
+###############
+# source file #
+###############
+
+gadget_name = [ 'clock', 'cpu', 'cpufreq', 'memory', 'powerstat', 'workspace', 'alsa', 'pulseaudio', 'network', 'label', 'script' ]
+
+src = [ 'core/main.c', 'core/bar.c', 'core/vbar.c' ]
+src += [ 'ef/delay.c', 'ef/file.c', 'ef/memory.c', 'ef/optex.c', 'ef/deadpoll.c', 'ef/heap.c', 'ef/protect.c', 'ef/safe.c', 'ef/signal.c', 'ef/spawn.c' ]
+src += [ 'ef/hashalg.c', 'ef/rbhash.c', 'ef/phq.c', 'ef/trie.c', 'ef/stack.c' ] 
+src += [ 'ef/string.c', 'ef/utf8.c', 'ef/ft.c', 'ef/image.c', 'ef/vectorization.c', 'ef/xorg.c' ]
+src += [ 'ef/list.c', 'ef/socket.c' ]
+src += [ 'ef/json.c' ]
+src += [ 'ef/proc.c', 'ef/sysclass.c' ]
 
 ##################
 # compiler flags #
 ##################
 
-incdir = include_directories('include')
-
-add_global_arguments('-std=gnu11', language: 'c')
+# warnings
 add_global_arguments('-Wall', language: 'c')
 add_global_arguments('-Wextra', language: 'c')
 add_global_arguments('-Wuninitialized', language: 'c')
@@ -15,141 +39,154 @@ add_global_arguments('-Wstrict-aliasing', language: 'c')
 add_global_arguments('-Wstrict-overflow', language: 'c')
 add_global_arguments('-Wfloat-equal', language: 'c')
 add_global_arguments('-Wvla', language: 'c')
-if( get_option('optimize') > 0 )
+
+#reentrant malloc
+add_global_arguments('-pthread', language: 'c')
+add_global_link_arguments('-pthread', language:'c')
+
+# standard
+add_global_arguments('-std=gnu11', language: 'c')
+
+# open mp
+if get_option('openmp') > 0
+  message('openmp enabled')
+  add_global_arguments('-fopenmp', language:'c')
+  add_global_link_arguments('-fopenmp', language:'c')
+  add_global_arguments('-DOMP_ENABLE=1', language: 'c')
+endif 
+
+# gprof
+if get_option('gprof') > 0
+  add_global_arguments('-pg', language:'c')
+  add_global_link_arguments('-pg', language:'c')
+endif
+
+# optimization
+if( get_option('optimize') == 3 )
+  message('agressive optimization enabled')
+  add_global_arguments('-O3', language: 'c')
+  add_global_arguments('-march=native', language: 'c')
+  add_global_arguments('-mtune=native', language: 'c')
+elif( get_option('optimize') == 2 )
+  message('local optimization enabled')
   add_global_arguments('-O2', language: 'c')
   add_global_arguments('-march=native', language: 'c')
   add_global_arguments('-mtune=native', language: 'c')
+elif( get_option('optimize') == 1 )
+  message('generic optimization enabled')
+  add_global_arguments('-O2', language: 'c')
 endif
-add_global_arguments('-DEF_MEM_PKEY_DISABLE=1', language: 'c')
 
-cc = meson.get_compiler('c')
+if get_option('autovectorization') > 0
+  if( get_option('optimize') < 2 )
+	error('required option optimize > 1')
+  endif
+  message('vectorization enabled')
+  add_global_arguments('-ftree-vectorize', language:'c')
+  add_global_arguments('-DVECTORIZE=1', language:'c')
+endif
 
+##########################
+# libraries dependencies #
+##########################
+
+math_dep = cc.find_library('m', required : true)
+png_dep = cc.find_library('png', required : true)
+tcc_dep = cc.find_library('tcc', required: true)
+dynamic_dep = cc.find_library('dl', required : true)
+
+libDeps = [ math_dep, png_dep, tcc_dep, dynamic_dep ]
+
+if get_option('G_alsa') > 0 
+  alsa_dep = cc.find_library('asound', required: true)
+  libDeps += [ alsa_dep ]
+endif
+
+ft_dep = dependency('freetype2', required: true)
+fconfig_dep = dependency('fontconfig', required: true)
+
+if get_option('G_pulseaudio') > 0 
+  pulse_dep = cc.find_library('pulse', required: true)
+  libDeps += [ pulse_dep ]
+endif
+
+libDeps += [ ft_dep, fconfig_dep ]
+
+#wand_dep = dependency('MagickWand', required: true)
+xcb_dep = dependency('xcb', required: true)
+xcb_icccm__dep = dependency('xcb-icccm', required: true)
+xcb_composite_dep = dependency('xcb-composite', required: true)
+xcb_ewmh_dep = dependency('xcb-ewmh', required: true)
+xcb_util_dep = dependency('xcb-util', required: true)
+xcb_image_dep = dependency('xcb-image', required: true)
+xcb_error_dep = dependency('xcb-errors', required: true)
+xcb_randr_dep = dependency('xcb-randr', required: true)
+xkb_dep = dependency('xkbcommon', required: true)
+xkb_x11_dep = dependency('xkbcommon-x11', required: true)
+libDeps += [ xcb_dep, xcb_icccm__dep, xcb_ewmh_dep, xcb_util_dep, xcb_image_dep, xkb_dep, xkb_x11_dep, xcb_composite_dep, xcb_error_dep, xcb_randr_dep ]
+
+# template
 #m_dep = cc.find_library('m', required : true)
-deps = [  ] 
-need_web = false
+pcre2_dep = cc.find_library('pcre2-8', required : true)
+utf8_dep = cc.find_library('unistring', required : true)
+libDeps += [ pcre2_dep, utf8_dep ]
 
 #########################
 # software dependencies #
 #########################
 
-bash = find_program('bash', required: true)
-sed = find_program('sed', required: true)
-gperf_software = find_program('gperf', required: true)
-gperf_custom_software = find_program('gperf.custom', required: true)
+perl = find_program('perl', required: true)
+gadget_build = find_program('./gadget/gadget.build', required: true)
 
-rldd = run_command('bash', '-c', 'ldd --version | sed -n -r -e "s/.*([0-9]+\.[0-9]+)>*/\\1/p"')
-glibc_version = rldd.stdout().strip()
-if( glibc_version == '' )
-  message('undefined version glibc' )
-  add_global_arguments('-DEF_MEM_UNDECLARE_PKEY=1', language: 'c') 
-elif( glibc_version.version_compare('>=2.27') )
-  message('glibc >= 2.27')
-else
-  message('glibc < 2.27' )
-  add_global_arguments('-DEF_MEM_UNDECLARE_PKEY=1', language: 'c')
-endif
+#################
+# Configuration #
+#################
 
-########
-# core #
-########
+conf_gadget = configuration_data()
 
-src = [ 'core/vbar.c', 'core/config.c', 'core/delay.c', 'core/string.c', 'core/memory.c', 'core/modules.c', 'core/spawn.c', 'core/optex.c', 'core/intp.c', 'core/file.c' ]
-src += [ 'core/heap.c', 'core/protect.c', 'core/safe.c', 'core/signal.c', 'core/json.c' ]
+l_proto = ''
+r_proto = ''
+l_vect = ''
+r_vect = ''
+gen_proto_load = 'int gadget_@0@_load(gadget_s*); '
+gen_proto_reg = 'void gadget_@0@_register(vbar_s*); '
+gen_vect_load = '{"@0@", gadget_@0@_load},'
+gen_vect_reg = 'gadget_@0@_register,'
+gen_msg = 'enable @0@ gadget'
+gadget_src = [ ]
 
-##############
-# select ipc #
-##############
-
-src += ['ipc/icommonpc.c']
-
-opt_wm = get_option('wm')
-if opt_wm == '' 
-  if (find_program('i3', required: false, native: true)).found()
-	opt_wm = 'i3wm'
-  elif (find_program('dwm', required: false, native: true)).found()
-	opt_wm = 'dwm'
-  else
-	opt_wm = 'i3wm'
-	warning('no wm available, configure with -Dwm=')
+foreach g : gadget_name
+  enabled = get_option('G_@0@'.format(g))
+  if( enabled > 0 )
+	gsrc = 'gadget/G_@0@.c'.format(g)
+	gadget_src += [ gsrc ]
+	l_proto += gen_proto_load.format(g)
+	r_proto += gen_proto_reg.format(g)
+	l_vect += gen_vect_load.format(g)
+	r_vect += gen_vect_reg.format(g)
+	message(gen_msg.format(g))
   endif
-endif
+endforeach
 
-if opt_wm == 'i3wm'
-  src += [ 'ipc/i3pc.c' ]
-elif opt_wm == 'dwm'
-  src += [ 'ipc/idpc.c' ]
-  tmpdep = cc.find_library('X11', required : true)
-  deps += [ tmpdep ]  
-endif
+conf_gadget.set('GADGET_AUTOGEN_PROTO_LOAD', l_proto)
+conf_gadget.set('GADGET_AUTOGEN_VECTOR_LOAD', l_vect)
+conf_gadget.set('GADGET_AUTOGEN_PROTO_REGISTER', r_proto)
+conf_gadget.set('GADGET_AUTOGEN_VECTOR_REGISTER', r_vect)
 
-##################
-# select modules #
-##################
-modules = [ 'cpu', 'cpufreq', 'memory', 'datetime', 'static', 'power', 'network', 'wireless', 'temperature', 'ipc', 'ip', 'weather' ]
+configure_file(output: 'gadget_autogen.h', configuration: conf_gadget)
 
-v_mod = ''
-p_mod = ''
-gen_mod = 'int @0@_mod_load(module_s* mod, char* path);'
-gen_vec = '{"@0@", @0@_mod_load, "~/.config/vbar/@0@/config"},'
-gen_msg = 'enable @0@ module'
-conf_mod = configuration_data()
+src += gadget_src
 
-foreach mod : modules
-  enm = get_option('M@0@'.format(mod))
-  if( enm > 0 )
-	sss = 'modules/M_@0@.c'.format(mod)
-	src += [ sss ]
+#################
+# Custom Target #
+#################
 
-	v_mod += gen_vec.format(mod)
-	p_mod += gen_mod.format(mod)
-	message(gen_msg.format(mod))
-  endif
-endforeach 
-
-conf_mod.set('AUTO_VECTOR_MODULE', v_mod)
-conf_mod.set('AUTO_PROTO_MODULE', p_mod)
-
-gperf_mod_src = custom_target('gperf hash_mods.h', 
-  output: 'hash_mods.h',
-  input: 'gperf/mods.gperf', 
-  command: [gperf_custom_software, 'hash_mods', 'HMODS_', '@INPUT@', '@OUTPUT@']
+gadget_target = custom_target('vbarBuildScript',
+  output: 'vbarScript.h',
+  input: gadget_src,
+  command: [ gadget_build, '@OUTPUT@', '@INPUT@' ]
 )
-src += [ gperf_mod_src ]
-
-############################
-### extra option modules ###
-############################
-
-opt_mcpuncores = get_option('m-cpu-ncores')
-if( opt_mcpuncores == 0 )
-  r = run_command('bash', '-c', 'cat /proc/cpuinfo | grep processor | wc -l')
-  l = r.stdout().strip()
-  opt_mcpuncores = l.to_int()
-endif
-
-if opt_mcpuncores > 0
-  debugstr = '-DNCORES_MAX=@0@'
-  debugstr = debugstr.format(opt_mcpuncores)
-  add_global_arguments(debugstr, language: 'c')
-  message(debugstr)
-endif
-
-gperf_intp_src = custom_target('gperf hash_intp.h', 
-  output: 'hash_intp.h',
-  input: 'gperf/intp.gperf', 
-  command: [gperf_custom_software, 'hash_intp', 'HINTP_', '@INPUT@', '@OUTPUT@']
-)
-src += [ gperf_intp_src ]
-
-if get_option('Mip') > 0 or get_option('Mweather') > 0
-  need_web = true
-endif
-
-if need_web
-  curl_dep = cc.find_library('curl', required : true)
-  deps += [ curl_dep ]
-  src += [ 'core/web.c' ]
-endif
+#src += [ gadget_target ]
 
 #########
 # debug #
@@ -157,24 +194,27 @@ endif
 
 opt_debug = get_option('ebug')
 if opt_debug > 0
-  message('debug enabled')
-  debugstr = '-DEF_DEBUG_ENABLE=@0@'
+  debugstr = 'debug enabled @0@'
+  debugstr = debugstr.format(opt_debug)
+  message(debugstr)
+  debugstr = '-DDEBUG_ENABLE=@0@'
   debugstr = debugstr.format(opt_debug)
   add_global_arguments(debugstr, language: 'c')
+  add_global_arguments('-g', language: 'c')
+  #add_global_arguments('-ftree-vectorizer-verbose=5', language:'c')
+  #add_global_arguments('-fopt-info-loop-optimized', language:'c')
+  #add_global_arguments('-fopt-info-vec-optimized', language:'c')
+  #add_global_arguments('-fopt-info-vec-missed', language:'c')
 endif
 
-opt_debug_color = get_option('olor')
-if opt_debug_color > 0
+if get_option('olor') > 0
   message('color debug enabled')
-  debugstr = '-DEF_DEBUG_COLOR=@0@'
-  debugstr = debugstr.format(opt_debug_color)
-  add_global_arguments(debugstr, language: 'c')
-  add_global_link_arguments('-rdynamic', language: 'c')
+  add_global_arguments('-DDEBUG_COLOR=1', language: 'c')
 endif
 
 if get_option('assert') > 0
   message('assertion enabled')
-  add_global_arguments('-DEF_ASSERT_ENABLE=1', language: 'c')
+  add_global_arguments('-DASSERT_ENABLE=1', language: 'c')
 endif
 
 ###########
@@ -188,6 +228,6 @@ message('released under GPLv3')
 # build #
 #########
 
-configure_file(output: 'config_mod.h', configuration: conf_mod)
-executable('vbar', src, include_directories: incdir, dependencies: deps, install: true)
+executable(projectName, src, include_directories: includeDir, dependencies: libDeps, install: true)
+
 

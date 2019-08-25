@@ -1,3 +1,4 @@
 #!/bin/bash
 ninja -C build
-valgrind --undef-value-errors=no --tool=memcheck --leak-check=yes --show-reachable=yes --num-callers=20 --track-fds=yes ./build/vbar 1> /dev/null
+valgrind --undef-value-errors=no --tool=memcheck --leak-check=yes --show-reachable=yes --num-callers=20 --track-fds=yes\
+   	./build/akbar -c /home/vbextreme/Project/c/app/akbar/themes/test/config.c 1> /dev/null

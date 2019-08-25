@@ -1,9 +1,0 @@
-name = reboot
-text.full = "reboot"
-text.short = "reboot"
-hide = 1
-separator = 0
-icon = "♼"
-
-event = "reboot"
-

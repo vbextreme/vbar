@@ -1,7 +1,0 @@
-color = 0xAAAA11
-refresh = 3000
- 
-hide = 1
-text.full = "[ $3ghz $4 ]"
-text.short = "[ $3ghz $4 ]"
-
