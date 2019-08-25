@@ -1,4 +1,4 @@
-# vbar 1.8
+# vbar 2.0
 ```
 ┌─┬─┬───────────────────────────────────────────────────────┬───────┬─────┬───────────┬───┐
 │1│2│                                                       │💻 0.1%│🌡45°│🔋 80% 3:10│ ⏻ │
@@ -29,20 +29,18 @@
 └─────────────────────────────────────────────────────────────────────────────────────────┘
 ```
 
-another status bar for i3/dwm</br>
+another bar</br>
 </br>
 Released under GPL v3</br>
 
 ## How To
- see [wiki page](https://github.com/vbextreme/vbar/wiki/Home)
-
+	to do
 ### Build and Install
- see [wiki page](https://github.com/vbextreme/vbar/wiki/Build)
-
+	to do
 ### Configuration
- see [wiki page](https://github.com/vbextreme/vbar/wiki/Configure)
-
+	to do
 ## News
+* **2.0**  drop i3bar dependency, rename modules to gadgets, change config mode<br>
 * **1.8**  fix some bug, add config string in multiline, initial support for scrolling</br>
 * **1.7**  mprotect for old glibc, fix weather unset value</br>
 * **1.6**  add weather module, fix meson, add backtrace</br>
@@ -79,127 +77,11 @@ Released under GPL v3</br>
 * **0.0**  begin
 
 ## Release Schedule
-- [X] v1.0
-	- [X] core
-		- [X] string
-		- [X] memory
-		- [X] delay
-		- [X] config
-		- [X] modules
-		- [X] spawn
-		- [X] vbar
-			- [X] call event
-			- [X] custom directory for config file
-		- [X] file
-	- [X] ipc
-		- [X] i3
-		- [X] dwm
-	- [X] modules
-		- [X] cpu
-		- [X] memory
-		- [X] date
-		- [X] static
-		- [X] net
-		- [X] power
-		- [X] temperature
-		- [X] cpufreq
-		- [X] extern ipc event
-	- [X] documentation
-		- [X] main
-		- [X] build
-		- [X] configure
-		- [X] wm
-		- [X] module
-		- [X] cpu
-		- [X] cpufreq
-		- [X] memory
-		- [X] datetime
-		- [X] static
-		- [X] power
-		- [X] network
-		- [X] wireless
-		- [X] temperature
-		- [X] ipc
-		- [X] troubleshoot
-		- [X] sidebar
-	- [X] beta
-		- [X] valgrind
-		- [X] scan-build
-		- [X] tester
-- [ ] v2.0
-	- [X] core
-		- [X] crash protect
-	- [ ] ipc
-		- [X] more type blink
-		- [X] scroll mode
-		- [ ] dwm color
-		- [ ] spectrwm
-		- [ ] lemonbar
-	- [ ] modules
-		- [X] ip
-		- [X] meteo
-		- [ ] audio
-		- [ ] email
-	- [ ] documentation
-		- [X] ip
-		- [X] meteo
-		- [ ] audio
-		- [ ] email
-		- [ ] lemonbar
-		- [ ] dwm color
-		- [ ] spectrwm
-		- [X] blink mode
-		- [ ] scroll
-		- [ ] config
-		- [ ] make module
-	- [ ] beta
-		- [ ] valgrind
-		- [ ] scan-build
-		- [ ] splint
-		- [ ] tester
-- [ ] v3.0
-	- [ ] modules
-		- [ ] bluetooth
-		- [ ] bs
-	- [ ] documentation
-		- [ ] bluetooth
-		- [ ] bs
-	- [ ] beta
-		- [ ] valgrind
-		- [ ] scan-build
-		- [ ] splint
-		- [ ] tester
-- [ ] v4.0
-	- [ ] modules
-		- [ ] kde connect
-	- [ ] documentation
-		- [ ] kde connect
-	- [ ] beta
-		- [ ] valgrind
-		- [ ] scan-build
-		- [ ] splint
-		- [ ] tester
-- [ ] v5.0
-	- [ ] ipc
-		- [ ] custom bar
-	- [ ] tools
-		- [ ] fork i3bar
-		- [ ] fork i3-input
-		- [ ] fork i3-nagbar
-	- [ ] documentation
-		- [ ] custom bar
-	- [ ] beta
-		- [ ] valgrind
-		- [ ] scan-build
-		- [ ] splint
-		- [ ] tester
-- [ ] v6.0
-	- [ ] custom bar
-		- [ ] integrated menu
-	- [ ] documentation
-		- [ ] custom bar
-	- [ ] beta
-		- [ ] valgrind
-		- [ ] scan-build
-		- [ ] splint
-		- [ ] tester
+* add documentation
+* add themes
+* gadget bluetooth
+* gadget weather
+* gadget overview
+
+
+
