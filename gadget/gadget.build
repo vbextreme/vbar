@@ -1,0 +1,116 @@
+#!/usr/bin/env  perl
+
+=pod
+
+=head1 NAME
+
+=head2 SYNOPSIS
+
+=head2 USAGE
+
+=head2 COPYRIGHT
+
+Copyright vbextreme 2019
+License gplv3
+
+=cut
+
+use strict;
+use warnings;
+use lib '.' ;
+
+my $vbarScriptH = '../gadget/baseScript.h';
+
+sub prebuild {
+	my ($fdo) = @_;
+	my $fdvs;
+	open($fdvs, '<', $vbarScriptH) or die "error on open $vbarScriptH";
+	while( my $line = <$fdvs> ) {
+		print $fdo $line;
+	}	
+}
+
+sub endbuild {
+	my ($fdo) = @_;
+	print $fdo "#endif\n";
+}
+
+sub findproto {
+	my ($finp, $fname) = @_;
+	my $fdi;
+	open($fdi, '<', $finp) or die "on open $finp";
+
+	my $lineproto = '';
+	while( my $line = <$fdi> ) {
+		if( $lineproto ne '' ) {
+			return $lineproto if $line =~ /^\{/;
+			$lineproto = '';
+		}
+		if( $line =~ /$fname\(/ ) {
+			return $line if $line =~ /\{ *$/;
+			$lineproto = $line;
+		}
+	}
+	return '';
+}
+
+sub build{
+	my ($fdo, $gname) = @_;
+	my @fname;
+	my @freg;
+	my @fproto;
+
+	# search all register function
+
+	my $fdi;
+	open($fdi, '<', $gname) or die "on open $gname";
+
+	while( my $line = <$fdi> ) {
+		if( $line =~ /config_add_symbol\([a-zA-Z0-9_ \t]+,[ \t]*\"([^\"]+)\"[ \t]*,[ \t]*([^ \)]+)/ ) {
+			push @fname, $2;
+			push @freg, $1;
+		}
+	}
+
+	# create prototipe
+	my $f;
+	while( $f = pop @fname ) {
+		my $r = pop @freg;
+		#print "FNC:$f REG:$r ";
+		my $p = findproto($gname, $f);
+		#print "PROTO:$p\n";
+		$p =~ s/(__private|static) //;
+		$p =~ s/[\{\n]+/;/;
+		$p =~ s/$f\(/$r\(/;
+		push @fproto, $p;
+	}
+
+	# store
+	print $fdo "/* $gname */\n";
+	while( my $p = pop @fproto ) {
+		print $fdo "$p\n";
+	}
+	print $fdo "/* end */\n";
+}
+
+
+if( $#ARGV < 1 ) {
+    print "Usage:\ngadget.build <output.h> <file.c>\n";
+    exit 1;
+}
+
+my $out = shift @ARGV;
+my $gname;
+my $fdo;
+
+open($fdo, '>', $out) or die "error on open $out";
+prebuild($fdo);
+
+while( $gname = pop @ARGV ) {
+	build($fdo, $gname);
+}
+endbuild($fdo);
+
+
+
+
