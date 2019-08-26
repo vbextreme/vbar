@@ -305,6 +305,8 @@ void mem_event(gadget_s* g, gadgetEventType_e event, void* arg){
 		case GADGET_EVENT_EXTEND_CLOSE:
 		case GADGET_EVENT_MOUSE_RELEASE:
 		case GADGET_EVENT_MOUSE_PRESS:
+			system("notify-send -a \"hello\" world");
+		break;
 		case GADGET_EVENT_MOUSE_MOVE:
 		case GADGET_EVENT_MOUSE_DBLCLICK:
 		break;

@@ -1,0 +1,18 @@
+#!/bin/bash
+
+PACMAN="meson ninja libpng tcc alsa-lib freetype2 fontconfig libpulse pcre2 libunistring libxcb xcb-util-wm xcb-util xcb-util-image xcb-util-errors libxkbcommon libxkbcommon-x11"
+
+APT="meson ninja libpng-dev libtcc-dev libasound2-dev freetype fontconfig libpulse-dev pcre2-devel libunistring-devel xcb libxcb-icccm4-dev libxcb-composite0-dev libxcb-ewmh-dev libxcb-util0-dev libxcb-image0-dev libxcb-randr0-dev libxkbcommon-dev libxkbcommon-x11-dev"
+
+DNF="meson ninja libpng-devel tcc-devel libasound-devel freetype2-devel fontconfig-devel libpulse-devel libpcre2-dev libunistring-dev libxcb-devel libxcbutil-icccm-devel libxcb-util-wm-devel xcb-util-devel xcb-util-image-devel xcb-util-errors libxcb-randr0 libxkbcommon-devel libxkbcommon-x11-devel" 
+
+if [[ $1 == apt ]]; then
+	apt install $APT
+elif [[ $1 == dnf ]]; then
+	dnf install $DNF
+elif [[ $1 == pacman ]]; then
+	pacman --needed -S $PACMAN
+else
+	echo "usage: ./dependency.install packagename"
+	echo "where packagename == apt dnf pacman"
+fi
