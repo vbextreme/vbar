@@ -560,7 +560,7 @@ void vbar_main(void){
 	gadget_network_device_set(network, "wlp3s0");
 	gadget_interval(network, 1000);
 	gadget_start(network);
-
+/*
 	if( !(test = gadget_new(vbar, "return null", "all")) ){
 		error = gadget_new(vbar, "label", "all");
 		gadget_event_register(error, error_event);	
@@ -572,7 +572,7 @@ void vbar_main(void){
 		gadget_interval(error, 0);
 		gadget_start(error);
 	}
-
+*/
 	script = gadget_new(vbar, "script", "all");
 	gadget_event_register(script, script_event);	
 	gadget_align(script, VBAR_ALIGNED_LEFT);

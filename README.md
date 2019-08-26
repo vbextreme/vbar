@@ -82,6 +82,7 @@ Released under GPL v3</br>
 * gadget bluetooth
 * gadget weather
 * gadget overview
-
+* gadget api shell
+* gadget notification
 
 
