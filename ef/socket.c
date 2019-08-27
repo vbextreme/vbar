@@ -315,9 +315,11 @@ err_t socket_wifi_info(char* device, char* essid, int* dbm, int* bitrate){
 	if( ioctl(fd, SIOCGIWESSID, &rqsk) == -1 ){
 		dbg_warning("ioctl essid");
 		dbg_errno();
-		return -1;
+		essid[0] = 0;
 	}
-   	essid[rqsk.u.essid.length] = 0;
+	else{
+		essid[rqsk.u.essid.length] = 0;
+	}
 
 	//memset(&rqsk, 0, sizeof(struct iwreq));
 	rqsk.u.essid.length = sizeof(struct iw_statistics);
@@ -325,7 +327,7 @@ err_t socket_wifi_info(char* device, char* essid, int* dbm, int* bitrate){
 	if( ioctl(fd, SIOCGIWSTATS, &rqsk) == -1 ){
 		dbg_warning("ioctl stats");
 		dbg_errno();
-		return -1;
+		*dbm = 0;
 	}
 	else if( ((struct iw_statistics *)rqsk.u.data.pointer)->qual.updated & IW_QUAL_DBM){
         //signal is measured in dBm and is valid for us to use
@@ -338,9 +340,11 @@ err_t socket_wifi_info(char* device, char* essid, int* dbm, int* bitrate){
 	if( ioctl(fd, SIOCGIWRATE, &rqsk) == -1 ){
 		dbg_warning("ioctl bitrate");
 		dbg_errno();
-		return -1;
+		*bitrate = 0;
 	}
-	memcpy(&bitrate, &rqsk.u.bitrate.value, sizeof(int));
+	else{
+		memcpy(&bitrate, &rqsk.u.bitrate.value, sizeof(int));
+	}
 
 	close(fd);
 	return 0;
