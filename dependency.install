@@ -6,11 +6,11 @@ APT="meson ninja libpng-dev libtcc-dev libasound2-dev freetype fontconfig libpul
 
 DNF="meson ninja libpng-devel tcc-devel libasound-devel freetype2-devel fontconfig-devel libpulse-devel libpcre2-dev libunistring-dev libxcb-devel libxcbutil-icccm-devel libxcb-util-wm-devel xcb-util-devel xcb-util-image-devel xcb-util-errors libxcb-randr0 libxkbcommon-devel libxkbcommon-x11-devel" 
 
-if [[ $1 == apt ]]; then
+if [[ "$1" == "apt" ]]; then
 	apt install $APT
-elif [[ $1 == dnf ]]; then
+elif [[ "$1" == "dnf" ]]; then
 	dnf install $DNF
-elif [[ $1 == pacman ]]; then
+elif [[ "$1" == "pacman" ]]; then
 	pacman --needed -S $PACMAN
 else
 	echo "usage: ./dependency.install packagename"
