@@ -86,6 +86,7 @@ __private unsigned long network_transmit_speed(gadget_s* g){
 
 int gadget_network_load(gadget_s* g){
 	gnetwork_s* gn = mem_new(gnetwork_s);
+	gn->essid[0] = 0;
 	gn->increment = 0;
 	gn->speed = 0;
 	g->data = gn;
