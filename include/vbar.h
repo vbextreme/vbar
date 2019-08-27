@@ -138,6 +138,7 @@ typedef struct gadget{
 	char* name;
 	size_t lenName;
 	char* instance;
+	size_t type;
 
 	int hiden;
 
@@ -223,6 +224,7 @@ typedef struct ipcproto{
 
 #define config_add_symbol(GS, TOK, ARG) tcc_add_symbol((GS)->tcc, TOK, ARG)
 err_t vbar_script_load(vbar_s* vb, char const* sourcefile);
+size_t gadget_type_get(vbar_s* vbar, const char* name);
 void vbar_change_ferr(const char* name);
 const char* vbar_script_error(void);
 err_t vbar_script_run(vbar_s* vb);

@@ -158,6 +158,15 @@ err_t chash_find(void** out, chash_s* ht, const char* name, size_t len){
 	return chash_find_fromhash(out, ht, hash, name, len);
 }
 
+chashElement_s* chash_find_raw(chash_s* ht, const char* name, size_t len){
+	uint32_t hash = ht->hashing(name, len);
+	long bucket;
+	if( (bucket = chash_find_bucket(ht, hash, name, len)) < 0 ){
+		return NULL;
+	}
+	return &ht->table[bucket];
+}
+
 void chash_free(chash_s* ht){
 	for( size_t i = 0; i < ht->size; ++i ){
 		if( NULL == ht->table[i].name ) continue;

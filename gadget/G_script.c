@@ -6,6 +6,8 @@
 //cmd:cmd
 //cmd:cmd
 
+__private size_t TYPE = 0;
+
 typedef struct script{
 	char* out;
 	char* err;
@@ -14,6 +16,7 @@ typedef struct script{
 }script_s;
 
 __private err_t script_shell(gadget_s* g, char* cmd){
+	if( g->type != TYPE ) return -1;
 	script_s* s = g->data;
 	if( s->err ) free(s->err);
 	if( s->out ) free(s->out);
@@ -21,6 +24,8 @@ __private err_t script_shell(gadget_s* g, char* cmd){
 }
 
 __private err_t script_shell_event(gadget_s* g, char* cmd, gadgetEventType_e ev, void* arg){
+	if( g->type != TYPE ) return -1;
+
 	static const char* evname[] = {
 		"GADGET_EVENT_REFRESH",
 		"GADGET_EVENT_EXTEND_OPEN",
@@ -78,11 +83,13 @@ __private err_t script_shell_event(gadget_s* g, char* cmd, gadgetEventType_e ev,
 }
 
 __private const char* script_raw_out_get(gadget_s* g){
+	if( g->type != TYPE ) return "error gadget";
 	script_s* s = g->data;
 	return s->out;
 }
 
 __private const char* script_raw_err_get(gadget_s* g){
+	if( g->type != TYPE ) return "error gadget";
 	script_s* s = g->data;
 	return s->err;
 }
@@ -93,6 +100,7 @@ __private int script_exit_code_get(gadget_s* g){
 }
 
 __private const char* script_txt_get(gadget_s* g){
+	if( g->type != TYPE ) return "error gadget";
 	script_s* s = g->data;
 	char* txt = strstr(s->out, "txt:");
 	if( !txt ){
@@ -105,6 +113,7 @@ __private const char* script_txt_get(gadget_s* g){
 }
 
 __private const char* script_cmd_get(gadget_s* g){
+	if( g->type != TYPE ) return "error gadget";
 	script_s* s = g->data;
 	if( s->cmd == NULL ) s->cmd = s->out;
 	do{
@@ -144,6 +153,7 @@ int gadget_script_load(gadget_s* g){
 
 void gadget_script_register(vbar_s* vb){
 	dbg_info("register label");
+	TYPE = gadget_type_get(vb, "script");
 	config_add_symbol(vb, "gadget_script_shell", script_shell);
 	config_add_symbol(vb, "gadget_script_shell_event", script_shell_event);
 	config_add_symbol(vb, "gadget_script_out_raw", script_raw_out_get);

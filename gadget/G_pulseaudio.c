@@ -1,10 +1,12 @@
 #include <vbar.h>
 #include <pulse/pulseaudio.h>
 
-//WARNING pulseaudio works in other threads, callback is generate from thread and gadget_event is executed from this thread, vbar for now not support concurrency
-//alternative is to create queue and poll to this, same polybar
+//WARNING pulseaudio works in other threads
 //
 //fork from polybar
+
+__private size_t TYPE = 0;
+
 
 #define PULSE_CLASS "vbar"
 #define PULSE_DEFAULT_SINK "@DEFAULT_SINK@"
@@ -243,6 +245,7 @@ __private int pulseaudio_free(gadget_s* g){
 }
 
 __private void gpulse_sink_set(gadget_s* g, char* name){
+	if( g->type != TYPE ) return;
 	pulseaudio_s* pa = g->data;
 	if( name && * name ){
 		pa->sinkname = name;
@@ -250,16 +253,19 @@ __private void gpulse_sink_set(gadget_s* g, char* name){
 }
 
 __private const char* gpulse_sink_get(gadget_s* g){
+	if( g->type != TYPE ) return "error gadget";
 	pulseaudio_s* pa = g->data;
 	return pa->sinkname;
 }
 
 __private int gpulse_volume_get(gadget_s* g){
+	if( g->type != TYPE ) return -1;
 	pulseaudio_s* pa = g->data;
 	return (int)(pa_cvolume_max(&pa->cvolume) * 100.0f / PA_VOLUME_NORM + 0.5f);
 }
 
 __private void gpulse_volume_set(gadget_s* g, float percentage){
+	if( g->type != TYPE ) return;
 	pulseaudio_s* pa = g->data;
 	pa_threaded_mainloop_lock(pa->tml);
 	pa_volume_t vol = (((PA_VOLUME_NORM - PA_VOLUME_MUTED) * percentage) /100.0) + 0.5 + PA_VOLUME_MUTED;
@@ -273,6 +279,7 @@ __private void gpulse_volume_set(gadget_s* g, float percentage){
 }
 
 __private void gpulse_volume_delta(gadget_s* g, int delta) {
+	if( g->type != TYPE ) return;
 	dbg_info("pulse delta %d", delta);
 	pulseaudio_s* pa = g->data;
 	pa_threaded_mainloop_lock(pa->tml);
@@ -304,6 +311,7 @@ __private void gpulse_volume_delta(gadget_s* g, int delta) {
 }
 
 __private void gpulse_mute_set(gadget_s* g, int mode){
+	if( g->type != TYPE ) return;
 	pulseaudio_s* pa = g->data;
 	pa_threaded_mainloop_lock(pa->tml);
 	struct pa_operation *op = pa_context_set_sink_mute_by_index(pa->ctx, pa->mindex, mode, pulseaudio_simple_callback, pa);
@@ -315,11 +323,13 @@ __private void gpulse_mute_set(gadget_s* g, int mode){
 }
 
 __private int gpulse_mute_get(gadget_s* g){
+	if( g->type != TYPE ) return -1;
 	pulseaudio_s* pa = g->data;
 	return pa->mute;
 }
 
 __private void gpulse_connect(gadget_s* g){
+	if( g->type != TYPE ) return;
 	pulseaudio_s* pa = g->data;
 	pulseaudio_init(g, pa, 0);
 }
@@ -342,6 +352,7 @@ int gadget_pulseaudio_load(gadget_s* g){
 
 void gadget_pulseaudio_register(vbar_s* vb){
 	dbg_info("register pulseaudio");
+	TYPE = gadget_type_get(vb, "pulseaudio");
 	config_add_symbol(vb, "gadget_pulseaudio_connect", gpulse_connect);
 	config_add_symbol(vb, "gadget_pulseaudio_sink_set", gpulse_sink_set);
 	config_add_symbol(vb, "gadget_pulseaudio_sink_get", gpulse_sink_get);

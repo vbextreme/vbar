@@ -1,6 +1,8 @@
 #include <vbar.h>
 #include <ef/sysclass.h>
 
+__private size_t TYPE = 0; 
+
 __private size_t wrap_cpufreq_fq_get(unsigned mode, size_t idcpu){
 	__private const char* pcfn[] = { SYSCLASS_CPUFREQ_CURFQ, SYSCLASS_CPUFREQ_MINFQ, SYSCLASS_CPUFREQ_MAXFQ};
 	char fname[PATH_MAX];
@@ -39,6 +41,7 @@ int gadget_cpufreq_load(gadget_s* g){
 
 void gadget_cpufreq_register(vbar_s* vb){
 	dbg_info("register cpu");
+	TYPE = gadget_type_get(vb, "cpufreq");
 	config_add_symbol(vb, "gadget_cpufreq_fq_get", wrap_cpufreq_fq_get);
 	config_add_symbol(vb, "gadget_cpufreq_available_governor_get", wrap_cpufreq_available_governor_get);
 	config_add_symbol(vb, "gadget_cpufreq_available_governor_free", release_available_governor);

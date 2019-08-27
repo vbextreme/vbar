@@ -4,6 +4,8 @@
 
 //TODO unregister deadpoll in galsa_disable_callback
 
+__private size_t TYPE = 0;
+
 typedef struct galsa{
 	char* card;
 	char* channel;
@@ -190,16 +192,19 @@ __private err_t galsa_callback(__unused int ev, void* data){
 }
 
 __private void galsa_card_set(gadget_s* g, char* name){
+	if( g->type != TYPE ) return;
 	galsa_s* a = g->data;
 	a->card = name;
 }
 
 __private void galsa_channel_set(gadget_s* g, char* name){
+	if( g->type != TYPE ) return;
 	galsa_s* a = g->data;
 	a->channel = name;
 }
 
 __private void galsa_volume_set(gadget_s* g, long volume){
+	if( g->type != TYPE ) return;
 	galsa_s* a = g->data;
 	if( galsa_mixer_begin(a) ) return;
 	volume += a->min;
@@ -210,6 +215,7 @@ __private void galsa_volume_set(gadget_s* g, long volume){
 }
 
 __private long galsa_volume_get(gadget_s* g){
+	if( g->type != TYPE ) return -1;
 	long ret;
 	galsa_s* a = g->data;
 	if( galsa_mixer_begin(a) ) return 0;
@@ -220,11 +226,13 @@ __private long galsa_volume_get(gadget_s* g){
 }
 
 __private long galsa_volume_max_get(gadget_s* g){
+	if( g->type != TYPE ) return -1;
 	galsa_s* a = g->data;
 	return (a->max-a->min);
 }
 
 __private void galsa_connect(gadget_s* g){
+	if( g->type != TYPE ) return;
 	galsa_s* a = g->data;
 	if( a->hmixer ) galsa_mixer_end(a);
 	galsa_mixer_begin(a);
@@ -256,6 +264,7 @@ int gadget_alsa_load(gadget_s* g){
 
 void gadget_alsa_register(vbar_s* vb){
 	dbg_info("register alsa");
+	TYPE = gadget_type_get(vb, "alsa");
 	config_add_symbol(vb, "gadget_alsa_card_set", galsa_card_set);
 	config_add_symbol(vb, "gadget_alsa_channel_set", galsa_channel_set);
 	config_add_symbol(vb, "gadget_alsa_volume_set", galsa_volume_set);

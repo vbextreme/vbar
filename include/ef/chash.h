@@ -62,6 +62,7 @@ err_t chash_add_unique_dupkey(chash_s* ht, const char* name, size_t len, void* d
 err_t chash_find_fromhash_custom(void** out, chash_s* ht, uint32_t hash, void* name, chashcmp_f cmp);
 err_t chash_find_fromhash(void** out, chash_s* ht, uint32_t hash, const char* name, size_t len);
 err_t chash_find(void** out, chash_s* ht, const char* name, size_t len);
+chashElement_s* chash_find_raw(chash_s* ht, const char* name, size_t len);
 void chash_free(chash_s* ht);
 err_t chash_remove_fromhash(chash_s* ht, uint32_t hash, const char* name, size_t len);
 err_t chash_remove(chash_s* ht, const char* name, size_t len);

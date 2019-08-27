@@ -40,6 +40,14 @@ __private err_t vbar_gadget_insert(vbar_s* vb, gadget_s* g){
 	return 0;
 }
 
+size_t gadget_type_get(vbar_s* vbar, const char* name){
+	chashElement_s* e = chash_find_raw(&vbar->list, name, strlen(name));
+	if( !e ){
+		return 0;
+	}
+	return (e->distance << 31) | e->hash;
+}
+
 __private gadget_s* gadget_new(vbar_s* vb, char const* class, char const* name){
 	gadget_s* g = mem_zero_many(gadget_s,1);
 	iassert(g);
@@ -58,6 +66,7 @@ __private gadget_s* gadget_new(vbar_s* vb, char const* class, char const* name){
 	g->selfE.priority = 0;
 	g->selfE.data = g;
 	g->selfE.free = NULL;
+	g->type = gadget_type_get(vb, class);
 	return g;
 }
 
@@ -807,6 +816,8 @@ err_t vbar_script_load(vbar_s* vb, char const* sourcefile){
 	}
 	return 0;
 }
+
+
 
 void vbar_change_ferr(const char* name){
 	FILE* f = fopen(name,"w");

@@ -1,6 +1,8 @@
 #include <vbar.h>
 #include <ef/proc.h>
 
+__private size_t TYPE = 0;
+
 typedef struct gnetwork{
 	char* device;
 	char essid[SOCKET_WIFI_ESSID_SIZE];
@@ -31,31 +33,37 @@ __private int network_ellapse(gadget_s* g){
 }
 
 __private void network_device_set(gadget_s* g, char* device){
+	if( g->type != TYPE ) return;
 	gnetwork_s* n = g->data;
 	n->device = device;
 }
 
 __private const char* network_essid_get(gadget_s* g){
+	if( g->type != TYPE ) return "error gadget";
 	gnetwork_s* n = g->data;
 	return n->essid;
 }
 
 __private int network_dbm_get(gadget_s* g){
+	if( g->type != TYPE ) return -1;
 	gnetwork_s* n = g->data;
 	return n->dbm;
 }
 
 __private int network_bitrate_get(gadget_s* g){
+	if( g->type != TYPE ) return -1;
 	gnetwork_s* n = g->data;
 	return n->bitrate;
 }
 	
 __private int network_ok(gadget_s* g){
+	if( g->type != TYPE ) return -1;
 	gnetwork_s* n = g->data;
 	return n->statusok;
 }
 
 __private unsigned long network_receive_speed(gadget_s* g){
+	if( g->type != TYPE ) return 0;
 	gnetwork_s* n = g->data;
 	if( n->increment < 2 ) return 0;
 	size_t old = n->increment & 1;
@@ -66,6 +74,7 @@ __private unsigned long network_receive_speed(gadget_s* g){
 }
 
 __private unsigned long network_transmit_speed(gadget_s* g){
+	if( g->type != TYPE ) return 0;
 	gnetwork_s* n = g->data;
 	if( n->increment < 2 ) return 0;
 	size_t old = n->increment & 1;
@@ -87,6 +96,7 @@ int gadget_network_load(gadget_s* g){
 
 void gadget_network_register(vbar_s* vb){
 	dbg_info("register network");
+	TYPE = gadget_type_get(vb, "network");
 	config_add_symbol(vb, "gadget_network_device_set", network_device_set);
 	config_add_symbol(vb, "gadget_network_essid_get", network_essid_get);
 	config_add_symbol(vb, "gadget_network_dbm_get", network_dbm_get);

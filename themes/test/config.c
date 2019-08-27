@@ -465,6 +465,8 @@ void vbar_main(void){
 	vbar_monitor_set(vbar, NULL);
 	vbar_fonts_set(vbar, FONT, FONT_SIZE);
 	vbar_fonts_set(vbar, "Symbola", FONT_SIZE);
+	//vbar_fonts_set(vbar, "Fira Mono", FONT_SIZE);
+
 
 	vbar_colors_set(vbar, BACKGROUND, FOREGROUND);
 	vbar_height_set(vbar, HEIGHT, SPACING_TOP, SPACING_BOTTOM);

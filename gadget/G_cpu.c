@@ -1,6 +1,8 @@
 #include <vbar.h>
 #include <ef/proc.h>
 
+__private size_t TYPE = 0;
+
 typedef struct procCpu{
 	size_t current;
 	size_t ncores;
@@ -15,6 +17,7 @@ __private int cpu_ellapse(gadget_s* g){
 }
 
 __private double wrap_cpu_load_average(gadget_s* g, unsigned core){
+	if( g->type != TYPE ) return -1.0;
 	procCpu_s* cpu = g->data;
 	if( core > cpu->ncores+1 ){
 		dbg_warning("no core %u", core);
@@ -54,6 +57,7 @@ int gadget_cpu_load(gadget_s* g){
 
 void gadget_cpu_register(vbar_s* vb){
 	dbg_info("register cpu");
+	TYPE = gadget_type_get(vb, "cpu");
 	config_add_symbol(vb, "gadget_cpu_load_average", wrap_cpu_load_average);
 	config_add_symbol(vb, "gadget_cpu_count", cpu_core_count);
 }
