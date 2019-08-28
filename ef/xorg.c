@@ -3,6 +3,16 @@
 #include <xkbcommon/xkbcommon-x11.h>
 #include <xcb/randr.h>
 
+#ifdef XCB_ERROR_ENABLE
+	#define XCB_ERR_DEC xcb_generic_error_t* err
+	#define XCB_ERR_VAR &err
+	#define XCB_ERR_FREE free(err)
+#else
+	#define XCB_ERR_VAR NULL
+	#define XCB_ERR_DEC do{}while(0)
+	#define XCB_ERR_FREE do{}while(0)
+#endif
+
 err_t xorg_client_init(xorg_s* x){
 	x->connection = xcb_connect(x->display,&x->screenDefault);
 	if( x->connection == NULL ){
@@ -30,11 +40,13 @@ err_t xorg_client_init(xorg_s* x){
 		return -1;
 	}
 	
+#ifdef XCB_ERROR_ENABLE
 	x->err = NULL;
 	if( xcb_errors_context_new(x->connection, &x->err) ){
 		xcb_disconnect(x->connection);
 		dbg_fail("xcb util errors");
 	}
+#endif
 
 	xorg_atom_load(x);
 
@@ -52,7 +64,9 @@ err_t xorg_client_init(xorg_s* x){
 void xorg_client_terminate(xorg_s* x){
 	xkb_keymap_unref(x->key.keymap);
 	xkb_context_unref(x->key.ctx);
+#ifdef XCB_ERROR_ENABLE
 	xcb_errors_context_free(x->err);
+#endif
 	if( x->connection ) xcb_disconnect(x->connection);
 	x->connection = NULL;
 	for(size_t i = 0; i < x->monitorCount; ++i){
@@ -80,6 +94,7 @@ void xorg_client_sync(xorg_s* x){
 	xcb_aux_sync(x->connection);
 }
 
+#ifdef XCB_ERROR_ENABLE
 const char* xorg_error_major(xorg_s* x, xcb_generic_error_t* err){
 	return xcb_errors_get_name_for_major_code(x->err, err->major_code);
 }
@@ -91,6 +106,7 @@ const char* xorg_error_minor(xorg_s* x, xcb_generic_error_t* err){
 const char* xorg_error_string(xorg_s* x, xcb_generic_error_t* err, const char** extensionname){
 	return xcb_errors_get_name_for_error(x->err, err->error_code, extensionname);
 }
+#endif
 
 xcb_screen_t* xorg_screen_get(xorg_s* x, int idScreen){
 	xcb_screen_iterator_t iter = xcb_setup_roots_iterator(xcb_get_setup(x->connection));
@@ -181,16 +197,18 @@ err_t xorg_monitor_bysize(xorg_s* x, g2dCoord_s* size){
 }
 
 err_t xorg_monitor_primary(xorg_s* x){
-	xcb_generic_error_t* err;
+	XCB_ERR_DEC;
 	xcb_randr_get_monitors_reply_t* monitors = xcb_randr_get_monitors_reply(x->connection,
-			xcb_randr_get_monitors(x->connection, xorg_root(x),0), &err);
+			xcb_randr_get_monitors(x->connection, xorg_root(x),0), XCB_ERR_VAR);
 	dbg_info("");
 	if( !monitors ){
+#ifdef XCB_ERROR_ENABLE
 		if( err ){
 			dbg_error("monitor %d %s.%s::%s", err->error_code, xorg_error_major(x, err), xorg_error_minor(x, err), xorg_error_string(x, err, NULL));
 			free(err);
 		}
-		dbg_error("");
+#endif
+		dbg_error("monitor");
 	   	return -1;
 	}
 	xcb_randr_monitor_info_iterator_t it = xcb_randr_get_monitors_monitors_iterator(monitors);
@@ -288,13 +306,18 @@ void xorg_atom_load(xorg_s* x){
 	}
 	
 	for( unsigned i = 0; i < XORG_ATOM_COUNT; ++i ){
-		xcb_generic_error_t* err = NULL;
-	    xcb_intern_atom_reply_t *reply = xcb_intern_atom_reply(x->connection, cookie[i], &err);
+	XCB_ERR_DEC;
+    xcb_intern_atom_reply_t *reply = xcb_intern_atom_reply(x->connection, cookie[i], XCB_ERR_VAR);
 		if( !reply ){
 			dbg_error("xorg atom(%s) error", atomName[i]);
+#ifdef XCB_ERROR_ENABLE
 			if( err ){
 				dbg_error("atom reply %d %s.%s::%s", err->error_code, xorg_error_major(x, err), xorg_error_minor(x, err), xorg_error_string(x, err, NULL));
+				free(err);
 			}
+#else
+			dbg_error("atom reply");
+#endif
 			x->atom[i] = 0;
 		}
 		else{
@@ -325,14 +348,16 @@ ONEND:
 }
 
 err_t xorg_xcb_geometry(xorg_s* x, xcb_get_geometry_cookie_t cookie, unsigned* X, unsigned* Y, unsigned* W, unsigned* H, unsigned* B){
-	xcb_generic_error_t* err = NULL;
-	xcb_get_geometry_reply_t* reply = xcb_get_geometry_reply(x->connection, cookie, &err);;
+	XCB_ERR_DEC;
+	xcb_get_geometry_reply_t* reply = xcb_get_geometry_reply(x->connection, cookie, XCB_ERR_VAR);;
 	err_t ret = -1;
 	
+#ifdef XCB_ERROR_ENABLE
 	if( err ){
 		dbg_error("xcb code: %d", err->error_code);
 		goto ONEND;
 	}
+#endif
 	if( !reply ){
 		dbg_warning("xcb not reply");
 		goto ONEND;
@@ -345,7 +370,7 @@ err_t xorg_xcb_geometry(xorg_s* x, xcb_get_geometry_cookie_t cookie, unsigned* X
 	*B = reply->border_width;
 	ret = 0;
 ONEND:
-	free(err);
+	XCB_ERR_FREE;
 	free(reply);
 	return ret;
 }
@@ -367,14 +392,16 @@ inline __private err_t xorg_check_property_reply(xcb_get_property_reply_t* reply
 }
 
 int xorg_xcb_property_cardinal(xorg_s* x, xcb_get_property_cookie_t cookie){
-	xcb_generic_error_t* err = NULL;
-	xcb_get_property_reply_t* reply = xcb_get_property_reply(x->connection, cookie, &err);
+	XCB_ERR_DEC;
+	xcb_get_property_reply_t* reply = xcb_get_property_reply(x->connection, cookie, XCB_ERR_VAR);
 	int ret = -1;
-	
+
+#ifdef XCB_ERROR_ENABLE	
 	if( err ){
 		dbg_error("xcb code: %d", err->error_code);
 		goto ONEND;
 	}
+#endif
 	if( xorg_check_property_reply(reply, XCB_ATOM_CARDINAL) ){
 		goto ONEND;
 	}
@@ -390,7 +417,7 @@ int xorg_xcb_property_cardinal(xorg_s* x, xcb_get_property_cookie_t cookie){
 	ret = *val;
 	
 ONEND:
-	free(err);
+	XCB_ERR_FREE;
 	free(reply);
 	return ret;
 }
@@ -400,14 +427,15 @@ xcb_get_property_cookie_t xorg_xcb_property_cookie_string(xorg_s* x, xcb_window_
 }
 
 char* xorg_xcb_property_string(xorg_s* x, xcb_get_property_cookie_t cookie){
-	xcb_generic_error_t* err = NULL;
-	xcb_get_property_reply_t* reply = xcb_get_property_reply(x->connection, cookie, &err);
+	XCB_ERR_DEC;
+	xcb_get_property_reply_t* reply = xcb_get_property_reply(x->connection, cookie, XCB_ERR_VAR);
 	char* dst = NULL;
-
+#ifdef XCB_ERROR_ENABLE
 	if( err ){
 		dbg_error("xcb code: %d", err->error_code);
 		goto ONEND;
 	}
+#endif
 	if( !reply ){
 		dbg_warning("xcb not reply");
 		goto ONEND;
@@ -421,20 +449,21 @@ char* xorg_xcb_property_string(xorg_s* x, xcb_get_property_cookie_t cookie){
 	dst = mem_many(char, len+1);
 	sprintf(dst,"%.*s", len, (char*)xcb_get_property_value(reply));
 ONEND:
-	free(err);
+	XCB_ERR_FREE;
 	free(reply);
 	return dst;
 }
 
 char** xorg_xcb_property_string_list(xorg_s* x, xcb_get_property_cookie_t cookie){
-	xcb_generic_error_t* err = NULL;
-	xcb_get_property_reply_t* reply = xcb_get_property_reply(x->connection, cookie, &err);
+	XCB_ERR_DEC;
+	xcb_get_property_reply_t* reply = xcb_get_property_reply(x->connection, cookie, XCB_ERR_VAR);
 	char** dst = NULL;
-
+#ifdef XCB_ERROR_ENABLE
 	if( err ){
 		dbg_error("xcb code: %d", err->error_code);
 		goto ONEND;
 	}
+#endif
 	if( !reply ){
 		dbg_warning("xcb not reply");
 		goto ONEND;
@@ -462,20 +491,21 @@ char** xorg_xcb_property_string_list(xorg_s* x, xcb_get_property_cookie_t cookie
 		src+=ls+1;
 	}
 ONEND:
-	free(err);
+	XCB_ERR_FREE;
 	free(reply);
 	return dst;
 }
 
 err_t xorg_xcb_property_structure(void* out, xorg_s* x, xcb_get_property_cookie_t cookie, xcb_atom_t type, size_t size, size_t minsize){
-	xcb_generic_error_t* err = NULL;
-	xcb_get_property_reply_t* reply = xcb_get_property_reply(x->connection, cookie, &err);
+	XCB_ERR_DEC;
+	xcb_get_property_reply_t* reply = xcb_get_property_reply(x->connection, cookie, XCB_ERR_VAR);
 	int ret = -1;
-	
+#ifdef XCB_ERROR_ENABLE
 	if( err ){
 		dbg_error("xcb (%d) %s.%s::%s", err->error_code, xorg_error_major(x, err), xorg_error_minor(x, err), xorg_error_string(x, err, NULL));
 		goto ONEND;
 	}
+#endif
 	if( xorg_check_property_reply(reply, type) ){
 		goto ONEND;
 	}
@@ -494,20 +524,21 @@ err_t xorg_xcb_property_structure(void* out, xorg_s* x, xcb_get_property_cookie_
 	ret = 0;
 	
 ONEND:
-	free(err);
+	XCB_ERR_FREE;
 	free(reply);
 	return ret;
 }
 
 xcb_atom_t* xorg_xcb_property_atom_list(size_t* len, xorg_s* x, xcb_get_property_cookie_t cookie){
-	xcb_generic_error_t* err = NULL;
-	xcb_get_property_reply_t* reply = xcb_get_property_reply(x->connection, cookie, &err);
+	XCB_ERR_DEC;
+	xcb_get_property_reply_t* reply = xcb_get_property_reply(x->connection, cookie, XCB_ERR_VAR);
 	xcb_atom_t* dst = NULL;
-
+#ifdef XCB_ERROR_ENABLE
 	if( err ){
 		dbg_error("xcb code: %d", err->error_code);
 		goto ONEND;
 	}
+#endif
 	if( xorg_check_property_reply(reply, XCB_ATOM_ATOM) ){
 		goto ONEND;
 	}
@@ -523,20 +554,21 @@ xcb_atom_t* xorg_xcb_property_atom_list(size_t* len, xorg_s* x, xcb_get_property
 	}
 
 ONEND:
-	free(err);
+	XCB_ERR_FREE;
 	free(reply);
 	return dst;
 }
 
 xcb_pixmap_t xorg_xcb_property_pixmap(xorg_s* x, xcb_get_property_cookie_t cookie){
-	xcb_generic_error_t* err = NULL;
-	xcb_get_property_reply_t* reply = xcb_get_property_reply(x->connection, cookie, &err);
+	XCB_ERR_DEC;
+	xcb_get_property_reply_t* reply = xcb_get_property_reply(x->connection, cookie, XCB_ERR_VAR);
 	xcb_pixmap_t ret = XCB_NONE;
-	
+#ifdef XCB_ERROR_ENABLE
 	if( err ){
 		dbg_error("xcb code: %d", err->error_code);
 		goto ONEND;
 	}
+#endif
 	if( xorg_check_property_reply(reply, XCB_ATOM_PIXMAP) ){
 		dbg_error("check");
 		goto ONEND;
@@ -553,7 +585,7 @@ xcb_pixmap_t xorg_xcb_property_pixmap(xorg_s* x, xcb_get_property_cookie_t cooki
 	ret = *val;
 	
 ONEND:
-	free(err);
+	XCB_ERR_FREE;
 	free(reply);
 	return ret;
 }
@@ -792,14 +824,25 @@ struct xwReq{
 };
 
 xorgWindow_s* xorg_query_tree(size_t* count, xorg_s* x, xcb_window_t idxcb){
-	xcb_generic_error_t *err = NULL;
+	XCB_ERR_DEC;
 	xcb_query_tree_cookie_t cookie = xcb_query_tree(x->connection, idxcb);
 	
-	xcb_query_tree_reply_t* tree = xcb_query_tree_reply(x->connection, cookie, &err);
-	if( !tree || err ){
-		dbg_error("query tree (%d)", err->error_code);
+	xcb_query_tree_reply_t* tree = xcb_query_tree_reply(x->connection, cookie, XCB_ERR_VAR);
+
+	if( !tree
+#ifdef XCB_ERROR_ENABLE	
+			|| err
+#endif	
+			){
+		dbg_error("query tree (%d)", 
+#ifdef XCB_ERROR_ENABLE
+				err->error_code
+#else
+				-1
+#endif
+				);
 		free(tree);
-		free(err);
+		XCB_ERR_FREE;
 		return NULL;
 	}
 
@@ -899,19 +942,22 @@ xorgWindow_s* xorg_window_application(xorg_s* x,  size_t nworkspace, xcb_window_
 
 unsigned xorg_workspace_count(xorg_s* x){
 	unsigned ret = 0;
-	xcb_generic_error_t* err = NULL;
+	XCB_ERR_DEC;
 	xcb_get_property_cookie_t ws = xcb_get_property_unchecked(x->connection, 0, xorg_root(x), x->atom[XORG_ATOM_NET_NUMBER_OF_DESKTOPS], XCB_ATOM_CARDINAL, 0, sizeof(int));
-	xcb_get_property_reply_t* prop = xcb_get_property_reply(x->connection, ws, &err);
+	xcb_get_property_reply_t* prop = xcb_get_property_reply(x->connection, ws, XCB_ERR_VAR);
 	if( prop ){
 		unsigned* nd = (unsigned*)xcb_get_property_value(prop);
 		ret = *nd;
 	}
 	else{
+#ifdef XCB_ERROR_ENABLE
 		if( err ){
 			dbg_error("xcb (%d) %s.%s::%s", err->error_code, xorg_error_major(x, err), xorg_error_minor(x, err), xorg_error_string(x, err, NULL));
 			free(err);
 		}
-		else{
+		else
+#endif
+		{
 			dbg_error("no reply");
 		}
 	}
@@ -921,19 +967,22 @@ unsigned xorg_workspace_count(xorg_s* x){
 
 unsigned xorg_workspace_active(xorg_s* x){
 	unsigned ret = 0;
-	xcb_generic_error_t* err = NULL;
+	XCB_ERR_DEC;
 	xcb_get_property_cookie_t ws = xcb_get_property(x->connection, 0, xorg_root(x), x->atom[XORG_ATOM_NET_CURRENT_DESKTOP], XCB_ATOM_CARDINAL, 0, sizeof(int));
-	xcb_get_property_reply_t* prop = xcb_get_property_reply(x->connection, ws, &err);
+	xcb_get_property_reply_t* prop = xcb_get_property_reply(x->connection, ws, XCB_ERR_VAR);
 	if( prop ){
 		unsigned* nd = (unsigned*)xcb_get_property_value(prop);
 		ret = *nd;
 	}
 	else{
+#ifdef XCB_ERROR_ENABLE
 		if( err ){
 			dbg_error("xcb (%d) %s.%s::%s", err->error_code, xorg_error_major(x, err), xorg_error_minor(x, err), xorg_error_string(x, err, NULL));
 			free(err);
 		}
-		else{
+		else
+#endif
+		{
 			dbg_error("no reply");
 		}
 	}
@@ -952,10 +1001,9 @@ char** xorg_workspace_name_get(xorg_s* x){
 }
 
 uint8_t* xorg_ximage_get_composite(unsigned* outW, unsigned* outH, unsigned* outV, unsigned* outD, xorg_s* x, xcb_window_t id){
-    xcb_generic_error_t *err = NULL;
-
+	XCB_ERR_DEC;
     xcb_composite_query_version_cookie_t comp_ver_cookie = xcb_composite_query_version(x->connection, 0, 2);
-    xcb_composite_query_version_reply_t *comp_ver_reply = xcb_composite_query_version_reply(x->connection, comp_ver_cookie, &err);
+    xcb_composite_query_version_reply_t *comp_ver_reply = xcb_composite_query_version_reply(x->connection, comp_ver_cookie, XCB_ERR_VAR);
     if( comp_ver_reply ){
         if (comp_ver_reply->minor_version < 2) {
 			dbg_error("query composite failure: server returned v%d.%d", comp_ver_reply->major_version, comp_ver_reply->minor_version);
@@ -964,17 +1012,18 @@ uint8_t* xorg_ximage_get_composite(unsigned* outW, unsigned* outH, unsigned* out
         }
         free(comp_ver_reply);
     }
+#ifdef XCB_ERROR_ENABLE
     else if( err ){
         dbg_error("xcb error: %d\n", err->error_code);
         free(err);
         return NULL;
     }
-
+#endif
     xcb_composite_redirect_window(x->connection, id, XCB_COMPOSITE_REDIRECT_AUTOMATIC);
     int win_h, win_w;//, win_d;
 
     xcb_get_geometry_cookie_t gg_cookie = xcb_get_geometry(x->connection, id);
-    xcb_get_geometry_reply_t *gg_reply = xcb_get_geometry_reply(x->connection, gg_cookie, &err);
+    xcb_get_geometry_reply_t *gg_reply = xcb_get_geometry_reply(x->connection, gg_cookie, XCB_ERR_VAR);
     if (gg_reply) {
         win_w = gg_reply->width;
         win_h = gg_reply->height;
@@ -982,10 +1031,12 @@ uint8_t* xorg_ximage_get_composite(unsigned* outW, unsigned* outH, unsigned* out
         free(gg_reply);
     } 
 	else{
+#ifdef XCB_ERROR_ENABLE
         if( err ){
             dbg_error("get geometry: XCB error %d\n", err->error_code);
             free(err);
         }
+#endif
         return NULL;
     }
 
@@ -996,7 +1047,7 @@ uint8_t* xorg_ximage_get_composite(unsigned* outW, unsigned* outH, unsigned* out
 	
     // get the image
     xcb_get_image_cookie_t gi_cookie = xcb_get_image(x->connection, XCB_IMAGE_FORMAT_Z_PIXMAP, win_pixmap, 0, 0, win_w, win_h, (uint32_t)(~0UL));
-    xcb_get_image_reply_t *gi_reply = xcb_get_image_reply(x->connection, gi_cookie, &err);
+    xcb_get_image_reply_t *gi_reply = xcb_get_image_reply(x->connection, gi_cookie, XCB_ERR_VAR);
     uint8_t* data = NULL;
 	if( gi_reply ){
         int data_len = xcb_get_image_data_length(gi_reply);
@@ -1012,11 +1063,14 @@ uint8_t* xorg_ximage_get_composite(unsigned* outW, unsigned* outH, unsigned* out
         free(gi_reply);
     }
 	else{
+#ifdef XCB_ERROR_ENABLE
 		if( err ){
 			dbg_error("get image fail: %d %s.%s::%s", err->error_code, xorg_error_major(x, err), xorg_error_minor(x, err), xorg_error_string(x, err, NULL));
 			free(err);
 		}
-		else{
+		else
+#endif
+		{
 			dbg_error("unknown data");
 		}
 	}
@@ -1033,21 +1087,23 @@ xcb_pixmap_t xorg_root_pixmap_get(xorg_s* x){
 }
 
 uint8_t* xorg_ximage_root_get(unsigned* outW, unsigned* outH, unsigned* outV, unsigned* outD, xorg_s* x){
-    xcb_generic_error_t *err = NULL;
+	XCB_ERR_DEC;
 	int win_h, win_w;
 
     xcb_get_geometry_cookie_t gg_cookie = xcb_get_geometry(x->connection, xorg_root(x));
-    xcb_get_geometry_reply_t *gg_reply = xcb_get_geometry_reply(x->connection, gg_cookie, &err);
+    xcb_get_geometry_reply_t *gg_reply = xcb_get_geometry_reply(x->connection, gg_cookie, XCB_ERR_VAR);
     if (gg_reply) {
         win_w = gg_reply->width;
         win_h = gg_reply->height;
         free(gg_reply);
     } 
 	else{
+#if XCB_ERROR_ENABLE
         if( err ){
             dbg_error("get geometry: XCB error %d\n", err->error_code);
             free(err);
         }
+#endif
         return NULL;
     }
 	dbg_info("root %d*%d",win_w,win_h);
@@ -1056,7 +1112,7 @@ uint8_t* xorg_ximage_root_get(unsigned* outW, unsigned* outH, unsigned* outV, un
 	
     // get the image
     xcb_get_image_cookie_t gi_cookie = xcb_get_image(x->connection, XCB_IMAGE_FORMAT_Z_PIXMAP, xorg_root(x), 0, 0, win_w, win_h, (uint32_t)(~0UL));
-    xcb_get_image_reply_t *gi_reply = xcb_get_image_reply(x->connection, gi_cookie, &err);
+    xcb_get_image_reply_t *gi_reply = xcb_get_image_reply(x->connection, gi_cookie, XCB_ERR_VAR);
     uint8_t* data = NULL;
 	if( gi_reply ){
         int data_len = xcb_get_image_data_length(gi_reply);
@@ -1072,11 +1128,14 @@ uint8_t* xorg_ximage_root_get(unsigned* outW, unsigned* outH, unsigned* outV, un
         free(gi_reply);
     }
 	else{
+#ifdef XCB_ERROR_ENABLE
 		if( err ){
 			dbg_error("get image fail: %d %s.%s::%s", err->error_code, xorg_error_major(x, err), xorg_error_minor(x, err), xorg_error_string(x, err, NULL));
 			free(err);
 		}
-		else{
+		else
+#endif
+		{
 			dbg_error("unknown data");
 		}
 	}
@@ -1187,11 +1246,19 @@ void xorg_wm_reserve_dock_space_on_bottom(xorg_s* x, xcb_window_t id, unsigned X
 
 void xorg_register_events(xorg_s* x, xcb_window_t window, unsigned int eventmask) {
 	xcb_void_cookie_t cookie = xcb_change_window_attributes_checked(x->connection, window, XCB_CW_EVENT_MASK, (uint32_t[]){eventmask});
+#ifdef XCB_ERROR_ENABLE
 	xcb_generic_error_t *err = xcb_request_check(x->connection, cookie);
 	if (err != NULL) {
 		dbg_error("xcb change windows attribute, event mask: %d", err->error_code);
 		free(err);
 	}
+#else
+	void *err = xcb_request_check(x->connection, cookie);
+	if (err != NULL) {
+		dbg_error("xcb change windows attributei");
+		free(err);
+	}
+#endif
 }
 
 xcb_window_t xorg_win_new(xorgSurface_s* surface, xorg_s* x, xcb_window_t parent, g2dCoord_s* pos, unsigned border, g2dColor_t background){

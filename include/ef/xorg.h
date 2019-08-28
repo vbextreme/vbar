@@ -12,8 +12,11 @@
 #include <xcb/xcb_atom.h>
 #include <xcb/xcb_icccm.h>
 #include <xcb/composite.h>
-#include <xcb/xcb_errors.h>
 #include <xkbcommon/xkbcommon.h>
+
+#ifdef XCB_ERROR_ENABLE
+	#include <xcb/xcb_errors.h>
+#endif
 
 #define XKB_UTF_MAX 32
 
@@ -84,7 +87,9 @@ typedef struct xorg{
 	monitor_s* monitorPrimary;
 	char* display;
 	xkb_s key;
+#ifdef XCB_ERROR_ENABLE
 	xcb_errors_context_t* err;
+#endif
 	xorgAtom_e atom[XORG_ATOM_COUNT];
 	long clickms;
 	long dblclickms;
@@ -203,9 +208,11 @@ void xorg_client_terminate(xorg_s* x);
 err_t xorg_root_init(xorg_s* x, int onscreen);
 void xorg_client_flush(xorg_s* x);
 void xorg_client_sync(xorg_s* x);
+#ifdef XCB_ERROR_ENABLE
 const char* xorg_error_major(xorg_s* x, xcb_generic_error_t* err);
 const char* xorg_error_minor(xorg_s* x, xcb_generic_error_t* err);
 const char* xorg_error_string(xorg_s* x, xcb_generic_error_t* err, const char** extensionname);
+#endif
 xcb_screen_t* xorg_screen_get(xorg_s* x, int idScreen);
 void xorg_randr_monitor_refresh(xorg_s* x);
 err_t xorg_monitor_byname(xorg_s* x, char const* name);
