@@ -1,2 +1,3 @@
 #!/bin/bash
-cp vbarScript.h /usr/include/vbarScript.h
+mkdir -p $DESTDIR/usr/include/
+cp vbarScript.h $DESTDIR/usr/include/vbarScript.h
