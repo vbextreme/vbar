@@ -1,0 +1,5 @@
+#!/bin/bash
+
+killall -q vbar
+while pgrep -x vbar >/dev/null; do sleep 1; done
+vbar
