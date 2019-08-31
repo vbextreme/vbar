@@ -77,6 +77,10 @@ Released under GPL v3</br>
 * **0.0**  begin
 
 ## Release Schedule
+* test foreground color
+* check cpu gadget
+* check awesome fonts
+* check change background color in mouse events
 * add documentation
 * add themes
 * gadget bluetooth
