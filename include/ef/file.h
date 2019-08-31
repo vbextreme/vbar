@@ -18,7 +18,7 @@ typedef struct dirent dirent_s;
 #define __fd_autoclose   __cleanup(fd_close_auto)
 #define __file_autoclose __cleanup(file_close_auto)
 
-
+void path_kill_back(char* path);
 err_t path_current(char* path);
 err_t path_home(char* path);
 char* path_resolve(char* path);

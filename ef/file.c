@@ -1,11 +1,17 @@
 #include <ef/type.h>
 #include <ef/file.h>
 #include <ef/memory.h>
+#include <ef/strong.h>
 #include <sys/time.h>
 #include <time.h>
 #include <string.h>
 #include <utime.h>
 #include <pwd.h>
+
+void path_kill_back(char* path){
+	char* bs = strrchr(path, '/');
+	if( bs ) *bs = 0;
+}
 
 err_t path_current(char* path){
     catch_null( getcwd(path, PATH_MAX) ){
@@ -36,14 +42,41 @@ err_t path_home(char* path){
 
 char* path_resolve(char* path){
 	char tmp[PATH_MAX];
+
 	if( *path == '~' ){
 		if( path_home(tmp) ){
 			return NULL;
 		}
 		strcpy(&tmp[strlen(tmp)], &path[1]);
-		return realpath(path,0);
+		return str_dup(tmp,0);
 	}
-	return realpath(path,0);
+	else if( *path == '.' ){
+		path_current(tmp);
+		if( path[1] == '.' ){
+			path_kill_back(tmp);
+			if( path[2] ){
+				size_t l = strlen(tmp);
+				if( path[2] != '/' ){
+					tmp[l++] = '/';
+					tmp[l] = 0;
+				}
+				strcpy(&tmp[strlen(tmp)], &path[2]);
+				return str_dup(tmp,0);
+			}
+			return str_dup(tmp, 0);
+		}
+		if( path[1] ){
+			size_t l = strlen(tmp);
+			if( path[1] != '/' ){
+				tmp[l++] = '/';
+				tmp[l] = 0;
+			}
+			strcpy(&tmp[strlen(tmp)], &path[1]);
+			return str_dup(tmp,0);
+		}
+		return str_dup(tmp, 0);
+	}
+	return NULL;
 }
 
 char const* file_extension(char const* name){

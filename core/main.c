@@ -40,15 +40,18 @@ int main(int argc, char* argv[]){
 	}
 
 	if( args[a_config].hasset ){
+		dbg_info("use config %s", (char*)args[a_config].autoset);
 		config = path_resolve(args[a_config].autoset);
 	}
 	else{
+		dbg_info("use config %s", VBAR_CONFIG);
 		config = path_resolve(VBAR_CONFIG);
 	}
 	if( !config ){
 		dbg_error("bad path");
 		return 1;
 	}
+	dbg_info("config resolve to %s", config);
 
 	vbar_s vbar;
 	memset(&vbar, 0, sizeof(vbar_s));
