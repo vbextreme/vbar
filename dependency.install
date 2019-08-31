@@ -2,16 +2,23 @@
 
 PACMAN="meson ninja libpng tcc alsa-lib freetype2 fontconfig libpulse pcre2 libunistring libxcb xcb-util-wm xcb-util xcb-util-image xcb-util-errors libxkbcommon libxkbcommon-x11"
 
-APT="meson ninja-build libpng-dev libtcc-dev libasound2-dev libfreetype6-dev libfontconfig1-dev libpulse-dev libpcre2-dev libunistring-dev xcb libxcb-icccm4-dev libxcb-composite0-dev libxcb-ewmh-dev libxcb-util0-dev libxcb-image0-dev libxcb-randr0-dev libxkbcommon-dev libxkbcommon-x11-dev"
+APT="meson ninja-build libpng-dev tcc libtcc-dev libasound2-dev libfreetype6-dev libfontconfig1-dev libpulse-dev libpcre2-dev libunistring-dev xcb libxcb-icccm4-dev libxcb-composite0-dev libxcb-ewmh-dev libxcb-util0-dev libxcb-image0-dev libxcb-randr0-dev libxkbcommon-dev libxkbcommon-x11-dev"
 
-DNF="meson ninja libpng-devel tcc-devel libasound-devel freetype2-devel fontconfig-devel libpulse-devel libpcre2-dev libunistring-dev libxcb-devel libxcbutil-icccm-devel libxcb-util-wm-devel xcb-util-devel xcb-util-image-devel xcb-util-errors libxcb-randr0 libxkbcommon-devel libxkbcommon-x11-devel" 
+#todo SELINUX
+DNF="meson ninja-build libpng-devel freetype-devel fontconfig-devel pulseaudio-libs-devel pcre2-devel libunistring-devel libxcb-devel xcb-util-devel xcb-util-xrm-devel xcb-proto xcb-util-wm-devel xcb-util-cursor-devel xcb-util-image-devel libxkbcommon-devel libxkbcommon-x11-devel tcc alsa-lib-devel" 
 
 if [[ "$1" == "apt" ]]; then
-	apt install $APT
+	sudo apt install $APT
 elif [[ "$1" == "dnf" ]]; then
-	dnf install $DNF
+	#dnf copr enable lantw44/tcc
+	sudo dnf install $DNF
+	git clone git://repo.or.cz/tinycc.git
+	cd tinycc
+	./configure --with-selinux
+	make -j4
+	sudo make install
 elif [[ "$1" == "pacman" ]]; then
-	pacman --needed -S $PACMAN
+	sudo pacman --needed -S $PACMAN
 else
 	echo "usage: ./dependency.install packagename"
 	echo "where packagename == apt dnf pacman"
