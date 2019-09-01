@@ -5,7 +5,6 @@
 //[0] vbarScript ninja not auto regenerate if edit baseScript, is not a bug?
 //[0] :( input not works with bar
 //[1] check bar moved is xorg_win_resize?
-//[3] protect draw text offscreen
 //[3] on config gadget_load can return NULL, is better return error gadget
 //[4] gadget_unload
 //[6] gadget separator
