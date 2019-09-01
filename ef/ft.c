@@ -15,8 +15,10 @@ __private FT_Library _ftl;
 #define FT_ERROR_START_LIST     {
 #define FT_ERROR_END_LIST       };
 
+#ifdef DEBUG_ENABLE
 __private const char* ftStrError[] = 
 #include FT_ERRORS_H
+#endif
 
 err_t ft_init(ftlib_h* ftl){
 	if(ftl == NULL){

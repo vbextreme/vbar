@@ -68,7 +68,7 @@ __private trieElement_s* trie_add_charset(trieElement_s* node, char ch, void* da
 }
 
 
-
+#if DEBUG_ENABLE
 
 __private char* term_escape_escape(int ch){
 	static char ret[2] = {0};
@@ -87,7 +87,7 @@ __private char* term_escape_escape(int ch){
 	}
 }
 
-
+#endif
 
 
 

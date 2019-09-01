@@ -556,6 +556,15 @@ void vbar_main(void){
 	gadget_interval(mem, 2000);
 	gadget_start(mem);
 
+	network = gadget_new(vbar, "network", "all");
+	gadget_event_register(network, network_event);	
+	gadget_align(network, VBAR_ALIGNED_RIGHT);
+	gadget_border_color(network, rgb(220,30,30));
+	gadget_border(network, VBAR_BORDER_BOTTOM);
+	gadget_network_device_set(network, "wlp3s0");
+	gadget_interval(network, 1000);
+	gadget_start(network);
+
 	cpu = gadget_new(vbar, "cpu", "all");
 	gadget_event_register(cpu, cpu_event);	
 	//gadget_align(cpu, VBAR_ALIGNED_LEFT);
@@ -564,7 +573,7 @@ void vbar_main(void){
 	gadget_border_color(cpu, rgb(220,30,30));
 	gadget_border(cpu, VBAR_BORDER_BOTTOM);
 	//gadget_background(cpu, rgb(50,150,150));
-	gadget_interval(cpu, 800);
+	gadget_interval(cpu, 900);
 	gadget_extend_enable(cpu, 4);
 	gadget_extend_background(cpu, 0, rgb(10,10,55));
 	gadget_start(cpu);
@@ -574,14 +583,6 @@ void vbar_main(void){
 	gadget_interval(cpufreq, 0);
 	gadget_start(cpufreq);
 
-	network = gadget_new(vbar, "network", "all");
-	gadget_event_register(network, network_event);	
-	gadget_align(network, VBAR_ALIGNED_RIGHT);
-	gadget_border_color(network, rgb(220,30,30));
-	gadget_border(network, VBAR_BORDER_BOTTOM);
-	gadget_network_device_set(network, "wlp3s0");
-	gadget_interval(network, 1000);
-	gadget_start(network);
 /*
 	if( !(test = gadget_new(vbar, "return null", "all")) ){
 		error = gadget_new(vbar, "label", "all");
@@ -591,10 +592,11 @@ void vbar_main(void){
 		gadget_border(error, VBAR_BORDER_BOTTOM);
 		gadget_background(error, rgb(100,10,10));
 		gadget_label_set(error, "error: on create gadget");
-		gadget_interval(error, 0);
+		gadget_interval(error, 1000);
 		gadget_start(error);
 	}
 */
+	
 	script = gadget_new(vbar, "script", "all");
 	gadget_event_register(script, script_event);	
 	gadget_align(script, VBAR_ALIGNED_LEFT);

@@ -27,7 +27,9 @@ __private int network_ellapse(gadget_s* g){
 	else{
 		n->statusok = 1;
 	}
-	net_device(&n->nd[n->increment&1], n->device);
+	if( net_device(&n->nd[n->increment&1], n->device) ){
+		dbg_error("on read net devices");
+	}
 	++n->increment;
 	return 0;
 }

@@ -78,8 +78,8 @@ __private void gadget_free(gadget_s* g){
 
 __private void gadget_tick(gadget_s* g){
 	if( g->eventTimems > 0 ){
-		dbg_info("%s is runner", g->instance);
 		g->selfE.priority = g->eventTimems + time_ms();
+		dbg_info("%s is runner wake on %ld", g->instance, g->selfE.priority);
 		phq_insert(&g->vbar->runner, &g->selfE);
 	}
 }
@@ -464,35 +464,49 @@ __private void vbar_raise_refresh(vbar_s* vb, gadget_s* g){
 	vb->active = old;
 }
 
+/*
+void _dump(phq_s *q){
+    for(size_t i = 1; i < q->count; ++i){
+		gadget_s* g = q->elements[i]->data;
+        dbg_info("[%lu-%lu] priority=%lu data=%p %s", i, q->elements[i]->index, q->elements[i]->priority, q->elements[i]->data, g->instance); 
+    }
+}
+*/
+
 err_t vbar_deadline(__unused int type, void* vbar){
 	vbar_s* vb = vbar;
-	
-	iassert(phq_count(&vb->runner));
-	phqElement_s* raised = phq_pop(&vb->runner);
-	iassert( raised );
+	phqElement_s* raised;
 
-	gadget_s* g = raised->data;
-	iassert( g );
-	g->redraw = GADGET_NOREDRAW;	
-	vbar_label_reset(g);
+	do{	
+		iassert(phq_count(&vb->runner));
+		raised = phq_pop(&vb->runner);
+		iassert( raised );
 
-	vb->active = g;
-	if( g->ellapse ){
-		g->ellapse(g);
-	}
-	
-	if( g->event ){
-		g->event(g, GADGET_EVENT_REFRESH, NULL);
-		if( vb->extend == g ){
-			vbar_extend_reset(vb->extend);
-			g->event(g, GADGET_EVENT_EXTEND_REFRESH, NULL);
+		gadget_s* g = raised->data;
+		iassert( g );
+		dbg_info("deadline %s", g->instance);
+		g->redraw = GADGET_NOREDRAW;	
+		vbar_label_reset(g);
+
+		vb->active = g;
+		if( g->ellapse ){
+			g->ellapse(g);
 		}
-	}
 	
-	if( vb->active  ){
-		gadget_tick(g);
-		vb->active = NULL;
-	}
+		if( g->event ){
+			g->event(g, GADGET_EVENT_REFRESH, NULL);
+			if( vb->extend == g ){
+				vbar_extend_reset(vb->extend);
+				g->event(g, GADGET_EVENT_EXTEND_REFRESH, NULL);
+			}
+		}
+	
+		if( vb->active  ){
+			gadget_tick(g);
+			vb->active = NULL;
+		}
+		raised = phq_peek(&vb->runner);
+	}while( raised->priority <= time_ms() );
 
 	return 0;
 }
@@ -910,6 +924,7 @@ void vbar_gadget_refresh_all(vbar_s* vb){
 
 void vbar_loop(vbar_s* vb){
 	long timer = -1;
+	
 	while(1){
 		phqElement_s* pk = phq_peek(&vb->runner);
 		if( pk ){

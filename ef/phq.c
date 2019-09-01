@@ -70,7 +70,7 @@ __private size_t maxchild(phq_s *q, size_t i){
     size_t childnode = left(i);
 
     if (childnode > q->count) return 0;
-    if ( (childnode+1) < q->count && q->cmp(q->elements[childnode]->priority, q->elements[childnode+1]->priority) ) childnode++;
+    if ( (childnode+1) < q->count+1 && q->cmp(q->elements[childnode]->priority, q->elements[childnode+1]->priority) ) childnode++;
 
     return childnode;
 }
