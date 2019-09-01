@@ -33,7 +33,7 @@ void script_event(gadget_s* g, gadgetEventType_e event, void* arg){
 		case GADGET_EVENT_REFRESH:{
 			gadget_script_shell_event(g, "/home/vbextreme/Project/c/app/vbar/test.sh", event, arg);
 			const char* txt = gadget_script_txt(g);
-			gadget_text(g, " %s ", txt);
+			gadget_text(g, " %s test awesome ", txt);
 			gadget_redraw(g);
 		}
 		break;
@@ -52,15 +52,22 @@ void script_event(gadget_s* g, gadgetEventType_e event, void* arg){
 		case GADGET_EVENT_EXTEND_REFRESH:
 		case GADGET_EVENT_EXTEND_CLOSE:
 		case GADGET_EVENT_MOUSE_CLICK:
+		
+		//TEST MOUSE PRESS
+
 		case GADGET_EVENT_MOUSE_RELEASE:
 			gadget_background(g, BACKGROUND);
+			gadget_foreground(g, FOREGROUND);
 			gadget_redraw(g);
 		break;
 
 		case GADGET_EVENT_MOUSE_PRESS:
 			gadget_background(g, rgb(220,30,30));
+			gadget_foreground(g, rgb(10,10,10));
 			gadget_redraw(g);
 		break;
+
+		// END TEST
 
 		case GADGET_EVENT_MOUSE_MOVE:
 		case GADGET_EVENT_MOUSE_DBLCLICK:{
@@ -473,7 +480,10 @@ void vbar_main(void){
 	vbar_monitor_set(vbar, NULL);
 	vbar_fonts_set(vbar, FONT, FONT_SIZE);
 	vbar_fonts_set(vbar, "Symbola", FONT_SIZE);
-	//vbar_fonts_set(vbar, "Fira Mono", FONT_SIZE);
+	vbar_fonts_set(vbar, "FontAwesome5FreeRegular", FONT_SIZE);
+	vbar_fonts_set(vbar, "FontAwesome5FreeSolid", FONT_SIZE);
+	vbar_fonts_set(vbar, "FontAwesome5Brands", FONT_SIZE);
+
 
 
 	vbar_colors_set(vbar, BACKGROUND, FOREGROUND);
