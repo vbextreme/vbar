@@ -10,10 +10,13 @@ typedef enum{
 	a_count
 }arg_e;
 
+long topSpacingOpt = 0;
+
 argdef_s args[] = {
 	{0, 'h', "help",    ARGDEF_NOARG, NULL, "display this help"},
 	{0, 'c', "config",  ARGDEF_STR,   NULL, "set config file"},
 	{0, 'm', "monitor", ARGDEF_STR,   NULL, "set monitor name"},
+	{0, 't', "top",     ARGDEF_SIGNED,&topSpacingOpt, "set top spacing"}, 
 	{0, 'd', "debug",   ARGDEF_STR,   NULL, "set file to output debug"},
 	{0, 0  , NULL   ,   ARGDEF_NOARG, NULL , NULL}
 };	

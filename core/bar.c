@@ -8,6 +8,8 @@
 
 //TODO aggiungere click per uscire da evento mouse
 
+extern long topSpacingOpt;
+
 /*******************************************************************************************************************************************************************/
 /*******************************************************************************************************************************************************************/
 /******************************************************************* X EVENTS **************************************************************************************/
@@ -178,7 +180,7 @@ __private void bar_height_set(vbar_s* vb, unsigned height, unsigned spacingTop, 
 	if( spacingBottom == 0 ){
 		spacingTop = (vb->bar.fontHeight / BAR_TB_SPACING_FACTOR)/2;
 	}
-	vb->bar.topSpacing = spacingTop;
+	vb->bar.topSpacing = spacingTop + topSpacingOpt;
 	vb->bar.bottomSpacing = spacingBottom;
 	vb->bar.height = ( height < vb->bar.fontHeight ) ? 
 			vb->bar.fontHeight + vb->bar.topSpacing + vb->bar.bottomSpacing 
