@@ -208,6 +208,7 @@ typedef struct vbar{
 	gadget_s* hover;
 	xorgEventRegister_s* xer;
 	socket_s ipc;
+	const char* monitorName;
 }vbar_s;
 
 /*

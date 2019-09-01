@@ -143,8 +143,10 @@ __private void bar_error_mouse(xorgMouse_s* mouse){
 /*****************************************************************************************************************************************************************/
 
 __private void bar_monitor_set(vbar_s* vb, char const* monitor){	
-	if( monitor && xorg_monitor_byname(&vb->bar.x, monitor) ){
-		dbg_error("monitor");
+	char const* mn = monitor ? monitor : vb->monitorName;
+	
+	if( mn && xorg_monitor_byname(&vb->bar.x, mn) ){
+		dbg_error("monitor %s", mn);
 		exit(1);
 	}
 }

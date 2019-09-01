@@ -5,15 +5,17 @@
 typedef enum{ 
 	a_help, 
 	a_config,
+	a_monitor,
 	a_debug,
 	a_count
 }arg_e;
 
 argdef_s args[] = {
-	{0, 'h', "help",   ARGDEF_NOARG, NULL, "display this help"},
-	{0, 'c', "config", ARGDEF_STR,   NULL, "set config file"},
-	{0, 'd', "debug", ARGDEF_STR,   NULL, "set file to output debug"},
-	{0, 0  , NULL   , ARGDEF_NOARG   , NULL , NULL}
+	{0, 'h', "help",    ARGDEF_NOARG, NULL, "display this help"},
+	{0, 'c', "config",  ARGDEF_STR,   NULL, "set config file"},
+	{0, 'm', "monitor", ARGDEF_STR,   NULL, "set monitor name"},
+	{0, 'd', "debug",   ARGDEF_STR,   NULL, "set file to output debug"},
+	{0, 0  , NULL   ,   ARGDEF_NOARG, NULL , NULL}
 };	
 
 //err_t vbar_deadline(__unused int type, void* vbar);
@@ -55,6 +57,11 @@ int main(int argc, char* argv[]){
 
 	vbar_s vbar;
 	memset(&vbar, 0, sizeof(vbar_s));
+	
+	if( args[a_monitor].hasset ){
+		vbar.monitorName = args[a_monitor].autoset;
+		dbg_info("default monitor name::%s", vbar.monitorName);
+	}
 
 	vbar_begin(&vbar);
 	if( vbar_script_load(&vbar, config) ){
