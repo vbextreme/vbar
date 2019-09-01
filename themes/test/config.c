@@ -145,6 +145,17 @@ void network_event(gadget_s* g, gadgetEventType_e event, void* arg){
 	}
 }
 
+struct wi{
+	char* name;
+	int id;
+};
+
+int wscmp2(const void* a, const void* b){
+	struct wi* wa = (struct wi*)a;
+	struct wi* wb = (struct wi*)b;
+	return atoi(wa->name) - atoi(wb->name);
+}
+
 void workspace_event(gadget_s* g, gadgetEventType_e event, void* arg){
 
 	switch( event ){
@@ -157,13 +168,21 @@ void workspace_event(gadget_s* g, gadgetEventType_e event, void* arg){
 				gadget_text(g, "workspace error");
 				break;
 			}
+			char** names = gadget_workspace_names(g);
+			
+			struct wi win[WORKSPACE_N];
+			for( size_t i = 0; i < count; ++i){
+				win[i].name = names[i];
+				win[i].id = i;
+			}
+			qsort(win, count, sizeof(struct wi), wscmp2);
 
-			char** names = gadget_workspace_names(g);		
 			for( size_t i = 0; i < count; ++i){
 				gadget_hide(workspace[i], 0);
 				gadget_text_reset(workspace[i]);
-				gadget_text(workspace[i], " %s ", names[i]);
-				gadget_background(workspace[i], i==active ? DBLUE : GRAY);
+				gadget_text(workspace[i], " %s ", win[i].name);
+				gadget_status_set(workspace[i], win[i].id);
+				gadget_background(workspace[i], win[i].id==(int)active ? DBLUE : GRAY);
 				gadget_redraw(workspace[i]);
 			}
 			for( size_t i = count; i < WORKSPACE_N; ++i){
@@ -604,8 +623,6 @@ void vbar_main(void){
 	gadget_border(script, VBAR_BORDER_BOTTOM);
 	gadget_interval(script, 1000);
 	gadget_start(script);
-
-
 
 	//gadget_colors_set(clock, BACKGROUND, FOREGROUND");
 	//gadget_interval_set(clock, 60000);
