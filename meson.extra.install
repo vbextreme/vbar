@@ -1,6 +1,4 @@
 #!/bin/bash
 mkdir -p $DESTDIR/usr/include/
-#todo use meson data for this
-	mkdir -p ~/.config/vbar
-	cp ../launch ~/.config/vbar/
 cp vbarScript.h $DESTDIR/usr/include/vbarScript.h
+mkdir -p ~/.config/vbar
