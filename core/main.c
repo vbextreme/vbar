@@ -69,6 +69,7 @@ int main(int argc, char* argv[]){
 	vbar_begin(&vbar);
 	if( vbar_script_load(&vbar, config) ){
 		const char* errd = vbar_script_error();
+		iassert( errd );
 		bar_simple_setting(&vbar);
 		bar_start(&vbar);
 		bar_error(&vbar, (utf8_t*)errd);

@@ -53,7 +53,15 @@ void script_event(gadget_s* g, gadgetEventType_e event, void* arg){
 		case GADGET_EVENT_EXTEND_CLOSE:
 		case GADGET_EVENT_MOUSE_CLICK:
 		case GADGET_EVENT_MOUSE_RELEASE:
+			gadget_background(g, BACKGROUND);
+			gadget_redraw(g);
+		break;
+
 		case GADGET_EVENT_MOUSE_PRESS:
+			gadget_background(g, rgb(220,30,30));
+			gadget_redraw(g);
+		break;
+
 		case GADGET_EVENT_MOUSE_MOVE:
 		case GADGET_EVENT_MOUSE_DBLCLICK:{
 			gadget_script_shell_event(g, "/home/vbextreme/Project/c/app/vbar/test.sh", event, arg);

@@ -754,6 +754,8 @@ gadget_s* vbar_gadget_byposition(int* exline, int* icon, vbar_s* vb, unsigned x,
 	return g;
 }
 
+__private char* lastTccError = NULL;
+
 __private char* script_source_load(char const* source){
 	FILE* fd = fopen(source, "r");
 	char* code = NULL;
@@ -772,10 +774,10 @@ ONERROR:
 	dbg_errno();
 	free(code);
 	if( fd ) fclose(fd);
+	lastTccError = "error on read config file";
 	return NULL;
 }
 
-__private char* lastTccError = NULL;
 __private void my_tcc_error(__unused void *opaque, const char *msg){
 	fprintf(stderr, "vbar config file error:\n%s\n",msg);
 	size_t len = strlen(msg);
