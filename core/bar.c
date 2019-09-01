@@ -392,6 +392,7 @@ __private void _gadget_draw_border(vbar_s* vb, gadget_s* g, g2dCoord_s* rect, un
 
 __private unsigned _gadget_draw(vbar_s* vb, gadget_s* g, icon_s* icon, g2dCoord_s* rect){
 	unsigned isz = 0;
+	if( rect->x + rect->w > vb->bar.surface.img.w ) return 0;
 	if( icon ){
 		g2dCoord_s dc = {
 			.x = rect->x,
