@@ -200,10 +200,11 @@ __private err_t pulseaudio_init(gadget_s* g, pulseaudio_s* pa, int max_volume){
 		pa_context_unref(pa->ctx);
 		pa_threaded_mainloop_free(pa->tml);
 		dbg_error("Could not connect to pulseaudio server");
+		return -1;
 	}
 
 	struct pa_operation* op = NULL;
-	if( pa->sinkname ){
+	if( pa->sinkname && *pa->sinkname ){
 		op = pa_context_get_sink_info_by_name(pa->ctx, pa->sinkname, pulseaudio_sink_info_callback, pa);
 		pulseaudio_wait_loop(op, pa->tml);
 	}
