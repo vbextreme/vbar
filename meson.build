@@ -226,12 +226,6 @@ endif
 # install #
 ###########
 
-if get_option('homedir') != ''
-  message('enable install launch')
-  tod = join_paths(get_option('homedir'),'.config/vbar')
-  install_data('launch', install_dir: tod, install_mode: ['rwxr-----', get_option('user'), get_option('user')])
-endif
-
 meson.add_install_script('meson.extra.install')
 
 ###########
