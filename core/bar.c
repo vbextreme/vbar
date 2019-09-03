@@ -290,14 +290,21 @@ void bar_register_symbol(vbar_s* vb){
 err_t bar_start(vbar_s* vb){
 	dbg_info("create bar");
 	g2dCoord_s pos = {.x = 0, .y = 0, .w = xorg_root_width(&vb->bar.x), .h = vb->bar.height };
+	if( !vb->bar.topBar ){
+		pos.y = xorg_root_height(&vb->bar.x) - pos.h;
+	}
 	vb->bar.id = xorg_win_new(&vb->bar.surface, &vb->bar.x, xorg_root(&vb->bar.x), &pos, 0, vb->bar.background);
+	
 	xorg_win_dock(&vb->bar.x, vb->bar.id);
 	if( vb->bar.topBar ){
+		dbg_info("bar on top");
 		xorg_wm_reserve_dock_space_on_top(&vb->bar.x, vb->bar.id, 0, xorg_root_width(&vb->bar.x), vb->bar.height);
 	}
 	else{
+		dbg_info("bar on bottom");
 		xorg_wm_reserve_dock_space_on_bottom(&vb->bar.x, vb->bar.id, 0, xorg_root_width(&vb->bar.x), vb->bar.height);
 	}
+	
 	g2dCoord_s dc = { .x = 0, .y = 0, .w = vb->bar.surface.img.w, .h = vb->bar.surface.img.h};
 	g2d_clear(&vb->bar.surface.img, vb->bar.background, &dc);
 

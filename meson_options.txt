@@ -5,7 +5,6 @@ option('optimize', type: 'integer', value: '2', description: 'enable optimizatio
 option('openmp', type: 'integer', value: '0', description: 'enable openmp')
 option('gprof', type: 'integer', value: '0', description: 'enable gprof')
 option('autovectorization', type: 'integer', value: '1', description: 'enable vectorization')
-
 option('G_clock', type: 'integer', value: '1', description: 'enable clock gadget')
 option('G_cpu', type: 'integer', value: '1', description: 'enable cpu gadget')
 option('G_cpufreq', type: 'integer', value: '1', description: 'enable cpufreq gadget')
@@ -17,7 +16,5 @@ option('G_pulseaudio', type: 'integer', value: '1', description: 'enable pulseau
 option('G_network', type: 'integer', value: '1', description: 'enable network gadget')
 option('G_label', type: 'integer', value: '1', description: 'enable label gadget')
 option('G_script', type: 'integer', value: '1', description: 'enable script gadget')
-
-option('homedir', type: 'string', value: '', description: 'home dir')
-option('user', type: 'integer', value: '1000', description: 'uid')
-
+option('homedir', type: 'string', value: '', description: 'home dir, set this option for copy launch to ~/.config/vbar directory. Examples -Dhomedir=/home/vbextreme')
+option('user', type: 'integer', value: '1000', description: 'set uid, only for install data in config dest')

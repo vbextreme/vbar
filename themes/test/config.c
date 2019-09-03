@@ -153,6 +153,7 @@ struct wi{
 int wscmp2(const void* a, const void* b){
 	struct wi* wa = (struct wi*)a;
 	struct wi* wb = (struct wi*)b;
+	if( !wa->name || ! wb->name ) return 0;
 	return atoi(wa->name) - atoi(wb->name);
 }
 

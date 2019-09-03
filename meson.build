@@ -112,7 +112,6 @@ endif
 
 libDeps += [ ft_dep, fconfig_dep ]
 
-#wand_dep = dependency('MagickWand', required: true)
 xcb_dep = dependency('xcb', required: true)
 xcb_icccm__dep = dependency('xcb-icccm', required: true)
 xcb_composite_dep = dependency('xcb-composite', required: true)

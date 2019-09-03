@@ -218,6 +218,7 @@ err_t xorg_monitor_primary(xorg_s* x){
 		xcb_randr_monitor_info_t* monitor = it.data;
 		if( monitor->primary ){
 			g2dCoord_s pos = {.x = monitor->x, .y = monitor->y, .w = monitor->width, .h = monitor->height };
+			dbg_info("monitor pos: %d %d %d*%d", monitor->x, monitor->y, monitor->width, monitor->height);
 			if( xorg_monitor_bysize(x, &pos) ){
 				free(monitors);
 				dbg_error("internal priary research");
@@ -1209,7 +1210,7 @@ void xorg_win_surface_redraw(xorg_s* x, xcb_window_t id,  xorgSurface_s* surface
 void xorg_win_dock(xorg_s* x, xcb_window_t id){
 	xcb_change_property(
 			x->connection, 
-			XCB_PROP_MODE_REPLACE, id, 
+			XCB_PROP_MODE_REPLACE, id,
 			x->atom[XORG_ATOM_NET_WM_WINDOW_TYPE], 
 			XCB_ATOM_ATOM, 32, 1, (unsigned char*)&x->atom[XORG_ATOM_NET_WM_WINDOW_TYPE_DOCK]
 	);
@@ -1219,28 +1220,29 @@ void xorg_wm_reserve_dock_space_on_top(xorg_s* x, xcb_window_t id, unsigned X, u
 	xorgWindowStrutPartial_s partial = {0};
 	partial.top = xorg_root_y(x) + h;
 	partial.top_start_x = xorg_root_x(x) + X;
-	partial.top_end_x = partial.top_start_x + w;
+	partial.top_end_x = partial.top_start_x + w - 1;
 	dbg_info("reserve: top %u x %u ex: %u", partial.top, partial.top_start_x, partial.top_end_x);
 
 	xcb_change_property(
 			x->connection, 
 			XCB_PROP_MODE_REPLACE, id, 
 			x->atom[XORG_ATOM_NET_WM_STRUT_PARTIAL], 
-			XCB_ATOM_CARDINAL, 32, 1, &partial
+			XCB_ATOM_CARDINAL, 32, 12, &partial
 	);
 }
 
 void xorg_wm_reserve_dock_space_on_bottom(xorg_s* x, xcb_window_t id, unsigned X, unsigned w, unsigned h){
 	xorgWindowStrutPartial_s partial = {0};
-	partial.bottom = h;
+	partial.bottom = xorg_root_y(x) + h;
 	partial.bottom_start_x = xorg_root_x(x) + X;
-	partial.bottom_end_x = partial.bottom_start_x + w;
-	
+	partial.bottom_end_x = partial.bottom_start_x + w - 1;
+	dbg_info("reserve: bottom %u x %u ex: %u", partial.bottom, partial.bottom_start_x, partial.bottom_end_x);
+
 	xcb_change_property(
 			x->connection, 
 			XCB_PROP_MODE_REPLACE, id, 
 			x->atom[XORG_ATOM_NET_WM_STRUT_PARTIAL], 
-			XCB_ATOM_CARDINAL, 32, 1, &partial
+			XCB_ATOM_CARDINAL, 32, 12, &partial
 	);
 }
 
@@ -1263,7 +1265,7 @@ void xorg_register_events(xorg_s* x, xcb_window_t window, unsigned int eventmask
 
 xcb_window_t xorg_win_new(xorgSurface_s* surface, xorg_s* x, xcb_window_t parent, g2dCoord_s* pos, unsigned border, g2dColor_t background){
 	unsigned event = X_WIN_EVENT;
-	
+	dbg_info("create window %d %d %d*%d", pos->x, pos->y, pos->w, pos->h);
 	xcb_window_t win = xcb_generate_id(x->connection);
 	xcb_create_window(x->connection, XCB_COPY_FROM_PARENT, win, parent,
 			xorg_root_x(x) + pos->x, xorg_root_y(x) + pos->y, pos->w, pos->h, border,
