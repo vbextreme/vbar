@@ -76,6 +76,14 @@ char* path_resolve(char* path){
 		}
 		return str_dup(tmp, 0);
 	}
+	else if( *path != '/' ){
+		path_current(tmp);	
+		size_t l = strlen(tmp);
+		tmp[l++] = '/';
+		tmp[l] = 0;
+		strcpy(&tmp[strlen(tmp)], &path[1]);
+		return str_dup(tmp,0);
+	}
 	return NULL;
 }
 
