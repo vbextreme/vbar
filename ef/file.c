@@ -40,7 +40,7 @@ err_t path_home(char* path){
         return 0;
 }
 
-char* path_resolve(char* path){
+char* path_resolve(const char* path){
 	char tmp[PATH_MAX];
 
 	if( *path == '~' ){
@@ -84,7 +84,7 @@ char* path_resolve(char* path){
 		strcpy(&tmp[strlen(tmp)], &path[1]);
 		return str_dup(tmp,0);
 	}
-	return NULL;
+	return str_dup(path,0);
 }
 
 char const* file_extension(char const* name){

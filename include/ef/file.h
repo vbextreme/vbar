@@ -21,7 +21,7 @@ typedef struct dirent dirent_s;
 void path_kill_back(char* path);
 err_t path_current(char* path);
 err_t path_home(char* path);
-char* path_resolve(char* path);
+char* path_resolve(const char* path);
 int file_exists(char* path);
 char const* file_extension(char const* name);
 void fd_close_auto(int* fd);

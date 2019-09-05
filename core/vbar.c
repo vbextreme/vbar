@@ -1,5 +1,7 @@
 #include <vbar.h>
 #include <stdarg.h>
+#include <ef/file.h>
+#include <ef/memory.h>
 #include "gadget_autogen.h"
 
 #define VBAR_IPC_BUFFER_SIZE 1024
@@ -241,16 +243,18 @@ __private void gadget_extend_redraw(gadget_s* g){
 
 __private void vbar_icon_load(vbar_s* vb, char const* path, char const* name, unsigned bk){
 	g2dImage_s png = {0};
+	__mem_autofree const char* pathres = path_resolve(path);
 
-	if( g2d_load(&png, path) ){
-		dbg_warning("icon \"%s\" not exists", path);
+	if( g2d_load(&png, pathres) ){
+		dbg_warning("icon \"%s\" not exists", pathres);
 		return;
 	}
 
 	icon_s* icon = mem_zero_many(icon_s, 1);
 	icon->name = name;
 	icon->path = path;
-	if( chash_add_unique(&vb->icons, name, strlen(name), 0, icon) ){
+	
+	if( chash_add_unique_dupkey(&vb->icons, name, strlen(name), icon) ){
 		dbg_info("already loaded");
 		free(icon);
 		g2d_unload(&png);
