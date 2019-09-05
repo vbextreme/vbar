@@ -651,13 +651,15 @@ void bar_gadget_draw(vbar_s* vb, gadget_s* g, utf8_t* oldLabel){
 	}
 
 	if( !oldLabel ){
+		/*
 		icon_s* icon = NULL;
 		if( g->iconName ){
 			chash_find((void*)&icon, &vb->icons, g->iconName, strlen(g->iconName));
 			iassert(icon != NULL);
 			//rect.w += icon->img.w;
 		}
-		_gadget_draw(vb, g, icon, &rect);
+		*/
+		_gadget_draw(vb, g, NULL, &rect);
 		//dbg_info("clear %u %u %d*%d", rect.x, rect.y, rect.w, rect.h);
 		//g2d_clear(&vb->bar.surface.img, g->background, &rect);
 		//if( g->label && *g->label ) g2d_string(&vb->bar.surface.img, &rect, &vb->bar.fonts, g->label, g->foreground, rect.x);
