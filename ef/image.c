@@ -280,7 +280,7 @@ void g2d_ratio(int modeAWH, unsigned sw, unsigned sh, unsigned* w, unsigned* h){
 	double scalingY = (double)sh / (double)*h;
 
 	switch( modeAWH ){
-		default: case 0:{
+		case 0:{
 			double scaling = scalingX > scalingY ? scalingX : scalingY;
 			*w = sw / scaling;
 			*h = sh / scaling;

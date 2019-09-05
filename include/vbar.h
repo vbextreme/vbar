@@ -32,6 +32,8 @@
 #define VBAR_BORDER_RIGHT  0x04
 #define VBAR_BORDER_BOTTOM 0x08
 
+#define VBAR_RESIZE_ICON -1
+
 #define VBAR_CONFIG "~/.config/vbar/config.c"
 #define VBAR_IPC "/tmp/vbar.ipc"
 

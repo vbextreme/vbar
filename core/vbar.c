@@ -262,7 +262,7 @@ __private void vbar_icon_load(vbar_s* vb, char const* path, char const* name, un
 	g2d_clear(&img, bk, &dc);
 	g2d_bitblt_alpha(&img, &dc, &png, &dc);
 
-	g2d_resize(&icon->img, &img, vb->bar.height, vb->bar.height - (vb->bar.topSpacing + vb->bar.bottomSpacing), 0);
+	g2d_resize(&icon->img, &img, vb->bar.height, vb->bar.height - (vb->bar.topSpacing + vb->bar.bottomSpacing), VBAR_RESIZE_ICON);
 	g2d_unload(&png);
 	g2d_unload(&img);
 	dbg_info("icon %s (%s) loaded", name, path);
