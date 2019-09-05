@@ -487,7 +487,7 @@ __private void _extend_selector(vbar_s* vb, gLine_s* gl, unsigned y, unsigned w,
 
 	for( size_t i = 0; i < gl->iconCount; ++i ){
 		if( gl->redraw == GADGET_NOREDRAW ) continue;
-		if( gl->redraw == GADGET_REDRAW || gl->iconName[i] != gl->oldIconName[i]){
+		if( gl->redraw == GADGET_REDRAW || (gl->iconName[i] && gl->iconName[i] != gl->oldIconName[i])){
 			icon_s* icon = NULL;
 			chash_find((void*)&icon, &vb->icons, gl->iconName[i], strlen(gl->iconName[i]));
 			iassert(icon != NULL);
