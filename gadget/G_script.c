@@ -40,7 +40,8 @@ __private err_t script_shell_event(gadget_s* g, char* cmd, gadgetEventType_e ev,
 		"GADGET_EVENT_MOUSE_DBLCLICK"
 	};
 
-	dbg_info("shell '%s' event:%s arg:%p", cmd, evname[ev], arg);
+	if( ev > 0 )
+		dbg_info("shell '%s' event:%s arg:%p", cmd, evname[ev], arg);
 
 	size_t lencmd = strlen(cmd);
 	if( lencmd + 150 > 4096 ){
