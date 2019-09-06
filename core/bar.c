@@ -35,7 +35,7 @@ __private void bar_mouse(xorgMouse_s* mouse){
 	if( g && g->event ){
 		vbarMouse_s vm = { 
 			.x = mouse->relative.x - g->position.x,
-			.y = mouse->relative.y, //TODO add bar posiion y and subtract
+			.y = mouse->relative.y, //TODO add bar position y and subtract
 			.button = mouse->button,
 			.extend = line < 0 ? 0 : 1,
 			.line = line,

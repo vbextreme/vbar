@@ -741,11 +741,19 @@ gadget_s* vbar_gadget_load(vbar_s* vb, char const* class, char const* name){
 gadget_s* vbar_gadget_byposition(int* exline, int* icon, vbar_s* vb, unsigned x, unsigned y){
 	if( y <= (unsigned)vb->bar.height ){
 		*exline = -1;
-		*icon = -1;
+		*icon = 0;
 		gadget_s* g = vb->drawed;
 		do{
 			//dbg_info("%s %u > %u && %u < %u",g->instance, x, g->position.x, x, g->position.x + g->position.w);
-			if( x > g->position.x && x < g->position.x + g->position.w && 
+			*icon = 0;
+			if( g->iconName ){
+				icon_s* ico = NULL;
+				if( !chash_find((void*)&ico, &vb->icons, g->iconName, strlen(g->iconName)) ){
+					iassert(ico);
+					*icon = ico->img.w;
+				}
+			}
+			if( x > g->position.x - *icon && x < g->position.x + g->position.w && 
 				y > g->position.y && y < g->position.y + g->position.h
 			){
 				return g;
