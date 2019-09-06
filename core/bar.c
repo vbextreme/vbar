@@ -659,7 +659,12 @@ void bar_gadget_draw(vbar_s* vb, gadget_s* g, utf8_t* oldLabel){
 			//rect.w += icon->img.w;
 		}
 		*/
-		_gadget_draw(vb, g, NULL, &rect);
+		if( ft_line_lenght(&vb->bar.fonts, g->oldLabel) != ft_line_lenght(&vb->bar.fonts, g->label) ){
+			bar_draw(vb);
+		}
+		else{
+			_gadget_draw(vb, g, NULL, &rect);
+		}
 		//dbg_info("clear %u %u %d*%d", rect.x, rect.y, rect.w, rect.h);
 		//g2d_clear(&vb->bar.surface.img, g->background, &rect);
 		//if( g->label && *g->label ) g2d_string(&vb->bar.surface.img, &rect, &vb->bar.fonts, g->label, g->foreground, rect.x);
