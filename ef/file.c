@@ -81,7 +81,7 @@ char* path_resolve(const char* path){
 		size_t l = strlen(tmp);
 		tmp[l++] = '/';
 		tmp[l] = 0;
-		strcpy(&tmp[strlen(tmp)], &path[1]);
+		strcpy(&tmp[strlen(tmp)], path);
 		return str_dup(tmp,0);
 	}
 	return str_dup(path,0);
