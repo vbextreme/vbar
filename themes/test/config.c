@@ -510,8 +510,8 @@ void vbar_main(void){
 	vbar_height_set(vbar, HEIGHT, SPACING_TOP, SPACING_BOTTOM);
 	vbar_topbar_set(vbar, TOPBAR);
 	vbar_border_width_set(vbar, BORDER_SIZE);
-	vbar_icon_load(vbar, "/usr/share/icons/Adwaita/16x16/apps/preferences-system-time-symbolic.symbolic.png", "clock", rgb(50, 50, 50));
-	vbar_icon_load(vbar, "/usr/share/icons/Adwaita/96x96/apps/preferences-system-time-symbolic.symbolic.png", "clock2", rgb( 50, 150, 150));
+	vbar_icon_load(vbar, "/usr/share/icons/Adwaita/16x16/apps/preferences-system-time-symbolic.symbolic.png", "clock");
+	vbar_icon_load(vbar, "/usr/share/icons/Adwaita/96x96/apps/preferences-system-time-symbolic.symbolic.png", "clock2");
 
 
 	for( size_t i = 0; i < WORKSPACE_N; ++i){
