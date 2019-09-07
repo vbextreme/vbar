@@ -241,7 +241,7 @@ __private void gadget_extend_redraw(gadget_s* g){
 	}
 }
 
-__private void vbar_icon_load(vbar_s* vb, char const* path, char const* name, unsigned bk){
+__private void vbar_icon_load(vbar_s* vb, char const* path, char const* name){
 	g2dImage_s png = {0};
 	__mem_autofree const char* pathres = path_resolve(path);
 
@@ -261,14 +261,9 @@ __private void vbar_icon_load(vbar_s* vb, char const* path, char const* name, un
 		return;
 	}
 
-	g2dImage_s img = g2d_new(png.w, png.h, X_COLOR_MODE);
-	g2dCoord_s dc = { .x = 0, .y = 0, .w = png.w, .h = png.h };	
-	g2d_clear(&img, bk, &dc);
-	g2d_bitblt_alpha(&img, &dc, &png, &dc);
+	g2d_resize(&icon->img, &png, vb->bar.height, vb->bar.height - (vb->bar.topSpacing + vb->bar.bottomSpacing), VBAR_RESIZE_ICON);
 
-	g2d_resize(&icon->img, &img, vb->bar.height, vb->bar.height - (vb->bar.topSpacing + vb->bar.bottomSpacing), VBAR_RESIZE_ICON);
 	g2d_unload(&png);
-	g2d_unload(&img);
 	dbg_info("icon %s (%s) loaded", name, path);
 }
 

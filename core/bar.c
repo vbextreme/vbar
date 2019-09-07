@@ -189,7 +189,7 @@ __private void bar_height_set(vbar_s* vb, unsigned height, unsigned spacingTop, 
 }
 
 __private unsigned inutility_rgb(int r, int g, int b){
-	return g2d_color_gen(X_COLOR_MODE, 0, r, g, b);
+	return g2d_color_gen(X_COLOR_MODE, 255, r, g, b);
 }
 
 __private void bar_border_width_set(vbar_s* vb, unsigned size){
@@ -415,7 +415,7 @@ __private unsigned _gadget_draw(vbar_s* vb, gadget_s* g, icon_s* icon, g2dCoord_
 			.w = icon->img.w,
 			.h = icon->img.h
 		};
-		g2d_bitblt(&vb->bar.surface.img, &dc, &icon->img, &sc);
+		g2d_bitblt_alpha(&vb->bar.surface.img, &dc, &icon->img, &sc);
 		rect->x += sc.w;
 		rect->w -= sc.w;
 		isz = sc.w;
@@ -503,7 +503,7 @@ __private void _extend_selector(vbar_s* vb, gLine_s* gl, unsigned y, unsigned w,
 				.w = icon->img.w,
 				.h = icon->img.h
 			};
-			g2d_bitblt(&vb->bar.surface.img, &dc, &icon->img, &sc);
+			g2d_bitblt_alpha(&vb->bar.surface.img, &dc, &icon->img, &sc);
 			area.x -= h;
 		}
 	}

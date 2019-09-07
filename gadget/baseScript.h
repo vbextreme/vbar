@@ -55,7 +55,7 @@ void vbar_colors_set(vbar_s* vb, unsigned background, unsigned foreground);
 void vbar_topbar_set(vbar_s* vb, unsigned ontop);
 void vbar_height_set(vbar_s* vb, unsigned height, unsigned spacingTop, unsigned spacingBottom);
 void vbar_border_width_set(vbar_s* vb, unsigned size);
-void vbar_icon_load(vbar_s* vb, char const* path, char const* name, unsigned background);
+void vbar_icon_load(vbar_s* vb, char const* path, char const* name);
 unsigned rgb(int r, int g, int b);
 
 gadget_s* gadget_new(vbar_s* vb, char const* class, char const* name);

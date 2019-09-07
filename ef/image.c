@@ -176,8 +176,7 @@ __private int file_is_png(FILE* fd){
 	return(!png_sig_cmp(buf, (png_size_t)0, PNG_BYTES_TO_CHECK));
 }
 
-__private err_t g2d_load_png(g2dImage_s* img, char const* path){
-	
+__private err_t g2d_load_png(g2dImage_s* img, char const* path){	
 	volatile FILE* fd = fopen(path, "r");
 	if( fd == NULL ){
 		dbg_error("open png");
