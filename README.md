@@ -77,7 +77,7 @@ Released under GPL v3</br>
 * **0.0**  begin
 
 ## Release Schedule
-* bug icon not display very well
+* bug? icon.png strange color load, is converter svg->png or libpng?
 * add documentation
 * add themes
 * gadget bluetooth

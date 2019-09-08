@@ -261,7 +261,8 @@ __private void vbar_icon_load(vbar_s* vb, char const* path, char const* name){
 		return;
 	}
 
-	g2d_resize(&icon->img, &png, vb->bar.height, vb->bar.height - (vb->bar.topSpacing + vb->bar.bottomSpacing), VBAR_RESIZE_ICON);
+	//g2d_resize(&icon->img, &png, vb->bar.height - (vb->bar.topSpacing + vb->bar.bottomSpacing), vb->bar.height - (vb->bar.topSpacing + vb->bar.bottomSpacing), VBAR_RESIZE_ICON);
+	g2d_resize(&icon->img, &png, vb->bar.fontHeight, vb->bar.fontHeight, VBAR_RESIZE_ICON);
 
 	g2d_unload(&png);
 	dbg_info("icon %s (%s) loaded", name, path);

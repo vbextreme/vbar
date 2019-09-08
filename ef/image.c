@@ -1015,9 +1015,7 @@ __private g2dColor_t sample_bicubic(g2dImage_s* img, float u, float v){
 } 
        
 void g2d_resize(g2dImage_s* dst, g2dImage_s* src, unsigned w, unsigned h, int ratio){
-	if( ratio ){
-		g2d_ratio(0, src->w, src->h, &w, &h);
-	}
+	g2d_ratio(ratio, src->w, src->h, &w, &h);
 	g2d_init(dst, w, h, src->mode);
 	dbg_info("resize %u*%u -> %u*%u", src->w, src->h, w, h);
 	for( unsigned y = 0; y < h; ++y ){
