@@ -539,6 +539,7 @@ void ft_font_test(int mode){
 */
 #endif
 
+
 unsigned ft_line_height(ftFonts_s* fonts){
 	ftRender_s* rch = ft_fallback_glyph_load(fonts, ' ', FT_RENDER_ANTIALIASED);
 	return rch->img.h;
