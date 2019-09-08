@@ -46,11 +46,15 @@ __private void bar_mouse(xorgMouse_s* mouse){
 
 		if( g != vb->hover ){
 			ev = GADGET_EVENT_MOUSE_ENTER;
-			if( vb->hover ) g->event(vb->hover, GADGET_EVENT_MOUSE_LEAVE, &vm);
+			if( vb->hover ){
+				dbg_info("raise mouse leave %s", vb->hover->instance);
+			   	vb->hover->event(vb->hover, GADGET_EVENT_MOUSE_LEAVE, &vm);
+			}
 			vb->hover = g;
+			dbg_info("raise mouse enter %s", g->instance);
 		}
 
-		dbg_info("raise mouse event(%d) x:%u y:%u b:%u l:%u i:%u e:%d", ev, vm.x, vm.y, vm.button, vm.line, vm.icon, vm.extend);
+		dbg_info("raise mouse event(%d)::%s x:%u y:%u b:%u l:%u i:%u e:%d", ev, g->instance, vm.x, vm.y, vm.button, vm.line, vm.icon, vm.extend);
 		g->event(g, ev, &vm);
 	}
 	else if( vb->hover && vb->hover->event ){
@@ -63,7 +67,9 @@ __private void bar_mouse(xorgMouse_s* mouse){
 			.icon = icon
 		};
 		gadgetEventType_e ev = GADGET_EVENT_MOUSE_LEAVE;
-		dbg_info("raise mouse event(%d) x:%u y:%u b:%u l:%u i:%u e:%d", ev, vm.x, vm.y, vm.button, vm.line, vm.icon, vm.extend);
+		dbg_info("raise mouse leave %s", vb->hover->instance);
+		dbg_info("raise mouse event(%d)::%s x:%u y:%u b:%u l:%u i:%u e:%d", ev, vb->hover->instance, vm.x, vm.y, vm.button, vm.line, vm.icon, vm.extend);
+
 		vb->hover->event(vb->hover, ev, &vm);
 		vb->hover = NULL;
 	}
@@ -648,14 +654,6 @@ void bar_gadget_draw(vbar_s* vb, gadget_s* g, utf8_t* oldLabel){
 	}
 
 	if( !oldLabel ){
-		/*
-		icon_s* icon = NULL;
-		if( g->iconName ){
-			chash_find((void*)&icon, &vb->icons, g->iconName, strlen(g->iconName));
-			iassert(icon != NULL);
-			//rect.w += icon->img.w;
-		}
-		*/
 		if( ft_line_lenght(&vb->bar.fonts, g->oldLabel) != ft_line_lenght(&vb->bar.fonts, g->label) ){
 			bar_draw(vb);
 		}

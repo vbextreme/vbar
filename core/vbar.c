@@ -744,8 +744,8 @@ gadget_s* vbar_gadget_byposition(int* exline, int* icon, vbar_s* vb, unsigned x,
 			if( g->iconName ){
 				icon_s* ico = NULL;
 				if( !chash_find((void*)&ico, &vb->icons, g->iconName, strlen(g->iconName)) ){
-					iassert(ico);
-					*icon = ico->img.w;
+					if( ico )
+						*icon = ico->img.w;
 				}
 			}
 			if( x > g->position.x - *icon && x < g->position.x + g->position.w && 

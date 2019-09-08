@@ -79,7 +79,6 @@ Released under GPL v3</br>
 ## Release Schedule
 * bug overlap text
 * bug empty text out of buffer write
-* bug border change color to right gadget
 * add documentation
 * add themes
 * gadget bluetooth
