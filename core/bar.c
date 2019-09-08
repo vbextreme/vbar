@@ -359,7 +359,6 @@ err_t bar_error(vbar_s* vb, utf8_t* errd){
 	return 0;
 }
 
-
 __private void _gadget_draw_border(vbar_s* vb, gadget_s* g, g2dCoord_s* rect, unsigned isz){
 	if( g->border & VBAR_BORDER_LEFT ){
 		g2dCoord_s bc ={
@@ -399,8 +398,7 @@ __private void _gadget_draw_border(vbar_s* vb, gadget_s* g, g2dCoord_s* rect, un
 	}
 }
 
-__private unsigned _gadget_draw(vbar_s* vb, gadget_s* g, icon_s* icon, g2dCoord_s* rect){
-	unsigned isz = 0;
+__private unsigned _gadget_draw(vbar_s* vb, gadget_s* g, icon_s* icon, int iconsize, g2dCoord_s* rect){
 	if( rect->x + rect->w > vb->bar.surface.img.w ) return 0;
 	if( icon ){
 		g2dCoord_s dc = {
@@ -418,17 +416,16 @@ __private unsigned _gadget_draw(vbar_s* vb, gadget_s* g, icon_s* icon, g2dCoord_
 		g2d_bitblt_alpha(&vb->bar.surface.img, &dc, &icon->img, &sc);
 		rect->x += sc.w;
 		rect->w -= sc.w;
-		isz = sc.w;
+		iconsize = icon->img.w;
 	}
 	g->position.x = rect->x;
 	g->position.y = rect->y;
 	g->position.w = rect->w;
 	g->position.h = rect->h;
-
 	dbg_info("gadget:: %s text: '%s' height: %u", g->instance, g->label, rect->h);
 
 	g2d_clear(&vb->bar.surface.img, g->background, rect);
-	if( g->border ) _gadget_draw_border(vb, g, rect, isz);
+	if( g->border ) _gadget_draw_border(vb, g, rect, iconsize);
 	unsigned begin = rect->x;
 	g2d_string(&vb->bar.surface.img, rect, &vb->bar.fonts, g->label, g->foreground, rect->x);
 	dbg_info("gadget:: %s text: '%s' height: %u", g->instance, g->label, rect->h);
@@ -560,8 +557,8 @@ void bar_draw(vbar_s* vb){
 			icon_s* icon = NULL;
 			if( g->iconName ){
 				chash_find((void*)&icon, &vb->icons, g->iconName, strlen(g->iconName));
-				iassert(icon != NULL);
-				rect.w += icon->img.w;
+				if( icon != NULL )
+					rect.w += icon->img.w;
 			}
 			if( rect.w == 0 && icon == NULL ){
 				g = g->next;
@@ -571,7 +568,7 @@ void bar_draw(vbar_s* vb){
 			switch( g->align ){
 				default: case VBAR_ALIGNED_LEFT:
 					rect.x = left;
-					_gadget_draw(vb, g, icon, &rect);
+					_gadget_draw(vb, g, icon, 0, &rect);
 					left = rect.x;
 				break;
 
@@ -582,7 +579,7 @@ void bar_draw(vbar_s* vb){
 				case VBAR_ALIGNED_RIGHT:
 					right -= rect.w;
 					rect.x = right;
-					_gadget_draw(vb, g, icon, &rect);	
+					_gadget_draw(vb, g, icon, 0, &rect);	
 				break;
 			}
 		}
@@ -599,12 +596,12 @@ void bar_draw(vbar_s* vb){
 					icon_s* icon = NULL;
 					if( g->iconName ){
 						chash_find((void*)&icon, &vb->icons, g->iconName, strlen(g->iconName));
-						iassert(icon != NULL);
-						rect.w += icon->img.w;
+						if( icon != NULL )
+							rect.w += icon->img.w;
 					}
 					rect.x = center;
 					//g->position.x = 
-					_gadget_draw(vb, g, icon, &rect);	
+					_gadget_draw(vb, g, icon, 0, &rect);	
 					//g->position.y = rect.y;
 					//g->position.w = rect.w;
 					//g->position.h = rect.h;
@@ -617,7 +614,7 @@ void bar_draw(vbar_s* vb){
 
 	xorg_win_surface_redraw(&vb->bar.x, vb->bar.id, &vb->bar.surface);
 }
-
+ 
 void bar_gadget_draw(vbar_s* vb, gadget_s* g, utf8_t* oldLabel){
 	dbg_info("text:\"%s\"", g->label);
 	iassert(g);
@@ -663,7 +660,14 @@ void bar_gadget_draw(vbar_s* vb, gadget_s* g, utf8_t* oldLabel){
 			bar_draw(vb);
 		}
 		else{
-			_gadget_draw(vb, g, NULL, &rect);
+			icon_s* icon = NULL;
+			unsigned isz = 0;
+			if( g->iconName ){
+				chash_find((void*)&icon, &vb->icons, g->iconName, strlen(g->iconName));
+				if( icon != NULL )
+					isz = icon->img.w;
+			}
+			_gadget_draw(vb, g, NULL, isz, &rect);
 		}
 		//dbg_info("clear %u %u %d*%d", rect.x, rect.y, rect.w, rect.h);
 		//g2d_clear(&vb->bar.surface.img, g->background, &rect);
