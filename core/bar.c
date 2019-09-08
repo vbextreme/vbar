@@ -653,6 +653,12 @@ void bar_gadget_draw(vbar_s* vb, gadget_s* g, utf8_t* oldLabel){
 		bar_draw(vb);
 		return;
 	}
+	
+	if( !ft_fonts_is_monospace(&vb->bar.fonts) ){ 
+		dbg_info("fonts is not monospace, disable optimization");
+		bar_draw(vb);
+		return;
+	}
 
 	if( !oldLabel ){
 		if( ft_line_lenght(&vb->bar.fonts, g->oldLabel) != ft_line_lenght(&vb->bar.fonts, g->label) ){

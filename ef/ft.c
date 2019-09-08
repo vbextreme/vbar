@@ -539,6 +539,11 @@ void ft_font_test(int mode){
 */
 #endif
 
+int ft_fonts_is_monospace(ftFonts_s* fonts){
+	ftRender_s* t1 = ft_fallback_glyph_load(fonts, ' ', FT_RENDER_ANTIALIASED);
+	ftRender_s* t2 = ft_fallback_glyph_load(fonts, '9', FT_RENDER_ANTIALIASED);
+	return t1->horiAdvance == t2->horiAdvance ? 1 : 0;
+}
 
 unsigned ft_line_height(ftFonts_s* fonts){
 	ftRender_s* rch = ft_fallback_glyph_load(fonts, ' ', FT_RENDER_ANTIALIASED);

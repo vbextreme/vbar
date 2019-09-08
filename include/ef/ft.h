@@ -82,6 +82,7 @@ void ft_font_render_size(ftFont_s* font, unsigned w, unsigned h);
 int ft_glyph_min_width(ftFont_s* font, utf_t utf);
 void ft_font_print_info(ftFont_s* font);
 
+int ft_fonts_is_monospace(ftFonts_s* fonts);
 unsigned ft_line_height(ftFonts_s* fonts);
 unsigned ft_line_lenght(ftFonts_s* fonts, utf8_t* str);
 unsigned ft_autowrap_height(ftFonts_s* fonts, utf8_t* str, unsigned width);
