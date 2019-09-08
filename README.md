@@ -77,6 +77,10 @@ Released under GPL v3</br>
 * **0.0**  begin
 
 ## Release Schedule
+* bug overlap text
+* bug empty text out of buffer write
+* bug border is not change all color on redraw
+* bug border change color to right gadget
 * add documentation
 * add themes
 * gadget bluetooth
