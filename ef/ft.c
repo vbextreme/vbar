@@ -545,7 +545,7 @@ unsigned ft_line_height(ftFonts_s* fonts){
 }
 
 unsigned ft_line_lenght(ftFonts_s* fonts, utf8_t* str){
-	if( !str ){
+	if( !str || !*str ){
 		dbg_warning("no str");
 		return 0;
 	}

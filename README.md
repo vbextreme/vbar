@@ -77,8 +77,7 @@ Released under GPL v3</br>
 * **0.0**  begin
 
 ## Release Schedule
-* bug overlap text
-* bug empty text out of buffer write
+* bug icon not display very well
 * add documentation
 * add themes
 * gadget bluetooth

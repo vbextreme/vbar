@@ -433,7 +433,8 @@ __private unsigned _gadget_draw(vbar_s* vb, gadget_s* g, icon_s* icon, int icons
 	g2d_clear(&vb->bar.surface.img, g->background, rect);
 	if( g->border ) _gadget_draw_border(vb, g, rect, iconsize);
 	unsigned begin = rect->x;
-	g2d_string(&vb->bar.surface.img, rect, &vb->bar.fonts, g->label, g->foreground, rect->x);
+	if( g->label && *g->label )
+		g2d_string(&vb->bar.surface.img, rect, &vb->bar.fonts, g->label, g->foreground, rect->x);
 	dbg_info("gadget:: %s text: '%s' height: %u", g->instance, g->label, rect->h);
 
 	return begin;
